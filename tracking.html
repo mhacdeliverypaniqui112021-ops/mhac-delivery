@@ -1,1 +1,351 @@
 
+<!doctype html>
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>MHAC DELIVERY — Tracking</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial,system-ui;
+background:#f3f4f6;
+color:#17171c
+}
+
+header{
+background:#17171c;
+color:white;
+padding:18px
+}
+
+.wrap{
+max-width:650px;
+margin:auto;
+padding:16px
+}
+
+.brand{
+font-size:25px;
+font-weight:900
+}
+
+.pink{
+color:#ff4f7b
+}
+
+.card{
+background:#fff;
+border-radius:18px;
+padding:20px;
+margin-bottom:15px;
+border:1px solid #ddd
+}
+
+.id{
+font-size:25px;
+font-weight:900
+}
+
+.status{
+padding:10px 15px;
+border-radius:25px;
+background:#fff0b5;
+display:inline-block;
+font-weight:900
+}
+
+.step{
+padding:14px;
+border-left:5px solid #ddd;
+margin:8px 0;
+background:#f7f7f8;
+border-radius:8px
+}
+
+.active{
+border-left-color:#ff4f7b;
+background:#fff0f4
+}
+
+.done{
+border-left-color:#159957;
+background:#edfff5
+}
+
+.total{
+font-size:24px;
+font-weight:900
+}
+
+button{
+width:100%;
+padding:13px;
+border:0;
+border-radius:10px;
+background:#ff4f7b;
+color:white;
+font-weight:900
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="wrap">
+
+<div class="brand">
+MHAC <span class="pink">DELIVERY</span>
+</div>
+
+<small>ORDER TRACKING</small>
+
+</div>
+
+</header>
+
+
+<main class="wrap">
+
+<div id="tracking"></div>
+
+</main>
+
+
+<script>
+
+const params=
+new URLSearchParams(
+location.search
+);
+
+const id=params.get("order");
+
+
+function load(){
+
+const box=
+document.getElementById("tracking");
+
+
+if(!id){
+
+box.innerHTML=`
+
+<div class="card">
+
+<h2>🔎 TRACK ORDER</h2>
+
+<p>
+Walang Order ID.
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+const raw=
+localStorage.getItem(
+"MHAC_ORDER_"+id
+);
+
+
+if(!raw){
+
+box.innerHTML=`
+
+<div class="card">
+
+<h2>❌ ORDER NOT FOUND</h2>
+
+<p>
+Check your Order ID.
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+const o=JSON.parse(raw);
+
+const statuses=[
+"Pending",
+"Confirmed",
+"Preparing",
+"Ready for Pickup",
+"Rider Assigned",
+"Picked Up",
+"Out for Delivery",
+"Delivered"
+];
+
+
+const current=
+statuses.indexOf(o.status);
+
+
+box.innerHTML=`
+
+<div class="card">
+
+<div class="id">
+${o.id}
+</div>
+
+<br>
+
+<span class="status">
+${o.status}
+</span>
+
+</div>
+
+
+<div class="card">
+
+<h2>📍 Delivery Details</h2>
+
+<p>
+👤 <b>${safe(o.customer)}</b>
+</p>
+
+<p>
+📍 ${safe(o.barangay)},
+${safe(o.municipality)}
+</p>
+
+<p>
+🏠 ${safe(o.address)}
+</p>
+
+<p>
+📏 ${o.distance} KM
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>🚚 Delivery Status</h2>
+
+${statuses.map((s,i)=>`
+
+<div class="step ${
+i<current?"done":
+i===current?"active":""
+}">
+
+${i<current?"✅":
+i===current?"🔵":"⚪"}
+
+<b>${s}</b>
+
+</div>
+
+`).join("")}
+
+</div>
+
+
+<div class="card">
+
+<h2>🧾 Payment Summary</h2>
+
+<p>
+Total Order:
+<b>${money(o.subtotal)}</b>
+</p>
+
+<p>
+10% Service Fee:
+<b>${money(o.serviceFee)}</b>
+</p>
+
+<p>
+Delivery Fee:
+<b>${money(o.deliveryFee)}</b>
+</p>
+
+<div class="total">
+
+GRAND TOTAL:
+${money(o.grandTotal)}
+
+</div>
+
+<br>
+
+<p>
+Payment:
+<b>${safe(o.payment)}</b>
+</p>
+
+</div>
+
+
+<button onclick="location.href='index.html'">
+
+🛍️ NEW ORDER
+
+</button>
+
+`;
+
+}
+
+
+function money(n){
+
+return "₱"+Number(n||0).toLocaleString(
+"en-PH",
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+);
+
+}
+
+
+function safe(value){
+
+return String(value||"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;");
+
+}
+
+
+load();
+
+setInterval(load,3000);
+
+</script>
+
+</body>
+
+</html>
