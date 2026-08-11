@@ -1,1 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
 
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>MHAC DELIVERY — Rider</title>
+
+<style>
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,system-ui;
+background:#f3f4f6
+}
+
+header{
+background:#17171c;
+color:#fff;
+padding:18px
+}
+
+.wrap{
+max-width:850px;
+margin:auto;
+padding:15px
+}
+
+.brand{
+font-size:25px;
+font-weight:900
+}
+
+.pink{color:#ff4f7b}
+
+.card{
+background:#fff;
+border-radius:17px;
+padding:17px;
+margin-bottom:15px;
+border:1px solid #ddd
+}
+
+.order{
+border:2px solid #ff4f7b;
+border-radius:15px;
+padding:15px;
+margin-bottom:15px
+}
+
+.big{
+font-size:22px;
+font-weight:900
+}
+
+.info{
+background:#f5f5f6;
+padding:12px;
+border-radius:10px;
+margin-top:8px
+}
+
+button{
+width:100%;
+padding:13px;
+border:0;
+border-radius:10px;
+background:#ff4f7b;
+color:white;
+font-weight:900;
+margin-top:8px
+}
+
+.green{background:#159957}
+
+.blue{background:#2474e8}
+
+.dark{background:#17171c}
+
+.status{
+display:inline-block;
+padding:7px 12px;
+border-radius:20px;
+background:#fff1b7;
+font-size:12px;
+font-weight:900
+}
+
+.total{
+font-size:24px;
+font-weight:900;
+margin-top:12px
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="wrap">
+
+<div class="brand">
+MHAC <span class="pink">DELIVERY</span>
+</div>
+
+<small>RIDER DELIVERY APP 🏍️</small>
+
+</div>
+
+</header>
+
+
+<main class="wrap">
+
+<div class="card">
+
+<h2>🏍️ My Deliveries</h2>
+
+<button class="dark"
+onclick="loadRiderOrders()">
+🔄 REFRESH
+</button>
+
+</div>
+
+
+<div id="orders"></div>
+
+</main>
+
+
+<script>
+
+function money(n){
+
+return "₱"+Number(n||0).toLocaleString(
+"en-PH",
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+);
+
+}
+
+
+function getOrders(){
+
+let result=[];
+
+for(let i=0;i<localStorage.length;i++){
+
+let key=localStorage.key(i);
+
+if(key && key.startsWith("MHAC_ORDER_")){
+
+try{
+
+let order=
+JSON.parse(localStorage.getItem(key));
+
+if(
+order.status==="Rider Assigned"||
+order.status==="Picked Up"||
+order.status==="Out for Delivery"
+){
+
+result.push(order);
+
+}
+
+}catch(e){}
+
+}
+
+}
+
+return result;
+
+}
+
+
+function loadRiderOrders(){
+
+const orders=getOrders();
+
+const box=
+document.getElementById("orders");
+
+
+if(!orders.length){
+
+box.innerHTML=`
+
+<div class="card" style="text-align:center">
+
+<h2>📭 NO ACTIVE DELIVERY</h2>
+
+<p>Walang assigned delivery ngayon.</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+box.innerHTML=orders.map(o=>`
+
+<div class="order">
+
+<div class="big">
+🏍️ ${o.id}
+</div>
+
+<span class="status">
+${o.status}
+</span>
+
+<hr>
+
+<div class="info">
+
+👤 <b>CUSTOMER</b><br>
+
+${safe(o.customer)}
+
+<br><br>
+
+📱 ${safe(o.mobile)}
+
+</div>
+
+
+<div class="info">
+
+📍 <b>DELIVER TO</b><br>
+
+${safe(o.barangay)}, ${safe(o.municipality)}
+
+<br><br>
+
+🏠 ${safe(o.address)}
+
+<br><br>
+
+📌 Landmark:
+${safe(o.landmark||"None")}
+
+</div>
+
+
+<div class="info">
+
+📏 Distance:
+<b>${o.distance} KM</b>
+
+</div>
+
+
+<div class="info">
+
+💳 Payment:
+<b>${safe(o.payment)}</b>
+
+</div>
+
+
+<div class="total">
+
+COLLECT:
+
+${money(o.grandTotal)}
+
+</div>
+
+
+<button class="blue"
+onclick="callCustomer('${o.mobile}')">
+
+📞 CALL CUSTOMER
+
+</button>
+
+
+<button class="dark"
+onclick="openMap('${o.address}, ${o.barangay}, ${o.municipality}')">
+
+🗺️ OPEN MAP
+
+</button>
+
+
+<button class="green"
+onclick="setStatus('${o.id}','Picked Up')">
+
+📦 PICKED UP
+
+</button>
+
+
+<button
+onclick="setStatus('${o.id}','Out for Delivery')">
+
+🛵 OUT FOR DELIVERY
+
+</button>
+
+
+<button class="green"
+onclick="setStatus('${o.id}','Delivered')">
+
+✅ DELIVERED
+
+</button>
+
+</div>
+
+`).join("");
+
+}
+
+
+function setStatus(id,status){
+
+let key="MHAC_ORDER_"+id;
+
+let order=JSON.parse(
+localStorage.getItem(key)
+);
+
+if(!order)return;
+
+order.status=status;
+
+order.updatedAt=
+new Date().toLocaleString();
+
+localStorage.setItem(
+key,
+JSON.stringify(order)
+);
+
+loadRiderOrders();
+
+}
+
+
+function callCustomer(number){
+
+if(number)
+location.href="tel:"+number;
+
+}
+
+
+function openMap(address){
+
+location.href=
+"https://www.google.com/maps/search/?api=1&query="+
+encodeURIComponent(address);
+
+}
+
+
+function safe(value){
+
+return String(value||"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;");
+
+}
+
+
+loadRiderOrders();
+
+setInterval(
+loadRiderOrders,
+3000
+);
+
+</script>
+
+</body>
+</html>
