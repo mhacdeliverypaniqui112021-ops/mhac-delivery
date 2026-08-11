@@ -1,1 +1,835 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MHAC DELIVERY — Admin</title>
 
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,system-ui,sans-serif;
+background:#f4f5f7;
+color:#17171c
+}
+
+header{
+background:#17171c;
+color:#fff;
+padding:18px
+}
+
+.wrap{
+max-width:1100px;
+margin:auto;
+padding:16px
+}
+
+.brand{
+font-size:25px;
+font-weight:900
+}
+
+.pink{
+color:#ff4f7b
+}
+
+.card{
+background:#fff;
+border:1px solid #e3e4e8;
+border-radius:17px;
+padding:17px;
+margin-bottom:15px
+}
+
+.dashboard{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:10px
+}
+
+.stat{
+background:#fff;
+border:1px solid #e3e4e8;
+border-radius:14px;
+padding:15px
+}
+
+.stat b{
+font-size:28px;
+display:block
+}
+
+.order{
+border:1px solid #ddd;
+border-radius:14px;
+padding:15px;
+margin-bottom:12px
+}
+
+.order-head{
+display:flex;
+justify-content:space-between;
+gap:10px;
+align-items:center;
+border-bottom:1px solid #eee;
+padding-bottom:10px
+}
+
+.order-id{
+font-weight:900;
+font-size:18px
+}
+
+.status{
+padding:7px 10px;
+border-radius:20px;
+font-size:11px;
+font-weight:900;
+background:#fff3cd;
+color:#8a6500
+}
+
+.info{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+margin-top:12px
+}
+
+.info div{
+background:#f7f7f8;
+padding:9px;
+border-radius:8px
+}
+
+.total{
+font-size:22px;
+font-weight:900;
+margin-top:12px;
+padding-top:12px;
+border-top:1px solid #ddd
+}
+
+button{
+border:0;
+border-radius:9px;
+padding:10px 12px;
+font-weight:900;
+cursor:pointer;
+background:#ff4f7b;
+color:white;
+margin:4px 2px
+}
+
+.dark{
+background:#17171c
+}
+
+.green{
+background:#159957
+}
+
+.blue{
+background:#2474e8
+}
+
+.red{
+background:#d93025
+}
+
+select{
+padding:10px;
+border:1px solid #ddd;
+border-radius:9px;
+font-weight:700
+}
+
+.empty{
+text-align:center;
+padding:35px;
+color:#777
+}
+
+@media(max-width:750px){
+.dashboard{
+grid-template-columns:1fr 1fr
+}
+
+.info{
+grid-template-columns:1fr
+}
+}
+
+@media(max-width:450px){
+.dashboard{
+grid-template-columns:1fr
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="wrap">
+
+<div class="brand">
+MHAC <span class="pink">DELIVERY</span>
+</div>
+
+<small>ADMIN ORDER DASHBOARD</small>
+
+</div>
+</header>
+
+
+<main class="wrap">
+
+<!-- DASHBOARD STATS -->
+
+<div class="dashboard">
+
+<div class="stat">
+<span>All Orders</span>
+<b id="allCount">0</b>
+</div>
+
+<div class="stat">
+<span>Pending</span>
+<b id="pendingCount">0</b>
+</div>
+
+<div class="stat">
+<span>Delivery</span>
+<b id="deliveryCount">0</b>
+</div>
+
+<div class="stat">
+<span>Completed</span>
+<b id="completedCount">0</b>
+</div>
+
+</div>
+
+
+<!-- CONTROLS -->
+
+<div class="card">
+
+<h2>📋 Orders</h2>
+
+<button onclick="loadOrders()">
+🔄 REFRESH ORDERS
+</button>
+
+<button class="dark" onclick="clearAllOrders()">
+🗑️ CLEAR ALL ORDERS
+</button>
+
+</div>
+
+
+<!-- ORDERS -->
+
+<div id="orders">
+
+<div class="empty">
+No orders found.
+</div>
+
+</div>
+
+</main>
+
+
+<script>
+
+/*
+=================================================
+MHAC DELIVERY ADMIN DASHBOARD
+LOCAL STORAGE VERSION
+=================================================
+*/
+
+
+function money(number){
+
+return "₱"+Number(number).toLocaleString(
+"en-PH",
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+);
+
+}
+
+
+/* GET ORDERS */
+
+function getOrders(){
+
+let orders=[];
+
+for(let i=0;i<localStorage.length;i++){
+
+let key=localStorage.key(i);
+
+if(!key) continue;
+
+if(key.startsWith("MHAC_ORDER_")){
+
+try{
+
+let order=
+JSON.parse(
+localStorage.getItem(key)
+);
+
+if(order){
+orders.push(order);
+}
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+}
+
+
+/* newest first */
+
+orders.sort((a,b)=>{
+
+return new Date(b.date)-new Date(a.date);
+
+});
+
+return orders;
+
+}
+
+
+/* LOAD */
+
+function loadOrders(){
+
+const orders=getOrders();
+
+const container=
+document.getElementById("orders");
+
+container.innerHTML="";
+
+
+/* COUNTERS */
+
+let pending=0;
+let delivery=0;
+let completed=0;
+
+
+orders.forEach(order=>{
+
+let status=
+(order.status||"Pending").toLowerCase();
+
+
+if(status==="pending"){
+pending++;
+}
+
+if(
+status==="rider assigned"||
+status==="picked up"||
+status==="out for delivery"
+){
+delivery++;
+}
+
+if(status==="delivered"){
+completed++;
+}
+
+
+});
+
+
+document.getElementById("allCount")
+.textContent=orders.length;
+
+document.getElementById("pendingCount")
+.textContent=pending;
+
+document.getElementById("deliveryCount")
+.textContent=delivery;
+
+document.getElementById("completedCount")
+.textContent=completed;
+
+
+if(orders.length===0){
+
+container.innerHTML=`
+
+<div class="card empty">
+
+<h2>📭 NO ORDERS YET</h2>
+
+<p>
+Orders created on this device will appear here.
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+/* DISPLAY ORDERS */
+
+orders.forEach(order=>{
+
+const div=
+document.createElement("div");
+
+div.className="order";
+
+div.innerHTML=`
+
+<div class="order-head">
+
+<div>
+
+<div class="order-id">
+${escapeHTML(order.id)}
+</div>
+
+<small>
+${escapeHTML(order.date||"")}
+</small>
+
+</div>
+
+<span class="status">
+${escapeHTML(order.status||"Pending")}
+</span>
+
+</div>
+
+
+<h3>
+🏪 ${escapeHTML(order.store||"")}
+</h3>
+
+
+<div class="info">
+
+<div>
+👤 <b>Customer</b><br>
+${escapeHTML(order.customer||"")}
+</div>
+
+<div>
+📱 <b>Mobile</b><br>
+${escapeHTML(order.mobile||"")}
+</div>
+
+<div>
+📍 <b>Municipality</b><br>
+${escapeHTML(order.municipality||"")}
+</div>
+
+<div>
+🏘️ <b>Barangay</b><br>
+${escapeHTML(order.barangay||"")}
+</div>
+
+<div>
+🏠 <b>Address</b><br>
+${escapeHTML(order.address||"")}
+</div>
+
+<div>
+📍 <b>Landmark</b><br>
+${escapeHTML(order.landmark||"Not specified")}
+</div>
+
+<div>
+📏 <b>Distance</b><br>
+${Number(order.distanceKm||order.distance||0).toFixed(1)} km
+</div>
+
+<div>
+💳 <b>Payment</b><br>
+${escapeHTML(order.payment||"")}
+</div>
+
+</div>
+
+
+<h3>🛍️ Items</h3>
+
+<div>
+
+${
+Array.isArray(order.items)
+
+? order.items.map(item=>`
+
+<div style="
+display:flex;
+justify-content:space-between;
+padding:6px 0;
+border-bottom:1px solid #eee
+">
+
+<span>
+${escapeHTML(item.name)}
+× ${item.quantity}
+</span>
+
+<b>
+${money(item.total)}
+</b>
+
+</div>
+
+`).join("")
+
+: "<small>Product details unavailable</small>"
+}
+
+</div>
+
+
+<div class="total">
+
+<div style="
+display:flex;
+justify-content:space-between;
+font-size:14px;
+font-weight:normal
+">
+
+<span>Total Order</span>
+
+<span>
+${money(order.subtotal||0)}
+</span>
+
+</div>
+
+
+<div style="
+display:flex;
+justify-content:space-between;
+font-size:14px;
+font-weight:normal
+">
+
+<span>10% Service Fee</span>
+
+<span>
+${money(order.serviceFee||0)}
+</span>
+
+</div>
+
+
+<div style="
+display:flex;
+justify-content:space-between;
+font-size:14px;
+font-weight:normal
+">
+
+<span>Delivery Fee</span>
+
+<span>
+${money(order.deliveryFee||0)}
+</span>
+
+</div>
+
+
+<div style="
+display:flex;
+justify-content:space-between;
+margin-top:8px
+">
+
+<span>GRAND TOTAL</span>
+
+<span>
+${money(order.grandTotal||0)}
+</span>
+
+</div>
+
+</div>
+
+
+<div style="margin-top:12px">
+
+<label>
+Update Status:
+</label>
+
+<select
+onchange="changeStatus('${order.id}',this.value)"
+>
+
+<option
+${order.status==="Pending"?"selected":""}>
+Pending
+</option>
+
+<option
+${order.status==="Confirmed"?"selected":""}>
+Confirmed
+</option>
+
+<option
+${order.status==="Preparing"?"selected":""}>
+Preparing
+</option>
+
+<option
+${order.status==="Ready for Pickup"?"selected":""}>
+Ready for Pickup
+</option>
+
+<option
+${order.status==="Rider Assigned"?"selected":""}>
+Rider Assigned
+</option>
+
+<option
+${order.status==="Picked Up"?"selected":""}>
+Picked Up
+</option>
+
+<option
+${order.status==="Out for Delivery"?"selected":""}>
+Out for Delivery
+</option>
+
+<option
+${order.status==="Delivered"?"selected":""}>
+Delivered
+</option>
+
+<option
+${order.status==="Cancelled"?"selected":""}>
+Cancelled
+</option>
+
+</select>
+
+
+<button
+class="green"
+onclick="confirmOrder('${order.id}')"
+>
+✅ CONFIRM
+</button>
+
+
+<button
+class="blue"
+onclick="contactCustomer('${order.mobile||""}')"
+>
+📞 CONTACT
+</button>
+
+
+<button
+class="red"
+onclick="deleteOrder('${order.id}')"
+>
+DELETE
+</button>
+
+</div>
+
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+
+/* STATUS */
+
+function changeStatus(orderId,status){
+
+const key=
+"MHAC_ORDER_"+orderId;
+
+const data=
+localStorage.getItem(key);
+
+if(!data){
+return;
+}
+
+try{
+
+const order=JSON.parse(data);
+
+order.status=status;
+
+order.updatedAt=
+new Date().toLocaleString();
+
+localStorage.setItem(
+key,
+JSON.stringify(order)
+);
+
+loadOrders();
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+
+/* CONFIRM */
+
+function confirmOrder(orderId){
+
+changeStatus(
+orderId,
+"Confirmed"
+);
+
+alert(
+"Order "+orderId+" confirmed."
+);
+
+}
+
+
+/* CONTACT */
+
+function contactCustomer(number){
+
+if(!number){
+
+alert(
+"No mobile number available."
+);
+
+return;
+
+}
+
+window.location.href=
+"tel:"+number;
+
+}
+
+
+/* DELETE */
+
+function deleteOrder(orderId){
+
+if(!confirm(
+"Delete order "+orderId+"?"
+)){
+
+return;
+
+}
+
+localStorage.removeItem(
+"MHAC_ORDER_"+orderId
+);
+
+loadOrders();
+
+}
+
+
+/* CLEAR */
+
+function clearAllOrders(){
+
+if(!confirm(
+"WARNING: Delete ALL orders from this browser?"
+)){
+
+return;
+
+}
+
+const keys=[];
+
+for(let i=0;i<localStorage.length;i++){
+
+const key=localStorage.key(i);
+
+if(
+key &&
+key.startsWith("MHAC_ORDER_")
+){
+
+keys.push(key);
+
+}
+
+}
+
+keys.forEach(key=>{
+localStorage.removeItem(key);
+});
+
+loadOrders();
+
+}
+
+
+/* SECURITY */
+
+function escapeHTML(value){
+
+return String(value??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* AUTO REFRESH */
+
+loadOrders();
+
+setInterval(
+loadOrders,
+5000
+);
+
+</script>
+
+</body>
+</html>
