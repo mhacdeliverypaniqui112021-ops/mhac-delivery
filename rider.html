@@ -1,395 +1,379 @@
 <!doctype html>
+
 <html lang="en">
 <head>
-
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>MHAC DELIVERY — Rider</title>
-
-<style>
-
+<meta name="theme-color" content="#17171c">
+<title>MHAC DELIVERY — Rider</title><style>
 *{box-sizing:border-box}
-
 body{
-margin:0;
-font-family:Arial,system-ui;
-background:#f3f4f6
+ margin:0;
+ font-family:Arial,system-ui;
+ background:#f4f5f7;
+ color:#17171c
 }
-
 header{
-background:#17171c;
-color:#fff;
-padding:18px
+ background:#17171c;
+ color:white;
+ padding:16px
 }
-
 .wrap{
-max-width:850px;
-margin:auto;
-padding:15px
+ max-width:900px;
+ margin:auto;
+ padding:15px
 }
-
-.brand{
-font-size:25px;
-font-weight:900
+.logo{
+ font-size:23px;
+ font-weight:900
 }
-
 .pink{color:#ff4f7b}
-
+.rider{
+ color:#55e391;
+ font-size:12px;
+ font-weight:bold
+}
 .card{
-background:#fff;
-border-radius:17px;
-padding:17px;
-margin-bottom:15px;
-border:1px solid #ddd
+ background:white;
+ border:1px solid #ddd;
+ border-radius:16px;
+ padding:17px;
+ margin-bottom:15px
 }
-
+.top{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:10px
+}
 .order{
-border:2px solid #ff4f7b;
-border-radius:15px;
-padding:15px;
-margin-bottom:15px
+ border:1px solid #ddd;
+ border-radius:14px;
+ padding:15px;
+ margin-top:12px
 }
-
-.big{
-font-size:22px;
-font-weight:900
+.order-id{
+ font-size:18px;
+ font-weight:900
 }
-
-.info{
-background:#f5f5f6;
-padding:12px;
-border-radius:10px;
-margin-top:8px
-}
-
-button{
-width:100%;
-padding:13px;
-border:0;
-border-radius:10px;
-background:#ff4f7b;
-color:white;
-font-weight:900;
-margin-top:8px
-}
-
-.green{background:#159957}
-
-.blue{background:#2474e8}
-
-.dark{background:#17171c}
-
 .status{
-display:inline-block;
-padding:7px 12px;
-border-radius:20px;
-background:#fff1b7;
-font-size:12px;
-font-weight:900
+ display:inline-block;
+ padding:6px 10px;
+ border-radius:20px;
+ background:#fff3cf;
+ color:#936800;
+ font-size:11px;
+ font-weight:900
 }
-
+.info{
+ margin-top:12px;
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px
+}
+.info div{
+ background:#f7f7f9;
+ padding:10px;
+ border-radius:9px;
+ font-size:13px
+}
+.label{
+ display:block;
+ font-size:10px;
+ color:#777;
+ font-weight:bold;
+ margin-bottom:4px
+}
+.money{
+ margin-top:12px;
+ padding:12px;
+ background:#fff7f9;
+ border-radius:10px
+}
 .total{
-font-size:24px;
-font-weight:900;
-margin-top:12px
+ font-size:21px;
+ font-weight:900;
+ color:#ff4f7b
 }
-
-</style>
-
-</head>
-
-<body>
-
-<header>
-
-<div class="wrap">
-
-<div class="brand">
-MHAC <span class="pink">DELIVERY</span>
-</div>
-
-<small>RIDER DELIVERY APP 🏍️</small>
-
-</div>
-
-</header>
-
-
-<main class="wrap">
-
-<div class="card">
-
-<h2>🏍️ My Deliveries</h2>
-
-<button class="dark"
-onclick="loadRiderOrders()">
-🔄 REFRESH
+button{
+ width:100%;
+ border:0;
+ border-radius:10px;
+ padding:12px;
+ margin-top:9px;
+ font-weight:900;
+ cursor:pointer
+}
+.accept{background:#17171c;color:white}
+.pickup{background:#ffb020;color:#17171c}
+.way{background:#ff4f7b;color:white}
+.delivered{background:#1c9b59;color:white}
+.empty{
+ text-align:center;
+ padding:40px;
+ color:#777
+}
+@media(max-width:600px){
+ .info{grid-template-columns:1fr}
+}
+</style></head><body><header>
+<div class="wrap"><div class="top">
+<div>
+<div class="logo">MHAC <span class="pink">DELIVERY</span></div>
+<div>RIDER APP</div>
+</div><div class="rider">● RIDER ONLINE</div>
+</div></div>
+</header><main class="wrap"><div class="card">
+<h2>🛵 My Deliveries</h2>
+<p style="color:#777">
+Orders assigned to this rider will appear here.
+</p><button onclick="loadOrders()" class="accept">
+↻ REFRESH ORDERS
 </button>
+</div><div id="orders"></div></main><script>
 
-</div>
-
-
-<div id="orders"></div>
-
-</main>
-
-
-<script>
+let orders=[];
 
 function money(n){
 
-return "₱"+Number(n||0).toLocaleString(
-"en-PH",
-{
-minimumFractionDigits:2,
-maximumFractionDigits:2
-}
-);
+ return "₱"+Number(n||0).toLocaleString("en-PH",{
+  minimumFractionDigits:2,
+  maximumFractionDigits:2
+ });
 
 }
 
+function loadOrders(){
 
-function getOrders(){
+ orders=[];
 
-let result=[];
+ /*
+  DEMO MODE:
+  Reads MHAC orders saved on this device.
+  Later we will connect this to the real
+  online order database.
+ */
 
-for(let i=0;i<localStorage.length;i++){
+ for(let i=0;i<localStorage.length;i++){
 
-let key=localStorage.key(i);
+  let key=localStorage.key(i);
 
-if(key && key.startsWith("MHAC_ORDER_")){
+  if(key && key.startsWith("MHAC_ORDER_")){
 
-try{
+   try{
 
-let order=
-JSON.parse(localStorage.getItem(key));
+    let order=JSON.parse(localStorage.getItem(key));
 
-if(
-order.status==="Rider Assigned"||
-order.status==="Picked Up"||
-order.status==="Out for Delivery"
-){
+    if(order) orders.push(order);
 
-result.push(order);
+   }catch(e){}
 
-}
+  }
 
-}catch(e){}
+ }
 
-}
-
-}
-
-return result;
+ renderOrders();
 
 }
 
+function renderOrders(){
 
-function loadRiderOrders(){
+ let box=document.getElementById("orders");
 
-const orders=getOrders();
+ if(orders.length===0){
 
-const box=
-document.getElementById("orders");
+  box.innerHTML=`
+  <div class="card empty">
+  🛵<br><br>
+  <b>No delivery orders</b>
+  <br>
+  <small>Assigned orders will appear here.</small>
+  </div>`;
 
+  return;
 
-if(!orders.length){
+ }
 
-box.innerHTML=`
+ box.innerHTML=orders.map(o=>{
 
-<div class="card" style="text-align:center">
+  let status=o.status||"Pending";
 
-<h2>📭 NO ACTIVE DELIVERY</h2>
+  if(status==="Delivered" || status==="Cancelled"){
+   return "";
+  }
 
-<p>Walang assigned delivery ngayon.</p>
+  return `
 
-</div>
+  <div class="card order">
 
-`;
+   <div class="top">
 
-return;
+    <div>
+     <div class="order-id">${o.id}</div>
+     <small>${o.date||""}</small>
+    </div>
+
+    <span class="status">${status}</span>
+
+   </div>
+
+   <hr>
+
+   <div class="info">
+
+    <div>
+     <span class="label">CUSTOMER</span>
+     <b>${o.customer||"-"}</b>
+    </div>
+
+    <div>
+     <span class="label">MOBILE</span>
+     ${o.mobile||"-"}
+    </div>
+
+    <div>
+     <span class="label">MUNICIPALITY</span>
+     ${o.municipality||"-"}
+    </div>
+
+    <div>
+     <span class="label">BARANGAY</span>
+     ${o.barangay||"-"}
+    </div>
+
+    <div style="grid-column:1/-1">
+     <span class="label">DELIVERY ADDRESS</span>
+     ${o.address||"-"}
+    </div>
+
+    <div style="grid-column:1/-1">
+     <span class="label">LANDMARK</span>
+     ${o.landmark||"No landmark"}
+    </div>
+
+    <div>
+     <span class="label">DISTANCE</span>
+     ${o.distance||0} KM
+    </div>
+
+    <div>
+     <span class="label">PAYMENT</span>
+     ${o.payment||"-"}
+    </div>
+
+   </div>
+
+   <div class="money">
+
+    <div>
+     Order: <b>${money(o.subtotal)}</b>
+    </div>
+
+    <div>
+     Service Fee: <b>${money(o.serviceFee)}</b>
+    </div>
+
+    <div>
+     Delivery Fee: <b>${money(o.deliveryFee)}</b>
+    </div>
+
+    <div class="total">
+     TOTAL: ${money(o.grandTotal)}
+    </div>
+
+   </div>
+
+   ${getButtons(o)}
+
+  </div>
+
+  `;
+
+ }).join("");
 
 }
 
+function getButtons(o){
 
-box.innerHTML=orders.map(o=>`
+ let status=o.status||"Pending";
 
-<div class="order">
+ if(status==="Pending"){
 
-<div class="big">
-🏍️ ${o.id}
-</div>
+  return `
+  <button class="accept"
+  onclick="updateStatus('${o.id}','Confirmed')">
+  ACCEPT ORDER
+  </button>`;
 
-<span class="status">
-${o.status}
-</span>
+ }
 
-<hr>
+ if(status==="Confirmed"){
 
-<div class="info">
+  return `
+  <button class="pickup"
+  onclick="updateStatus('${o.id}','Picked Up')">
+  📦 PICKED UP
+  </button>`;
 
-👤 <b>CUSTOMER</b><br>
+ }
 
-${safe(o.customer)}
+ if(status==="Picked Up"){
 
-<br><br>
+  return `
+  <button class="way"
+  onclick="updateStatus('${o.id}','On the Way')">
+  🛵 START DELIVERY
+  </button>`;
 
-📱 ${safe(o.mobile)}
+ }
 
-</div>
+ if(status==="On the Way"){
 
+  return `
+  <button class="delivered"
+  onclick="updateStatus('${o.id}','Delivered')">
+  ✅ MARK AS DELIVERED
+  </button>`;
 
-<div class="info">
+ }
 
-📍 <b>DELIVER TO</b><br>
-
-${safe(o.barangay)}, ${safe(o.municipality)}
-
-<br><br>
-
-🏠 ${safe(o.address)}
-
-<br><br>
-
-📌 Landmark:
-${safe(o.landmark||"None")}
-
-</div>
-
-
-<div class="info">
-
-📏 Distance:
-<b>${o.distance} KM</b>
-
-</div>
-
-
-<div class="info">
-
-💳 Payment:
-<b>${safe(o.payment)}</b>
-
-</div>
-
-
-<div class="total">
-
-COLLECT:
-
-${money(o.grandTotal)}
-
-</div>
-
-
-<button class="blue"
-onclick="callCustomer('${o.mobile}')">
-
-📞 CALL CUSTOMER
-
-</button>
-
-
-<button class="dark"
-onclick="openMap('${o.address}, ${o.barangay}, ${o.municipality}')">
-
-🗺️ OPEN MAP
-
-</button>
-
-
-<button class="green"
-onclick="setStatus('${o.id}','Picked Up')">
-
-📦 PICKED UP
-
-</button>
-
-
-<button
-onclick="setStatus('${o.id}','Out for Delivery')">
-
-🛵 OUT FOR DELIVERY
-
-</button>
-
-
-<button class="green"
-onclick="setStatus('${o.id}','Delivered')">
-
-✅ DELIVERED
-
-</button>
-
-</div>
-
-`).join("");
+ return "";
 
 }
 
+function updateStatus(id,status){
 
-function setStatus(id,status){
+ let key="MHAC_ORDER_"+id;
 
-let key="MHAC_ORDER_"+id;
+ let data=localStorage.getItem(key);
 
-let order=JSON.parse(
-localStorage.getItem(key)
-);
+ if(!data){
+  alert("Order not found.");
+  return;
+ }
 
-if(!order)return;
+ try{
 
-order.status=status;
+  let order=JSON.parse(data);
 
-order.updatedAt=
-new Date().toLocaleString();
+  order.status=status;
 
-localStorage.setItem(
-key,
-JSON.stringify(order)
-);
+  localStorage.setItem(
+   key,
+   JSON.stringify(order)
+  );
 
-loadRiderOrders();
+  loadOrders();
 
-}
+ }catch(e){
 
+  alert("Unable to update order.");
 
-function callCustomer(number){
-
-if(number)
-location.href="tel:"+number;
-
-}
-
-
-function openMap(address){
-
-location.href=
-"https://www.google.com/maps/search/?api=1&query="+
-encodeURIComponent(address);
+ }
 
 }
 
+loadOrders();
 
-function safe(value){
-
-return String(value||"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;");
-
-}
-
-
-loadRiderOrders();
-
-setInterval(
-loadRiderOrders,
-3000
-);
-
-</script>
-
-</body>
+</script></body>
 </html>
