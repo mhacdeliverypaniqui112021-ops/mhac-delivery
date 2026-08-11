@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MHAC DELIVERY — Production Starter</title>
+<style>
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:#f6f6f9;color:#17171c}
+header{background:#17171c;color:white;padding:18px}.wrap{max-width:900px;margin:auto;padding:20px}
+.card{background:white;border:1px solid #e5e5eb;border-radius:18px;padding:20px;margin-bottom:15px}
+h1{margin:0}.pink{color:#ff4f7b}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;font-size:12px;font-weight:800;margin:10px 0 5px}input,select,button{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;font:inherit;box-sizing:border-box}
+button{background:#ff4f7b;color:#fff;border:0;font-weight:900;cursor:pointer;margin-top:8px}.secondary{background:#17171c}
+pre{white-space:pre-wrap;background:#f2f2f5;padding:12px;border-radius:10px;font-size:12px}
+.note{background:#fff5f7;border:1px solid #ffd3df;padding:12px;border-radius:10px;font-size:13px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>MHAC <span class="pink">DELIVERY</span></h1><small>Production-ready Firebase connection starter</small></div></header>
+<main class="wrap">
+<div class="card">
+<h2>🔐 Account</h2>
+<p id="authState">Checking connection...</p>
+<div class="grid">
+<div><label>Email</label><input id="email" type="email" placeholder="customer@email.com"></div>
+<div><label>Password</label><input id="password" type="password" placeholder="Minimum 6 characters"></div>
+</div>
+<div class="grid"><button onclick="signUp()">CREATE ACCOUNT</button><button class="secondary" onclick="signIn()">LOGIN</button></div>
+<button class="secondary" onclick="signOutUser()">LOGOUT</button>
+</div>
+
+<div class="card">
+<h2>🧾 Test Order</h2>
+<div class="note"><b>Fee rule:</b> Total Order + 10% Service Fee + Delivery Fee. Delivery is ₱40 for the first kilometer, then +₱10 for every succeeding kilometer.</div>
+<div class="grid">
+<div><label>Total Order</label><input id="orderAmount" type="number" value="500"></div>
+<div><label>Distance (km)</label><input id="distance" type="number" value="3" step=".1"></div>
+</div>
+<button onclick="saveOrder()">SAVE TEST ORDER TO FIRESTORE</button>
+<p id="result"></p>
+</div>
+
+<div class="card">
+<h2>⚙️ Firebase configuration</h2>
+<p class="note">Replace the placeholder values in <code>firebase-config.js</code> with your Firebase Web App configuration. Never put private service-account keys in this website.</p>
+<pre>Firebase Console
+→ Create project
+→ Authentication → Email/Password
+→ Firestore Database
+→ Project settings → Your apps → Web app
+→ Copy Firebase config
+→ Paste into firebase-config.js</pre>
+</div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import { firebaseConfig } from "./firebase-config.js";
+
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const $=id=>document.getElementById(id);
+const money=n=>"₱"+Number(n).toLocaleString("en-PH",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+onAuthStateChanged(auth,user=>{$("authState").textContent=user?"Logged in as "+user.email:"Not logged in";});
+
+window.signUp=async()=>{try{await createUserWithEmailAndPassword(auth,$("email").value,$("password").value);alert("Account created.");}catch(e){alert(e.message)}};
+window.signIn=async()=>{try{await signInWithEmailAndPassword(auth,$("email").value,$("password").value);alert("Logged in.");}catch(e){alert(e.message)}};
+window.signOutUser=async()=>{await signOut(auth)};
+window.saveOrder=async()=>{
+ const user=auth.currentUser;if(!user){alert("Please login first.");return}
+ const order=Number($("orderAmount").value)||0, km=Math.ceil(Number($("distance").value)||0);
+ const sf=order*.10,df=km?40+(km-1)*10:0,total=order+sf+df;
+ const ref=await addDoc(collection(db,"orders"),{userId:user.uid,totalOrder:order,serviceFee:sf,deliveryFee:df,grandTotal:total,distanceKm:km,status:"Pending",createdAt:serverTimestamp()});
+ $("result").textContent=`Saved: ${ref.id} • Grand Total ${money(total)}`;
+};
+</script>
+</body></html>
