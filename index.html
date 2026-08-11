@@ -4,32 +4,209 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MHAC DELIVERY</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,system-ui;background:#f5f6f8;color:#17171c}
-header{background:#17171c;color:white;padding:18px}
-.wrap{max-width:1100px;margin:auto;padding:16px}
-.brand{font-size:25px;font-weight:900}.pink{color:#ff4f7b}
-.hero{background:linear-gradient(135deg,#17171c,#472333);color:white;padding:38px 0}
-.hero h1{font-size:42px;margin:0 0 10px}.hero p{color:#ddd}
-.card{background:white;border:1px solid #e4e5ea;border-radius:17px;padding:17px;margin-bottom:15px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.product{border:1px solid #ddd;border-radius:13px;padding:12px}
-.product h3{margin:6px 0}.price{font-weight:900}
-button{border:0;border-radius:10px;padding:11px;width:100%;font-weight:900;cursor:pointer;background:#ff4f7b;color:white}
-button.dark{background:#17171c}
-input,select,textarea{width:100%;padding:11px;border:1px solid #d8d9df;border-radius:9px;font:inherit}
-label{font-size:12px;font-weight:900;display:block;margin:9px 0 5px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.cart-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee}
-.total{font-size:21px;font-weight:900;border-top:1px solid #ddd;padding-top:10px}
-.notice{background:#fff3f6;border:1px solid #ffd1dc;border-radius:10px;padding:11px;font-size:13px}
-.store{border:2px solid transparent;cursor:pointer}.store.active{border-color:#ff4f7b}
-.hidden{display:none}
-.success{background:#e9f9f1;border:1px solid #bcebd5;padding:15px;border-radius:12px}
-footer{text-align:center;padding:30px;color:#777}
-@media(max-width:750px){.grid{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}.hero h1{font-size:34px}}
-@media(max-width:450px){.grid{grid-template-columns:1fr}}
+
+body{
+ margin:0;
+ font-family:Arial,system-ui,sans-serif;
+ background:#f5f6f8;
+ color:#17171c
+}
+
+header{
+ background:#17171c;
+ color:white;
+ padding:16px
+}
+
+.wrap{
+ max-width:1100px;
+ margin:auto;
+ padding:16px
+}
+
+.brand{
+ font-size:25px;
+ font-weight:900
+}
+
+.pink{
+ color:#ff4f7b
+}
+
+.hero{
+ background:linear-gradient(135deg,#17171c,#472333);
+ color:white;
+ padding:42px 0
+}
+
+.hero h1{
+ font-size:42px;
+ margin:0 0 10px
+}
+
+.hero p{
+ color:#ddd
+}
+
+.card{
+ background:white;
+ border:1px solid #e4e5ea;
+ border-radius:17px;
+ padding:17px;
+ margin-bottom:15px
+}
+
+.grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px
+}
+
+.row{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px
+}
+
+.product{
+ border:1px solid #ddd;
+ border-radius:13px;
+ padding:12px
+}
+
+.product h3{
+ margin:6px 0
+}
+
+.price{
+ font-weight:900;
+ font-size:18px
+}
+
+button{
+ border:0;
+ border-radius:10px;
+ padding:12px;
+ width:100%;
+ font-weight:900;
+ cursor:pointer;
+ background:#ff4f7b;
+ color:white;
+ margin-top:7px
+}
+
+button.dark{
+ background:#17171c
+}
+
+button.green{
+ background:#159957
+}
+
+input,select,textarea{
+ width:100%;
+ padding:12px;
+ border:1px solid #d8d9df;
+ border-radius:9px;
+ font:inherit
+}
+
+label{
+ font-size:12px;
+ font-weight:900;
+ display:block;
+ margin:10px 0 5px
+}
+
+.cart-item{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:10px;
+ padding:10px 0;
+ border-bottom:1px solid #eee
+}
+
+.total{
+ font-size:21px;
+ font-weight:900;
+ border-top:1px solid #ddd;
+ padding-top:12px
+}
+
+.notice{
+ background:#fff3f6;
+ border:1px solid #ffd1dc;
+ border-radius:10px;
+ padding:12px;
+ font-size:13px;
+ margin-top:12px
+}
+
+.location-box{
+ background:#eef8ff;
+ border:1px solid #b9e3ff;
+ border-radius:12px;
+ padding:12px;
+ margin-top:12px
+}
+
+.success{
+ background:#e9f9f1;
+ border:1px solid #bcebd5;
+ padding:16px;
+ border-radius:12px
+}
+
+.error{
+ background:#fff0f0;
+ border:1px solid #ffbcbc;
+ padding:12px;
+ border-radius:10px;
+ margin-top:10px
+}
+
+.store{
+ border:2px solid transparent;
+ cursor:pointer
+}
+
+.store.active{
+ border-color:#ff4f7b
+}
+
+.hidden{
+ display:none
+}
+
+.small{
+ font-size:12px;
+ color:#666
+}
+
+.status{
+ font-weight:900;
+ color:#d97706
+}
+
+footer{
+ text-align:center;
+ padding:30px;
+ color:#777
+}
+
+@media(max-width:750px){
+ .grid{grid-template-columns:1fr 1fr}
+ .row{grid-template-columns:1fr}
+ .hero h1{font-size:34px}
+}
+
+@media(max-width:450px){
+ .grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 
@@ -37,7 +214,9 @@ footer{text-align:center;padding:30px;color:#777}
 
 <header>
 <div class="wrap">
-<div class="brand">MHAC <span class="pink">DELIVERY</span></div>
+<div class="brand">
+MHAC <span class="pink">DELIVERY</span>
+</div>
 <small>Food • Grocery • Market • Medicine • Essentials</small>
 </div>
 </header>
@@ -46,17 +225,21 @@ footer{text-align:center;padding:30px;color:#777}
 <div class="wrap">
 <h1>Order. We Deliver. 🛵</h1>
 <p>Fast and affordable delivery around our covered municipalities.</p>
-<button onclick="document.getElementById('order').scrollIntoView()">ORDER NOW</button>
+<button onclick="document.getElementById('order').scrollIntoView({behavior:'smooth'})">
+ORDER NOW
+</button>
 </div>
 </section>
 
 <main class="wrap">
 
+<!-- STORES -->
 <div class="card" id="order">
 <h2>🏪 Choose Store</h2>
 <div class="grid" id="stores"></div>
 </div>
 
+<!-- PRODUCTS -->
 <div class="card">
 <h2>🛍️ Products</h2>
 <div id="products" class="grid">
@@ -64,15 +247,21 @@ footer{text-align:center;padding:30px;color:#777}
 </div>
 </div>
 
+<!-- CART -->
 <div class="card">
 <h2>🛒 Your Cart</h2>
-<div id="cart">Cart is empty.</div>
+<div id="cart">
+<p class="small">Your cart is empty.</p>
+</div>
 </div>
 
+<!-- DELIVERY -->
 <div class="card">
+
 <h2>📍 Delivery Information</h2>
 
 <div class="row">
+
 <div>
 <label>Municipality</label>
 <select id="municipality">
@@ -86,6 +275,7 @@ footer{text-align:center;padding:30px;color:#777}
 <option>Select municipality first</option>
 </select>
 </div>
+
 </div>
 
 <label>Complete Address</label>
@@ -95,44 +285,85 @@ footer{text-align:center;padding:30px;color:#777}
 <input id="landmark" placeholder="Example: near barangay hall">
 
 <div class="row">
+
 <div>
 <label>Customer Name</label>
-<input id="customer">
+<input id="customer" placeholder="Full name">
 </div>
 
 <div>
 <label>Mobile Number</label>
-<input id="mobile">
+<input id="mobile" type="tel" placeholder="09XXXXXXXXX">
 </div>
+
+</div>
+
+<div class="location-box">
+
+<b>📍 Automatic Distance</b>
+
+<p id="locationStatus" class="small">
+Location not detected yet.
+</p>
+
+<button class="green" onclick="getCustomerLocation()">
+📍 USE MY CURRENT LOCATION
+</button>
+
+<input id="distance" type="number" step="0.1" min="0" readonly
+placeholder="Distance will appear here">
+
+<p class="small">
+GPS distance is an estimate. Actual road distance may be different.
+</p>
+
 </div>
 
 <div class="row">
-<div>
-<label>Distance (km)</label>
-<input id="distance" type="number" min="1" step=".1" placeholder="Example: 3">
-</div>
 
 <div>
 <label>Payment Method</label>
 <select id="payment">
-<option>Cash on Delivery</option>
-<option>GCash</option>
+<option value="COD">Cash on Delivery</option>
+<option value="GCASH">GCash</option>
 </select>
 </div>
+
+<div>
+<label>Delivery Fee</label>
+<input id="deliveryDisplay" readonly value="₱0.00">
+</div>
+
 </div>
 
 <label>Order Notes</label>
 <textarea id="notes" placeholder="Optional instructions"></textarea>
 
 <div class="notice">
-<b>DELIVERY FEE:</b><br>
-First 1 km = ₱40<br>
-Every succeeding km = +₱10<br><br>
+
+<b>DELIVERY FEE RULE</b><br><br>
+
+1 km = <b>₱40</b><br>
+Every succeeding kilometer = <b>+₱10</b><br><br>
+
+Example:<br>
+1 km = ₱40<br>
+2 km = ₱50<br>
+3 km = ₱60<br>
+4 km = ₱70<br>
+5 km = ₱80
+
+<br><br>
+
 <b>TOTAL = ORDER + 10% SERVICE FEE + DELIVERY FEE</b>
-</div>
+
 </div>
 
+</div>
+
+<!-- SUMMARY -->
 <div class="card">
+
 <h2>🧾 Order Summary</h2>
 
 <div class="cart-item">
@@ -155,37 +386,104 @@ Every succeeding km = +₱10<br><br>
 <span id="grand">₱0.00</span>
 </div>
 
-<button onclick="placeOrder()">PLACE ORDER</button>
+<button onclick="placeOrder()">
+PLACE ORDER
+</button>
+
+<div id="checkoutError" class="error hidden"></div>
+
 </div>
 
+<!-- CONFIRMATION -->
 <div id="confirmation" class="card hidden"></div>
 
 </main>
 
 <footer>
-MHAC DELIVERY<br>
+
+MHAC DELIVERY<br><br>
+
 Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan
+
 </footer>
+
 
 <script>
 
+/* =========================
+   MUNICIPALITIES
+========================= */
+
 const municipalities={
-"Paniqui, Tarlac":["Abogado","Acocolao","Aduas","Apulid","Balaoang","Barang","Brillante","Burgos","Cabayaoasan","Canan","Carino","Cayanga","Colibangbang","Coral","Dapdap","Estacion","Mabilang","Manaois","Matalapitap","Nagmisaan","Nancamarinan","Nipaco","Patalan","Poblacion Norte","Poblacion Sur","Rang-ayan","Salumague","Samput","San Carlos","San Isidro","San Juan de Milla","Santa Ines","Sinigpit","Tablang","Ventenilla"],
 
-"Moncada, Tarlac":["Ablang-Sapang","Aringin","Atencio","Banaoang East","Banaoang West","Baquero Norte","Baquero Sur","Burgos","Calamay","Calapan","Camangaan East","Camangaan West","Camposanto 1 - Norte","Camposanto 1 - Sur","Camposanto 2","Capaoayan","Lapsing","Mabini","Maluac","Poblacion 1","Poblacion 2","Poblacion 3","Poblacion 4","Rizal","San Juan","San Julian","San Leon","San Pedro","San Roque","Santa Lucia East","Santa Lucia West","Santa Maria","Santa Monica","Tubectubang","Tolega Norte","Tolega Sur","Villa"],
+"Paniqui, Tarlac":[
+"Abogado","Acocolao","Aduas","Apulid","Balaoang","Barang",
+"Brillante","Burgos","Cabayaoasan","Canan","Carino","Cayanga",
+"Colibangbang","Coral","Dapdap","Estacion","Mabilang","Manaois",
+"Matalapitap","Nagmisaan","Nancamarinan","Nipaco","Patalan",
+"Poblacion Norte","Poblacion Sur","Rang-ayan","Salumague",
+"Samput","San Carlos","San Isidro","San Juan de Milla",
+"Santa Ines","Sinigpit","Tablang","Ventenilla"
+],
 
-"Ramos, Tarlac":["Coral-Iloco","Guiteb","Pance","Poblacion Center","Poblacion North","Poblacion South","San Juan","San Raymundo","Toledo"],
+"Moncada, Tarlac":[
+"Ablang-Sapang","Aringin","Atencio","Banaoang East","Banaoang West",
+"Baquero Norte","Baquero Sur","Burgos","Calamay","Calapan",
+"Camangaan East","Camangaan West","Camposanto 1 - Norte",
+"Camposanto 1 - Sur","Camposanto 2","Capaoayan","Lapsing","Mabini",
+"Maluac","Poblacion 1","Poblacion 2","Poblacion 3","Poblacion 4",
+"Rizal","San Juan","San Julian","San Leon","San Pedro","San Roque",
+"Santa Lucia East","Santa Lucia West","Santa Maria","Santa Monica",
+"Tubectubang","Tolega Norte","Tolega Sur","Villa"
+],
 
-"Gerona, Tarlac":["Abagon","Amacalan","Apsayan","Ayson","Bawa","Buenlag","Bularit","Calayaan","Carbonel","Cardona","Caturay","Danzo","Dicolor","Don Basilio","Luna","Mabini","Magaspac","Malayep","Matapitap","Matayuncab","New Salem","Oloybuaya","Padapada","Parsolingan","Pinasling","Plastado","Poblacion 1","Poblacion 2","Poblacion 3","Quezon","Rizal","Salapungan","San Agustin","San Antonio","San Bartolome","San Jose","Santa Lucia","Santiago","Sembrano","Singat","Sulipa","Tagumbao","Tangcaran","Villa Paz"],
+"Ramos, Tarlac":[
+"Coral-Iloco","Guiteb","Pance","Poblacion Center",
+"Poblacion North","Poblacion South","San Juan","San Raymundo","Toledo"
+],
 
-"Pura, Tarlac":["Balite","Buenavista","Cadanglaan","Estipona","Linao","Maasin","Matindeg","Maungib","Naya","Nilasin 1st","Nilasin 2nd","Poblacion 1","Poblacion 2","Poblacion 3","Poroc","Singat"],
+"Gerona, Tarlac":[
+"Abagon","Amacalan","Apsayan","Ayson","Bawa","Buenlag","Bularit",
+"Calayaan","Carbonel","Cardona","Caturay","Danzo","Dicolor",
+"Don Basilio","Luna","Mabini","Magaspac","Malayep","Matapitap",
+"Matayuncab","New Salem","Oloybuaya","Padapada","Parsolingan",
+"Pinasling","Plastado","Poblacion 1","Poblacion 2","Poblacion 3",
+"Quezon","Rizal","Salapungan","San Agustin","San Antonio",
+"San Bartolome","San Jose","Santa Lucia","Santiago","Sembrano",
+"Singat","Sulipa","Tagumbao","Tangcaran","Villa Paz"
+],
 
-"Anao, Tarlac":["Baguindoc","Bantog","Campos","Carmen","Casili","Don Ramon","Hernando","Poblacion","Rizal","San Francisco East","San Francisco West","San Jose North","San Jose South","San Juan","San Roque","Santo Domingo","Sinense","Suaverdez"],
+"Pura, Tarlac":[
+"Balite","Buenavista","Cadanglaan","Estipona","Linao","Maasin",
+"Matindeg","Maungib","Naya","Nilasin 1st","Nilasin 2nd",
+"Poblacion 1","Poblacion 2","Poblacion 3","Poroc","Singat"
+],
 
-"Nampicuan, Nueva Ecija":["Alemania","Ambasador Alzate Village","Cabaducan East","Cabaducan West","Cabawangan","East Central Poblacion","Edy","Maeling","Mayantoc","Medico","Monic","North Poblacion","Northwest Poblacion","Estacion","West Poblacion","Recuerdo","South Central Poblacion","Southeast Poblacion","Southwest Poblacion","Tony","West Central Poblacion"]
+"Anao, Tarlac":[
+"Baguindoc","Bantog","Campos","Carmen","Casili","Don Ramon",
+"Hernando","Poblacion","Rizal","San Francisco East",
+"San Francisco West","San Jose North","San Jose South",
+"San Juan","San Roque","Santo Domingo","Sinense","Suaverdez"
+],
+
+"Nampicuan, Nueva Ecija":[
+"Alemania","Ambasador Alzate Village","Cabaducan East",
+"Cabaducan West","Cabawangan","East Central Poblacion","Edy",
+"Maeling","Mayantoc","Medico","Monic","North Poblacion",
+"Northwest Poblacion","Estacion","West Poblacion","Recuerdo",
+"South Central Poblacion","Southeast Poblacion",
+"Southwest Poblacion","Tony","West Central Poblacion"
+]
+
 };
 
+
+/* =========================
+   STORES
+========================= */
+
 const stores=[
+
 {
 name:"MHAC FOOD",
 icon:"🍔",
@@ -196,6 +494,7 @@ products:[
 ["Milk Tea",89]
 ]
 },
+
 {
 name:"MHAC GROCERY",
 icon:"🛒",
@@ -206,6 +505,7 @@ products:[
 ["Drinking Water",50]
 ]
 },
+
 {
 name:"MHAC MARKET",
 icon:"🥬",
@@ -216,6 +516,7 @@ products:[
 ["Market Essentials",180]
 ]
 },
+
 {
 name:"MHAC MEDICINE",
 icon:"💊",
@@ -225,137 +526,221 @@ products:[
 ["Personal Care",120]
 ]
 }
+
 ];
+
+
+/* =========================
+   VARIABLES
+========================= */
 
 let selectedStore=null;
 let cart={};
+let customerLat=null;
+let customerLng=null;
 
-const money=n=>"₱"+Number(n).toLocaleString("en-PH",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+/* =========================
+   HELPERS
+========================= */
+
+const money=n =>
+"₱"+Number(n).toLocaleString("en-PH",{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+});
+
+
+/* =========================
+   INIT
+========================= */
 
 function init(){
 
-let m=document.getElementById("municipality");
+const municipality=document.getElementById("municipality");
 
-Object.keys(municipalities).forEach(x=>{
-let o=document.createElement("option");
-o.value=x;
-o.textContent=x;
-m.appendChild(o);
+Object.keys(municipalities).forEach(name=>{
+
+const option=document.createElement("option");
+
+option.value=name;
+option.textContent=name;
+
+municipality.appendChild(option);
+
 });
 
-document.getElementById("stores").innerHTML=stores.map((s,i)=>`
-<div class="card store" onclick="selectStore(${i})">
-<div style="font-size:40px">${s.icon}</div>
-<h3>${s.name}</h3>
-<button>VIEW PRODUCTS</button>
+
+document.getElementById("stores").innerHTML=
+stores.map((store,index)=>`
+
+<div class="card store"
+onclick="selectStore(${index})">
+
+<div style="font-size:40px">
+${store.icon}
 </div>
+
+<h3>${store.name}</h3>
+
+<button>
+VIEW PRODUCTS
+</button>
+
+</div>
+
 `).join("");
 
-m.onchange=function(){
 
-let b=document.getElementById("barangay");
+municipality.addEventListener("change",function(){
 
-b.innerHTML="<option value=''>Select barangay</option>";
+const barangay=document.getElementById("barangay");
 
-if(this.value){
+barangay.innerHTML=
+"<option value=''>Select barangay</option>";
 
-municipalities[this.value].forEach(x=>{
-let o=document.createElement("option");
-o.value=x;
-o.textContent=x;
-b.appendChild(o);
-});
+if(!this.value){
 
-b.disabled=false;
-
-}else{
-
-b.disabled=true;
+barangay.disabled=true;
+return;
 
 }
 
-};
+municipalities[this.value].forEach(name=>{
 
-["distance","address","customer","mobile","landmark"].forEach(id=>{
-document.getElementById(id).addEventListener("input",updateTotal);
+const option=document.createElement("option");
+
+option.value=name;
+option.textContent=name;
+
+barangay.appendChild(option);
+
 });
+
+barangay.disabled=false;
+
+});
+
+
+document
+.getElementById("distance")
+.addEventListener("input",updateTotal);
 
 }
 
-function selectStore(i){
 
-selectedStore=i;
+/* =========================
+   STORE
+========================= */
+
+function selectStore(index){
+
+selectedStore=index;
 cart={};
 
-document.querySelectorAll(".store").forEach((x,n)=>{
-x.classList.toggle("active",n===i);
+document.querySelectorAll(".store")
+.forEach((element,i)=>{
+
+element.classList.toggle(
+"active",
+i===index
+);
+
 });
 
-let s=stores[i];
 
-document.getElementById("products").innerHTML=s.products.map((p,n)=>`
+const store=stores[index];
+
+document.getElementById("products").innerHTML=
+store.products.map((product,index)=>`
+
 <div class="product">
-<div style="font-size:32px">${s.icon}</div>
-<h3>${p[0]}</h3>
-<div class="price">${money(p[1])}</div>
-<button onclick="addProduct(${n})">ADD TO CART</button>
+
+<div style="font-size:32px">
+${store.icon}
 </div>
+
+<h3>${product[0]}</h3>
+
+<div class="price">
+${money(product[1])}
+</div>
+
+<button onclick="addProduct(${index})">
+ADD TO CART
+</button>
+
+</div>
+
 `).join("");
 
-renderCart();
-
-document.getElementById("products").scrollIntoView({behavior:"smooth"});
-
-}
-
-function addProduct(i){
-
-cart[i]=(cart[i]||0)+1;
-renderCart();
-
-}
-
-function changeQty(i,n){
-
-cart[i]+=n;
-
-if(cart[i]<=0)delete cart[i];
 
 renderCart();
 
+document
+.getElementById("products")
+.scrollIntoView({behavior:"smooth"});
+
 }
+
+
+/* =========================
+   CART
+========================= */
+
+function addProduct(index){
+
+cart[index]=(cart[index]||0)+1;
+
+renderCart();
+
+}
+
+
+function changeQty(index,change){
+
+cart[index]=(cart[index]||0)+change;
+
+if(cart[index]<=0){
+delete cart[index];
+}
+
+renderCart();
+
+}
+
 
 function getSubtotal(){
 
-if(selectedStore===null)return 0;
+if(selectedStore===null){
+return 0;
+}
 
 let total=0;
 
-stores[selectedStore].products.forEach((p,i)=>{
-if(cart[i])total+=p[1]*cart[i];
+stores[selectedStore].products
+.forEach((product,index)=>{
+
+if(cart[index]){
+total+=product[1]*cart[index];
+}
+
 });
 
 return total;
 
 }
 
-function deliveryFee(){
-
-let km=Math.ceil(Number(document.getElementById("distance").value)||0);
-
-if(km<=0)return 0;
-
-return 40+(km-1)*10;
-
-}
 
 function renderCart(){
 
-let box=document.getElementById("cart");
+const box=document.getElementById("cart");
 
-if(selectedStore===null||Object.keys(cart).length===0){
+if(selectedStore===null||
+Object.keys(cart).length===0){
 
-box.innerHTML="<p style='color:#777'>Your cart is empty.</p>";
+box.innerHTML=
+"<p class='small'>Your cart is empty.</p>";
 
 updateTotal();
 
@@ -363,24 +748,52 @@ return;
 
 }
 
-let s=stores[selectedStore];
 
-box.innerHTML=Object.keys(cart).map(i=>{
+const store=stores[selectedStore];
 
-let p=s.products[i];
+box.innerHTML=
+Object.keys(cart).map(index=>{
+
+const product=store.products[index];
 
 return `
+
 <div class="cart-item">
+
 <div>
-<b>${p[0]}</b><br>
-<small>${money(p[1])} × ${cart[i]}</small>
+
+<b>${product[0]}</b>
+
+<br>
+
+<small>
+${money(product[1])} × ${cart[index]}
+</small>
+
 </div>
-<div>
-<button style="width:38px;padding:7px" onclick="changeQty(${i},-1)">−</button>
-${cart[i]}
-<button style="width:38px;padding:7px" onclick="changeQty(${i},1)">+</button>
+
+<div style="min-width:125px">
+
+<button
+style="width:36px;padding:7px"
+onclick="changeQty(${index},-1)">
+−
+</button>
+
+<span style="padding:10px">
+${cart[index]}
+</span>
+
+<button
+style="width:36px;padding:7px"
+onclick="changeQty(${index},1)">
++
+</button>
+
 </div>
+
 </div>
+
 `;
 
 }).join("");
@@ -389,105 +802,503 @@ updateTotal();
 
 }
 
-function updateTotal(){
 
-let sub=getSubtotal();
-let service=sub*.10;
-let delivery=deliveryFee();
-let grand=sub+service+delivery;
+/* =========================
+   DELIVERY FEE
+========================= */
 
-document.getElementById("subtotal").textContent=money(sub);
-document.getElementById("service").textContent=money(service);
-document.getElementById("delivery").textContent=money(delivery);
-document.getElementById("grand").textContent=money(grand);
+function deliveryFee(){
+
+const km=
+Number(document.getElementById("distance").value)||0;
+
+if(km<=0){
+return 0;
+}
+
+const roundedKm=Math.ceil(km);
+
+return 40+(roundedKm-1)*10;
 
 }
+
+
+/* =========================
+   TOTAL
+========================= */
+
+function updateTotal(){
+
+const subtotal=getSubtotal();
+
+const service=subtotal*0.10;
+
+const delivery=deliveryFee();
+
+const grand=subtotal+service+delivery;
+
+document.getElementById("subtotal")
+.textContent=money(subtotal);
+
+document.getElementById("service")
+.textContent=money(service);
+
+document.getElementById("delivery")
+.textContent=money(delivery);
+
+document.getElementById("deliveryDisplay")
+.value=money(delivery);
+
+document.getElementById("grand")
+.textContent=money(grand);
+
+}
+
+
+/* =========================
+   GPS LOCATION
+========================= */
+
+function getCustomerLocation(){
+
+const status=document.getElementById("locationStatus");
+
+if(!navigator.geolocation){
+
+status.textContent=
+"GPS is not supported by this browser.";
+
+return;
+
+}
+
+
+status.textContent=
+"📡 Getting your location...";
+
+
+navigator.geolocation.getCurrentPosition(
+
+position=>{
+
+customerLat=position.coords.latitude;
+customerLng=position.coords.longitude;
+
+
+/*
+   DEMO DELIVERY CENTER
+
+   Paniqui area is used as the initial
+   delivery reference point.
+
+   Later we will replace this with
+   the actual store location / routing API.
+*/
+
+const deliveryCenter={
+lat:15.6689,
+lng:120.5800
+};
+
+
+const km=
+calculateDistance(
+customerLat,
+customerLng,
+deliveryCenter.lat,
+deliveryCenter.lng
+);
+
+
+document.getElementById("distance")
+.value=km.toFixed(1);
+
+
+status.innerHTML=
+"✅ Location detected<br>"+
+"Estimated distance: <b>"+
+km.toFixed(1)+
+" km</b>";
+
+
+updateTotal();
+
+},
+
+error=>{
+
+let message="Unable to get your location.";
+
+if(error.code===1){
+message="Location permission was denied. Please allow location access.";
+}
+
+if(error.code===2){
+message="Your location is unavailable.";
+}
+
+if(error.code===3){
+message="Location request timed out.";
+}
+
+status.textContent="⚠️ "+message;
+
+}
+
+);
+
+}
+
+
+/* =========================
+   HAVERSINE DISTANCE
+========================= */
+
+function calculateDistance(lat1,lon1,lat2,lon2){
+
+const R=6371;
+
+const dLat=
+(lat2-lat1)*Math.PI/180;
+
+const dLon=
+(lon2-lon1)*Math.PI/180;
+
+const a=
+Math.sin(dLat/2)**2+
+Math.cos(lat1*Math.PI/180)*
+Math.cos(lat2*Math.PI/180)*
+Math.sin(dLon/2)**2;
+
+const c=
+2*Math.atan2(
+Math.sqrt(a),
+Math.sqrt(1-a)
+);
+
+return R*c;
+
+}
+
+
+/* =========================
+   ORDER
+========================= */
 
 function placeOrder(){
 
+const errorBox=
+document.getElementById("checkoutError");
+
+errorBox.classList.add("hidden");
+errorBox.textContent="";
+
+
 if(selectedStore===null){
-alert("Please choose a store.");
+
+showError("Please choose a store first.");
 return;
+
 }
+
 
 if(Object.keys(cart).length===0){
-alert("Please add products to your cart.");
+
+showError("Your cart is empty. Please add a product.");
 return;
+
 }
 
-let municipality=document.getElementById("municipality").value;
-let barangay=document.getElementById("barangay").value;
-let address=document.getElementById("address").value.trim();
-let customer=document.getElementById("customer").value.trim();
-let mobile=document.getElementById("mobile").value.trim();
-let distance=Number(document.getElementById("distance").value)||0;
 
-if(!municipality||!barangay||!address||!customer||!mobile||distance<=0){
-alert("Please complete all delivery information.");
+const municipality=
+document.getElementById("municipality").value;
+
+const barangay=
+document.getElementById("barangay").value;
+
+const address=
+document.getElementById("address").value.trim();
+
+const customer=
+document.getElementById("customer").value.trim();
+
+const mobile=
+document.getElementById("mobile").value.trim();
+
+const distance=
+Number(document.getElementById("distance").value)||0;
+
+
+if(!municipality){
+
+showError("Please select your municipality.");
 return;
+
 }
 
-let sub=getSubtotal();
-let service=sub*.10;
-let delivery=deliveryFee();
-let grand=sub+service+delivery;
 
-let orderId="MHAC-"+Math.floor(100000+Math.random()*900000);
+if(!barangay){
 
-let order={
+showError("Please select your barangay.");
+return;
+
+}
+
+
+if(!address){
+
+showError("Please enter your complete delivery address.");
+return;
+
+}
+
+
+if(!customer){
+
+showError("Please enter your name.");
+return;
+
+}
+
+
+if(!mobile){
+
+showError("Please enter your mobile number.");
+return;
+
+}
+
+
+if(distance<=0){
+
+showError(
+"Please press USE MY CURRENT LOCATION so we can calculate your delivery distance."
+);
+
+return;
+
+}
+
+
+const subtotal=getSubtotal();
+
+const service=subtotal*0.10;
+
+const delivery=deliveryFee();
+
+const grand=subtotal+service+delivery;
+
+const orderId=
+"MHAC-"+Math.floor(
+100000+Math.random()*900000
+);
+
+
+const store=stores[selectedStore];
+
+
+const order={
+
 id:orderId,
+
 date:new Date().toLocaleString(),
-store:stores[selectedStore].name,
+
+store:store.name,
+
 customer:customer,
+
 mobile:mobile,
+
 municipality:municipality,
+
 barangay:barangay,
+
 address:address,
-landmark:document.getElementById("landmark").value,
-distance:distance,
-payment:document.getElementById("payment").value,
-notes:document.getElementById("notes").value,
-subtotal:sub,
+
+landmark:
+document.getElementById("landmark").value,
+
+latitude:customerLat,
+
+longitude:customerLng,
+
+distanceKm:distance,
+
+payment:
+document.getElementById("payment").value,
+
+notes:
+document.getElementById("notes").value,
+
+items:Object.keys(cart).map(index=>({
+
+name:store.products[index][0],
+
+price:store.products[index][1],
+
+quantity:cart[index],
+
+total:
+store.products[index][1]*cart[index]
+
+})),
+
+subtotal:subtotal,
+
 serviceFee:service,
+
 deliveryFee:delivery,
+
 grandTotal:grand,
+
 status:"Pending"
+
 };
 
-localStorage.setItem("MHAC_ORDER_"+orderId,JSON.stringify(order));
 
-document.getElementById("confirmation").classList.remove("hidden");
+localStorage.setItem(
+"MHAC_ORDER_"+orderId,
+JSON.stringify(order)
+);
 
-document.getElementById("confirmation").innerHTML=`
+
+const confirmation=
+document.getElementById("confirmation");
+
+confirmation.classList.remove("hidden");
+
+
+confirmation.innerHTML=`
+
 <div class="success">
+
 <h2>✅ ORDER RECEIVED!</h2>
-<h3>${orderId}</h3>
-<p><b>${order.store}</b></p>
-<p>Customer: ${customer}</p>
-<p>Delivery: ${barangay}, ${municipality}</p>
-<p>Payment: ${order.payment}</p>
+
+<p>
+Your order has been successfully created.
+</p>
+
+<h2>${orderId}</h2>
+
+<p>
+<b>${store.name}</b>
+</p>
+
 <hr>
-<p>Total Order: <b>${money(sub)}</b></p>
-<p>10% Service Fee: <b>${money(service)}</b></p>
-<p>Delivery Fee: <b>${money(delivery)}</b></p>
-<h2>GRAND TOTAL: ${money(grand)}</h2>
-<p>Status: <b>Pending</b></p>
-<button onclick="copyOrder('${orderId}')">COPY ORDER ID</button>
-<button class="dark" onclick="location.reload()">NEW ORDER</button>
+
+<p>
+👤 Customer:
+<b>${customer}</b>
+</p>
+
+<p>
+📍 ${barangay}, ${municipality}
+</p>
+
+<p>
+🏠 ${address}
+</p>
+
+<p>
+📏 Distance:
+<b>${distance.toFixed(1)} km</b>
+</p>
+
+<p>
+💳 Payment:
+<b>${order.payment}</b>
+</p>
+
+<hr>
+
+<p>
+Total Order:
+<b>${money(subtotal)}</b>
+</p>
+
+<p>
+10% Service Fee:
+<b>${money(service)}</b>
+</p>
+
+<p>
+Delivery Fee:
+<b>${money(delivery)}</b>
+</p>
+
+<h2>
+GRAND TOTAL:
+${money(grand)}
+</h2>
+
+<p>
+Status:
+<span class="status">
+PENDING
+</span>
+</p>
+
+<button
+onclick="copyOrder('${orderId}')">
+COPY ORDER ID
+</button>
+
+<button
+class="dark"
+onclick="location.reload()">
+NEW ORDER
+</button>
+
 </div>
 `;
 
-document.getElementById("confirmation").scrollIntoView({behavior:"smooth"});
+
+confirmation.scrollIntoView({
+behavior:"smooth"
+});
 
 }
+
+
+function showError(message){
+
+const box=
+document.getElementById("checkoutError");
+
+box.textContent="⚠️ "+message;
+
+box.classList.remove("hidden");
+
+box.scrollIntoView({
+behavior:"smooth",
+block:"center"
+});
+
+}
+
 
 function copyOrder(id){
 
+if(navigator.clipboard){
+
 navigator.clipboard.writeText(id);
 
-alert("Order ID copied: "+id);
+alert(
+"Order ID copied: "+id
+);
+
+}else{
+
+alert(
+"Your Order ID is: "+id
+);
 
 }
+
+}
+
+
+/* START */
 
 init();
 
