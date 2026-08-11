@@ -1,79 +1,497 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MHAC DELIVERY — Production Starter</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MHAC DELIVERY</title>
 <style>
-body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:#f6f6f9;color:#17171c}
-header{background:#17171c;color:white;padding:18px}.wrap{max-width:900px;margin:auto;padding:20px}
-.card{background:white;border:1px solid #e5e5eb;border-radius:18px;padding:20px;margin-bottom:15px}
-h1{margin:0}.pink{color:#ff4f7b}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-label{display:block;font-size:12px;font-weight:800;margin:10px 0 5px}input,select,button{width:100%;padding:12px;border-radius:10px;border:1px solid #ddd;font:inherit;box-sizing:border-box}
-button{background:#ff4f7b;color:#fff;border:0;font-weight:900;cursor:pointer;margin-top:8px}.secondary{background:#17171c}
-pre{white-space:pre-wrap;background:#f2f2f5;padding:12px;border-radius:10px;font-size:12px}
-.note{background:#fff5f7;border:1px solid #ffd3df;padding:12px;border-radius:10px;font-size:13px}
-@media(max-width:650px){.grid{grid-template-columns:1fr}}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,system-ui;background:#f5f6f8;color:#17171c}
+header{background:#17171c;color:white;padding:18px}
+.wrap{max-width:1100px;margin:auto;padding:16px}
+.brand{font-size:25px;font-weight:900}.pink{color:#ff4f7b}
+.hero{background:linear-gradient(135deg,#17171c,#472333);color:white;padding:38px 0}
+.hero h1{font-size:42px;margin:0 0 10px}.hero p{color:#ddd}
+.card{background:white;border:1px solid #e4e5ea;border-radius:17px;padding:17px;margin-bottom:15px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.product{border:1px solid #ddd;border-radius:13px;padding:12px}
+.product h3{margin:6px 0}.price{font-weight:900}
+button{border:0;border-radius:10px;padding:11px;width:100%;font-weight:900;cursor:pointer;background:#ff4f7b;color:white}
+button.dark{background:#17171c}
+input,select,textarea{width:100%;padding:11px;border:1px solid #d8d9df;border-radius:9px;font:inherit}
+label{font-size:12px;font-weight:900;display:block;margin:9px 0 5px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cart-item{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee}
+.total{font-size:21px;font-weight:900;border-top:1px solid #ddd;padding-top:10px}
+.notice{background:#fff3f6;border:1px solid #ffd1dc;border-radius:10px;padding:11px;font-size:13px}
+.store{border:2px solid transparent;cursor:pointer}.store.active{border-color:#ff4f7b}
+.hidden{display:none}
+.success{background:#e9f9f1;border:1px solid #bcebd5;padding:15px;border-radius:12px}
+footer{text-align:center;padding:30px;color:#777}
+@media(max-width:750px){.grid{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}.hero h1{font-size:34px}}
+@media(max-width:450px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
+
 <body>
-<header><div class="wrap"><h1>MHAC <span class="pink">DELIVERY</span></h1><small>Production-ready Firebase connection starter</small></div></header>
+
+<header>
+<div class="wrap">
+<div class="brand">MHAC <span class="pink">DELIVERY</span></div>
+<small>Food • Grocery • Market • Medicine • Essentials</small>
+</div>
+</header>
+
+<section class="hero">
+<div class="wrap">
+<h1>Order. We Deliver. 🛵</h1>
+<p>Fast and affordable delivery around our covered municipalities.</p>
+<button onclick="document.getElementById('order').scrollIntoView()">ORDER NOW</button>
+</div>
+</section>
+
 <main class="wrap">
-<div class="card">
-<h2>🔐 Account</h2>
-<p id="authState">Checking connection...</p>
-<div class="grid">
-<div><label>Email</label><input id="email" type="email" placeholder="customer@email.com"></div>
-<div><label>Password</label><input id="password" type="password" placeholder="Minimum 6 characters"></div>
-</div>
-<div class="grid"><button onclick="signUp()">CREATE ACCOUNT</button><button class="secondary" onclick="signIn()">LOGIN</button></div>
-<button class="secondary" onclick="signOutUser()">LOGOUT</button>
+
+<div class="card" id="order">
+<h2>🏪 Choose Store</h2>
+<div class="grid" id="stores"></div>
 </div>
 
 <div class="card">
-<h2>🧾 Test Order</h2>
-<div class="note"><b>Fee rule:</b> Total Order + 10% Service Fee + Delivery Fee. Delivery is ₱40 for the first kilometer, then +₱10 for every succeeding kilometer.</div>
-<div class="grid">
-<div><label>Total Order</label><input id="orderAmount" type="number" value="500"></div>
-<div><label>Distance (km)</label><input id="distance" type="number" value="3" step=".1"></div>
+<h2>🛍️ Products</h2>
+<div id="products" class="grid">
+<p>Select a store first.</p>
 </div>
-<button onclick="saveOrder()">SAVE TEST ORDER TO FIRESTORE</button>
-<p id="result"></p>
 </div>
 
 <div class="card">
-<h2>⚙️ Firebase configuration</h2>
-<p class="note">Replace the placeholder values in <code>firebase-config.js</code> with your Firebase Web App configuration. Never put private service-account keys in this website.</p>
-<pre>Firebase Console
-→ Create project
-→ Authentication → Email/Password
-→ Firestore Database
-→ Project settings → Your apps → Web app
-→ Copy Firebase config
-→ Paste into firebase-config.js</pre>
+<h2>🛒 Your Cart</h2>
+<div id="cart">Cart is empty.</div>
 </div>
+
+<div class="card">
+<h2>📍 Delivery Information</h2>
+
+<div class="row">
+<div>
+<label>Municipality</label>
+<select id="municipality">
+<option value="">Select municipality</option>
+</select>
+</div>
+
+<div>
+<label>Barangay</label>
+<select id="barangay" disabled>
+<option>Select municipality first</option>
+</select>
+</div>
+</div>
+
+<label>Complete Address</label>
+<textarea id="address" placeholder="House number, street, subdivision..."></textarea>
+
+<label>Landmark</label>
+<input id="landmark" placeholder="Example: near barangay hall">
+
+<div class="row">
+<div>
+<label>Customer Name</label>
+<input id="customer">
+</div>
+
+<div>
+<label>Mobile Number</label>
+<input id="mobile">
+</div>
+</div>
+
+<div class="row">
+<div>
+<label>Distance (km)</label>
+<input id="distance" type="number" min="1" step=".1" placeholder="Example: 3">
+</div>
+
+<div>
+<label>Payment Method</label>
+<select id="payment">
+<option>Cash on Delivery</option>
+<option>GCash</option>
+</select>
+</div>
+</div>
+
+<label>Order Notes</label>
+<textarea id="notes" placeholder="Optional instructions"></textarea>
+
+<div class="notice">
+<b>DELIVERY FEE:</b><br>
+First 1 km = ₱40<br>
+Every succeeding km = +₱10<br><br>
+<b>TOTAL = ORDER + 10% SERVICE FEE + DELIVERY FEE</b>
+</div>
+</div>
+
+<div class="card">
+<h2>🧾 Order Summary</h2>
+
+<div class="cart-item">
+<span>Total Order</span>
+<b id="subtotal">₱0.00</b>
+</div>
+
+<div class="cart-item">
+<span>10% Service Fee</span>
+<b id="service">₱0.00</b>
+</div>
+
+<div class="cart-item">
+<span>Delivery Fee</span>
+<b id="delivery">₱0.00</b>
+</div>
+
+<div class="cart-item total">
+<span>GRAND TOTAL</span>
+<span id="grand">₱0.00</span>
+</div>
+
+<button onclick="placeOrder()">PLACE ORDER</button>
+</div>
+
+<div id="confirmation" class="card hidden"></div>
+
 </main>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-import { firebaseConfig } from "./firebase-config.js";
+<footer>
+MHAC DELIVERY<br>
+Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan
+</footer>
 
-const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
-const $=id=>document.getElementById(id);
+<script>
+
+const municipalities={
+"Paniqui, Tarlac":["Abogado","Acocolao","Aduas","Apulid","Balaoang","Barang","Brillante","Burgos","Cabayaoasan","Canan","Carino","Cayanga","Colibangbang","Coral","Dapdap","Estacion","Mabilang","Manaois","Matalapitap","Nagmisaan","Nancamarinan","Nipaco","Patalan","Poblacion Norte","Poblacion Sur","Rang-ayan","Salumague","Samput","San Carlos","San Isidro","San Juan de Milla","Santa Ines","Sinigpit","Tablang","Ventenilla"],
+
+"Moncada, Tarlac":["Ablang-Sapang","Aringin","Atencio","Banaoang East","Banaoang West","Baquero Norte","Baquero Sur","Burgos","Calamay","Calapan","Camangaan East","Camangaan West","Camposanto 1 - Norte","Camposanto 1 - Sur","Camposanto 2","Capaoayan","Lapsing","Mabini","Maluac","Poblacion 1","Poblacion 2","Poblacion 3","Poblacion 4","Rizal","San Juan","San Julian","San Leon","San Pedro","San Roque","Santa Lucia East","Santa Lucia West","Santa Maria","Santa Monica","Tubectubang","Tolega Norte","Tolega Sur","Villa"],
+
+"Ramos, Tarlac":["Coral-Iloco","Guiteb","Pance","Poblacion Center","Poblacion North","Poblacion South","San Juan","San Raymundo","Toledo"],
+
+"Gerona, Tarlac":["Abagon","Amacalan","Apsayan","Ayson","Bawa","Buenlag","Bularit","Calayaan","Carbonel","Cardona","Caturay","Danzo","Dicolor","Don Basilio","Luna","Mabini","Magaspac","Malayep","Matapitap","Matayuncab","New Salem","Oloybuaya","Padapada","Parsolingan","Pinasling","Plastado","Poblacion 1","Poblacion 2","Poblacion 3","Quezon","Rizal","Salapungan","San Agustin","San Antonio","San Bartolome","San Jose","Santa Lucia","Santiago","Sembrano","Singat","Sulipa","Tagumbao","Tangcaran","Villa Paz"],
+
+"Pura, Tarlac":["Balite","Buenavista","Cadanglaan","Estipona","Linao","Maasin","Matindeg","Maungib","Naya","Nilasin 1st","Nilasin 2nd","Poblacion 1","Poblacion 2","Poblacion 3","Poroc","Singat"],
+
+"Anao, Tarlac":["Baguindoc","Bantog","Campos","Carmen","Casili","Don Ramon","Hernando","Poblacion","Rizal","San Francisco East","San Francisco West","San Jose North","San Jose South","San Juan","San Roque","Santo Domingo","Sinense","Suaverdez"],
+
+"Nampicuan, Nueva Ecija":["Alemania","Ambasador Alzate Village","Cabaducan East","Cabaducan West","Cabawangan","East Central Poblacion","Edy","Maeling","Mayantoc","Medico","Monic","North Poblacion","Northwest Poblacion","Estacion","West Poblacion","Recuerdo","South Central Poblacion","Southeast Poblacion","Southwest Poblacion","Tony","West Central Poblacion"]
+};
+
+const stores=[
+{
+name:"MHAC FOOD",
+icon:"🍔",
+products:[
+["Burger Meal",129],
+["Chicken Meal",149],
+["Pancit",120],
+["Milk Tea",89]
+]
+},
+{
+name:"MHAC GROCERY",
+icon:"🛒",
+products:[
+["Rice 5kg",310],
+["Cooking Oil",95],
+["Grocery Bundle",250],
+["Drinking Water",50]
+]
+},
+{
+name:"MHAC MARKET",
+icon:"🥬",
+products:[
+["Vegetable Pack",120],
+["Fruit Pack",150],
+["Meat Pack",280],
+["Market Essentials",180]
+]
+},
+{
+name:"MHAC MEDICINE",
+icon:"💊",
+products:[
+["Medicine Errand",100],
+["Health Essentials",150],
+["Personal Care",120]
+]
+}
+];
+
+let selectedStore=null;
+let cart={};
+
 const money=n=>"₱"+Number(n).toLocaleString("en-PH",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-onAuthStateChanged(auth,user=>{$("authState").textContent=user?"Logged in as "+user.email:"Not logged in";});
+function init(){
 
-window.signUp=async()=>{try{await createUserWithEmailAndPassword(auth,$("email").value,$("password").value);alert("Account created.");}catch(e){alert(e.message)}};
-window.signIn=async()=>{try{await signInWithEmailAndPassword(auth,$("email").value,$("password").value);alert("Logged in.");}catch(e){alert(e.message)}};
-window.signOutUser=async()=>{await signOut(auth)};
-window.saveOrder=async()=>{
- const user=auth.currentUser;if(!user){alert("Please login first.");return}
- const order=Number($("orderAmount").value)||0, km=Math.ceil(Number($("distance").value)||0);
- const sf=order*.10,df=km?40+(km-1)*10:0,total=order+sf+df;
- const ref=await addDoc(collection(db,"orders"),{userId:user.uid,totalOrder:order,serviceFee:sf,deliveryFee:df,grandTotal:total,distanceKm:km,status:"Pending",createdAt:serverTimestamp()});
- $("result").textContent=`Saved: ${ref.id} • Grand Total ${money(total)}`;
+let m=document.getElementById("municipality");
+
+Object.keys(municipalities).forEach(x=>{
+let o=document.createElement("option");
+o.value=x;
+o.textContent=x;
+m.appendChild(o);
+});
+
+document.getElementById("stores").innerHTML=stores.map((s,i)=>`
+<div class="card store" onclick="selectStore(${i})">
+<div style="font-size:40px">${s.icon}</div>
+<h3>${s.name}</h3>
+<button>VIEW PRODUCTS</button>
+</div>
+`).join("");
+
+m.onchange=function(){
+
+let b=document.getElementById("barangay");
+
+b.innerHTML="<option value=''>Select barangay</option>";
+
+if(this.value){
+
+municipalities[this.value].forEach(x=>{
+let o=document.createElement("option");
+o.value=x;
+o.textContent=x;
+b.appendChild(o);
+});
+
+b.disabled=false;
+
+}else{
+
+b.disabled=true;
+
+}
+
 };
+
+["distance","address","customer","mobile","landmark"].forEach(id=>{
+document.getElementById(id).addEventListener("input",updateTotal);
+});
+
+}
+
+function selectStore(i){
+
+selectedStore=i;
+cart={};
+
+document.querySelectorAll(".store").forEach((x,n)=>{
+x.classList.toggle("active",n===i);
+});
+
+let s=stores[i];
+
+document.getElementById("products").innerHTML=s.products.map((p,n)=>`
+<div class="product">
+<div style="font-size:32px">${s.icon}</div>
+<h3>${p[0]}</h3>
+<div class="price">${money(p[1])}</div>
+<button onclick="addProduct(${n})">ADD TO CART</button>
+</div>
+`).join("");
+
+renderCart();
+
+document.getElementById("products").scrollIntoView({behavior:"smooth"});
+
+}
+
+function addProduct(i){
+
+cart[i]=(cart[i]||0)+1;
+renderCart();
+
+}
+
+function changeQty(i,n){
+
+cart[i]+=n;
+
+if(cart[i]<=0)delete cart[i];
+
+renderCart();
+
+}
+
+function getSubtotal(){
+
+if(selectedStore===null)return 0;
+
+let total=0;
+
+stores[selectedStore].products.forEach((p,i)=>{
+if(cart[i])total+=p[1]*cart[i];
+});
+
+return total;
+
+}
+
+function deliveryFee(){
+
+let km=Math.ceil(Number(document.getElementById("distance").value)||0);
+
+if(km<=0)return 0;
+
+return 40+(km-1)*10;
+
+}
+
+function renderCart(){
+
+let box=document.getElementById("cart");
+
+if(selectedStore===null||Object.keys(cart).length===0){
+
+box.innerHTML="<p style='color:#777'>Your cart is empty.</p>";
+
+updateTotal();
+
+return;
+
+}
+
+let s=stores[selectedStore];
+
+box.innerHTML=Object.keys(cart).map(i=>{
+
+let p=s.products[i];
+
+return `
+<div class="cart-item">
+<div>
+<b>${p[0]}</b><br>
+<small>${money(p[1])} × ${cart[i]}</small>
+</div>
+<div>
+<button style="width:38px;padding:7px" onclick="changeQty(${i},-1)">−</button>
+${cart[i]}
+<button style="width:38px;padding:7px" onclick="changeQty(${i},1)">+</button>
+</div>
+</div>
+`;
+
+}).join("");
+
+updateTotal();
+
+}
+
+function updateTotal(){
+
+let sub=getSubtotal();
+let service=sub*.10;
+let delivery=deliveryFee();
+let grand=sub+service+delivery;
+
+document.getElementById("subtotal").textContent=money(sub);
+document.getElementById("service").textContent=money(service);
+document.getElementById("delivery").textContent=money(delivery);
+document.getElementById("grand").textContent=money(grand);
+
+}
+
+function placeOrder(){
+
+if(selectedStore===null){
+alert("Please choose a store.");
+return;
+}
+
+if(Object.keys(cart).length===0){
+alert("Please add products to your cart.");
+return;
+}
+
+let municipality=document.getElementById("municipality").value;
+let barangay=document.getElementById("barangay").value;
+let address=document.getElementById("address").value.trim();
+let customer=document.getElementById("customer").value.trim();
+let mobile=document.getElementById("mobile").value.trim();
+let distance=Number(document.getElementById("distance").value)||0;
+
+if(!municipality||!barangay||!address||!customer||!mobile||distance<=0){
+alert("Please complete all delivery information.");
+return;
+}
+
+let sub=getSubtotal();
+let service=sub*.10;
+let delivery=deliveryFee();
+let grand=sub+service+delivery;
+
+let orderId="MHAC-"+Math.floor(100000+Math.random()*900000);
+
+let order={
+id:orderId,
+date:new Date().toLocaleString(),
+store:stores[selectedStore].name,
+customer:customer,
+mobile:mobile,
+municipality:municipality,
+barangay:barangay,
+address:address,
+landmark:document.getElementById("landmark").value,
+distance:distance,
+payment:document.getElementById("payment").value,
+notes:document.getElementById("notes").value,
+subtotal:sub,
+serviceFee:service,
+deliveryFee:delivery,
+grandTotal:grand,
+status:"Pending"
+};
+
+localStorage.setItem("MHAC_ORDER_"+orderId,JSON.stringify(order));
+
+document.getElementById("confirmation").classList.remove("hidden");
+
+document.getElementById("confirmation").innerHTML=`
+<div class="success">
+<h2>✅ ORDER RECEIVED!</h2>
+<h3>${orderId}</h3>
+<p><b>${order.store}</b></p>
+<p>Customer: ${customer}</p>
+<p>Delivery: ${barangay}, ${municipality}</p>
+<p>Payment: ${order.payment}</p>
+<hr>
+<p>Total Order: <b>${money(sub)}</b></p>
+<p>10% Service Fee: <b>${money(service)}</b></p>
+<p>Delivery Fee: <b>${money(delivery)}</b></p>
+<h2>GRAND TOTAL: ${money(grand)}</h2>
+<p>Status: <b>Pending</b></p>
+<button onclick="copyOrder('${orderId}')">COPY ORDER ID</button>
+<button class="dark" onclick="location.reload()">NEW ORDER</button>
+</div>
+`;
+
+document.getElementById("confirmation").scrollIntoView({behavior:"smooth"});
+
+}
+
+function copyOrder(id){
+
+navigator.clipboard.writeText(id);
+
+alert("Order ID copied: "+id);
+
+}
+
+init();
+
 </script>
-</body></html>
+
+</body>
+</html>
