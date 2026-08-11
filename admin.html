@@ -810,23 +810,598 @@ loadOrders();
 
 function escapeHTML(value){
 
-return String(value??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>MHAC DELIVERY — Admin</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,system-ui;
+background:#f3f4f6;
+color:#17171c
+}
+
+header{
+background:#17171c;
+color:#fff;
+padding:18px;
+position:sticky;
+top:0;
+z-index:10
+}
+
+.wrap{
+max-width:1200px;
+margin:auto;
+padding:15px
+}
+
+.brand{
+font-size:25px;
+font-weight:900
+}
+
+.pink{color:#ff4f7b}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+margin-bottom:15px
+}
+
+.stat{
+background:#fff;
+padding:15px;
+border-radius:15px;
+border:1px solid #ddd
+}
+
+.stat b{
+font-size:28px;
+display:block
+}
+
+.card{
+background:#fff;
+border:1px solid #ddd;
+border-radius:16px;
+padding:16px;
+margin-bottom:15px
+}
+
+.order{
+background:#fff;
+border:2px solid #eee;
+border-radius:16px;
+padding:16px;
+margin-bottom:14px
+}
+
+.new{
+border-color:#ff4f7b
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+gap:10px;
+align-items:center
+}
+
+.orderid{
+font-size:20px;
+font-weight:900
+}
+
+.status{
+display:inline-block;
+padding:7px 12px;
+border-radius:20px;
+background:#fff0b3;
+font-size:11px;
+font-weight:900
+}
+
+.customer{
+background:#17171c;
+color:#fff;
+border-radius:12px;
+padding:14px;
+margin-top:12px
+}
+
+.customer b{
+color:#ff8ca9
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:9px;
+margin-top:10px
+}
+
+.info{
+background:#f6f6f7;
+padding:10px;
+border-radius:9px
+}
+
+.item{
+display:flex;
+justify-content:space-between;
+padding:8px 0;
+border-bottom:1px solid #eee
+}
+
+.total{
+margin-top:12px;
+border-top:1px solid #ddd;
+padding-top:12px;
+font-size:23px;
+font-weight:900
+}
+
+button,select{
+padding:10px;
+border:0;
+border-radius:9px;
+font-weight:900;
+cursor:pointer
+}
+
+button{
+background:#ff4f7b;
+color:white
+}
+
+.dark{background:#17171c}
+.green{background:#159957}
+.blue{background:#2474e8}
+.red{background:#d93025}
+
+select{
+border:1px solid #ddd;
+background:#fff
+}
+
+@media(max-width:800px){
+.stats{grid-template-columns:repeat(2,1fr)}
+.grid{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:500px){
+.stats,.grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="wrap">
+
+<div class="brand">
+MHAC <span class="pink">DELIVERY</span>
+</div>
+
+<small>ADMIN CONTROL CENTER</small>
+
+</div>
+
+</header>
+
+
+<main class="wrap">
+
+<div class="stats">
+
+<div class="stat">
+ALL
+<b id="all">0</b>
+</div>
+
+<div class="stat">
+PENDING
+<b id="pending">0</b>
+</div>
+
+<div class="stat">
+PREPARING
+<b id="preparing">0</b>
+</div>
+
+<div class="stat">
+DELIVERY
+<b id="delivery">0</b>
+</div>
+
+<div class="stat">
+DELIVERED
+<b id="delivered">0</b>
+</div>
+
+</div>
+
+
+<div class="card">
+
+<button onclick="loadOrders()">
+🔄 REFRESH
+</button>
+
+<button class="dark" onclick="location.href='index.html'">
+🛍️ CUSTOMER APP
+</button>
+
+<button class="dark" onclick="location.href='rider.html'">
+🏍️ RIDER APP
+</button>
+
+</div>
+
+
+<div id="orders"></div>
+
+</main>
+
+
+<script>
+
+function money(n){
+
+return "₱"+Number(n||0).toLocaleString(
+"en-PH",
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+});
 
 }
 
 
-/* AUTO REFRESH */
+function getOrders(){
+
+let result=[];
+
+for(let i=0;i<localStorage.length;i++){
+
+let key=localStorage.key(i);
+
+if(key && key.startsWith("MHAC_ORDER_")){
+
+try{
+
+result.push(
+JSON.parse(localStorage.getItem(key))
+);
+
+}catch(e){}
+
+}
+
+}
+
+result.sort((a,b)=>
+new Date(b.date)-new Date(a.date)
+);
+
+return result;
+
+}
+
+
+function loadOrders(){
+
+const orders=getOrders();
+
+let pending=0;
+let preparing=0;
+let delivery=0;
+let delivered=0;
+
+
+orders.forEach(o=>{
+
+if(o.status==="Pending")pending++;
+
+if(o.status==="Preparing")preparing++;
+
+if(
+o.status==="Rider Assigned"||
+o.status==="Picked Up"||
+o.status==="Out for Delivery"
+)delivery++;
+
+if(o.status==="Delivered")delivered++;
+
+});
+
+
+document.getElementById("all").textContent=orders.length;
+
+document.getElementById("pending").textContent=pending;
+
+document.getElementById("preparing").textContent=preparing;
+
+document.getElementById("delivery").textContent=delivery;
+
+document.getElementById("delivered").textContent=delivered;
+
+
+const box=document.getElementById("orders");
+
+if(!orders.length){
+
+box.innerHTML=`
+
+<div class="card" style="text-align:center">
+
+<h2>📭 NO ORDERS</h2>
+
+<p>New customer orders will appear here.</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+box.innerHTML=orders.map(o=>`
+
+<div class="order ${o.status==="Pending"?"new":""}">
+
+<div class="top">
+
+<div>
+
+<div class="orderid">
+🆕 ${o.id}
+</div>
+
+<small>${o.date}</small>
+
+</div>
+
+<span class="status">
+${o.status}
+</span>
+
+</div>
+
+
+<div class="customer">
+
+<b>CUSTOMER</b><br>
+
+<strong>${safe(o.customer)}</strong><br>
+
+📱 ${safe(o.mobile)}
+
+</div>
+
+
+<div class="grid">
+
+<div class="info">
+📍 <b>LOCATION</b><br>
+${safe(o.barangay)}, ${safe(o.municipality)}
+</div>
+
+<div class="info">
+🏠 <b>ADDRESS</b><br>
+${safe(o.address)}
+</div>
+
+<div class="info">
+📏 <b>DISTANCE</b><br>
+${o.distance} KM
+</div>
+
+<div class="info">
+🏪 <b>STORE</b><br>
+${safe(o.store)}
+</div>
+
+<div class="info">
+💳 <b>PAYMENT</b><br>
+${safe(o.payment)}
+</div>
+
+<div class="info">
+📌 <b>LANDMARK</b><br>
+${safe(o.landmark||"None")}
+</div>
+
+</div>
+
+
+<h3>🛍️ ORDER ITEMS</h3>
+
+${(o.items||[]).map(item=>`
+
+<div class="item">
+
+<span>
+${safe(item.name)} × ${item.quantity}
+</span>
+
+<b>
+${money(item.total)}
+</b>
+
+</div>
+
+`).join("")}
+
+
+<div style="margin-top:12px">
+
+<div class="item">
+<span>Total Order</span>
+<b>${money(o.subtotal)}</b>
+</div>
+
+<div class="item">
+<span>10% Service Fee</span>
+<b>${money(o.serviceFee)}</b>
+</div>
+
+<div class="item">
+<span>Delivery Fee</span>
+<b>${money(o.deliveryFee)}</b>
+</div>
+
+<div class="total">
+GRAND TOTAL: ${money(o.grandTotal)}
+</div>
+
+</div>
+
+
+<div style="margin-top:14px">
+
+<select onchange="updateStatus('${o.id}',this.value)">
+
+${[
+"Pending",
+"Confirmed",
+"Preparing",
+"Ready for Pickup",
+"Rider Assigned",
+"Picked Up",
+"Out for Delivery",
+"Delivered",
+"Cancelled"
+].map(s=>
+`<option ${o.status===s?"selected":""}>${s}</option>`
+).join("")}
+
+</select>
+
+<button class="green"
+onclick="updateStatus('${o.id}','Confirmed')">
+✅ CONFIRM
+</button>
+
+<button class="blue"
+onclick="callCustomer('${o.mobile}')">
+📞 CALL
+</button>
+
+<button class="dark"
+onclick="assignRider('${o.id}')">
+🏍️ RIDER
+</button>
+
+<button class="red"
+onclick="deleteOrder('${o.id}')">
+DELETE
+</button>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+function updateStatus(id,status){
+
+const key="MHAC_ORDER_"+id;
+
+let order=JSON.parse(
+localStorage.getItem(key)
+);
+
+if(!order)return;
+
+order.status=status;
+
+order.updatedAt=
+new Date().toLocaleString();
+
+localStorage.setItem(
+key,
+JSON.stringify(order)
+);
+
+loadOrders();
+
+}
+
+
+function assignRider(id){
+
+updateStatus(
+id,
+"Rider Assigned"
+);
+
+alert(
+"Order "+id+" assigned to rider."
+);
+
+}
+
+
+function callCustomer(number){
+
+if(!number){
+alert("No mobile number.");
+return;
+}
+
+location.href="tel:"+number;
+
+}
+
+
+function deleteOrder(id){
+
+if(!confirm(
+"Delete "+id+"?"
+))return;
+
+localStorage.removeItem(
+"MHAC_ORDER_"+id
+);
+
+loadOrders();
+
+}
+
+
+function safe(value){
+
+return String(value||"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;");
+
+}
+
 
 loadOrders();
 
 setInterval(
 loadOrders,
-5000
+3000
 );
 
 </script>
