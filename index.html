@@ -62,7 +62,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 
 <section class="card">
 <div class="section-title"><h2>🏪 CHOOSE STORE</h2><span class="status">Maximum 2 stores • 2nd store +₱5</span></div>
-<div id="storeGrid" class="pills" style="justify-content:flex-start;margin:0"></div>
+<div id="storeGrid" class="pills" style="justify-content:flex-start;margin:0"><button onclick="selectStore('Jollibee')">🍗 Jollibee</button><button onclick="selectStore('McDonald's')">🍟 McDonald's</button><button onclick="selectStore('Local Food')">🍽️ Local Food</button></div>
 <div class="notice" style="margin-top:12px"><b>Multi-store rule:</b> First selected store has no extra store fee. A second store automatically adds <b>₱5</b>.</div>
 <div id="selectedStoreInfo" class="locationbox">Selected stores: <b>None</b></div>
 </section>
@@ -177,7 +177,7 @@ const defaultMenus=[
   {name:"McNuggets Meal",price:159,icon:"🍗",addons:[{name:"Medium Fries",price:25},{name:"Coke",price:30}]}
  ]}]}
 ];
-let menus=loadMenus(),activeStore=menus[0]?.name||null,activeLabel=null,cart={},modalFood=null,modalStore=null;
+let menus=loadMenus(),activeStore=menus[0]?.name||null,activeLabel=menus[0]?.labels?.[0]?.name||null,cart={},modalFood=null,modalStore=null;
 function loadMenus(){
  let x=null;
  try{x=JSON.parse(localStorage.getItem(MENU_KEY))}catch(e){}
@@ -194,7 +194,7 @@ function additionalStoreFee(){return selectedStores().length===2?ADDITIONAL_STOR
 function renderStores(){
  const box=document.getElementById('storeGrid'), chosen=selectedStores();
  box.innerHTML=menus.map(s=>{const sel=chosen.includes(s.name);const blocked=!sel&&chosen.length>=MAX_STORES;return `<button style="width:auto;padding:10px 14px;opacity:${blocked?.45:1};background:${sel?'#ed1118':'#111'}" onclick="selectStore(${JSON.stringify(s.name)})">${s.icon||'🍽️'} ${esc(s.name)}${sel?' ✓':''}</button>`}).join('') || '<span class="status">No stores yet. Create one below.</span>';
- document.getElementById('selectedStoreInfo').innerHTML=chosen.length?`Selected stores: <b>${chosen.map(esc).join(' + ')}</b>${chosen.length===2?'<br>Additional store fee: <b>₱5.00</b>':''}`:'Selected stores: <b>None</b>';
+ document.getElementById('selectedStoreInfo').innerHTML=chosen.length?`Selected stores: <b>${chosen.map(esc).join(' + ')}</b>${chosen.length===2?'<br>Additional store fee: <b>₱5.00</b>':''}`:`Selected stores: <b>None</b><br><small>Choose a store below, or tap ADD TO ORDER on a food to automatically choose its store.</small>`;
 }
 function selectStore(name){
  const chosen=selectedStores();
@@ -218,10 +218,16 @@ function openFoodModal(store,label,index){
 function closeFoodModal(){document.getElementById('foodModal').classList.remove('show');modalFood=null;modalStore=null}
 function addConfiguredFood(){
  if(!modalFood)return;
- const chosen=selectedStores();if(!chosen.includes(modalStore)&&chosen.length>=MAX_STORES){alert('Maximum 2 stores only.');return}
+ const chosen=selectedStores();
+ // If the customer has not selected a store yet, the food's store becomes the first selected store.
+ // If a different store is already selected, adding this food creates the second store (+₱5).
+ if(!chosen.includes(modalStore)&&chosen.length>=MAX_STORES){alert('Maximum 2 stores only. Remove one store from your cart before adding another store.');return}
  const adds=[...document.querySelectorAll('#modalAddons input[data-addon]:checked')].map(x=>modalFood.addons[Number(x.dataset.addon)]);
  cart.push({id:Date.now()+Math.random(),store:modalStore,label:modalFood.label,name:modalFood.name,icon:modalFood.icon||'🍽️',price:Number(modalFood.price),addons:adds,qty:1});
- closeFoodModal();renderCart();
+ activeStore=modalStore;
+ activeLabel=modalFood.label;
+ closeFoodModal();renderAllMenus();
+ document.getElementById('cart').scrollIntoView({behavior:'smooth'});
 }
 function addStore(){
  const name=document.getElementById('newStoreName').value.trim();if(!name)return alert('Enter store name.');if(getStore(name))return alert('Store already exists.');
@@ -353,7 +359,7 @@ async function recalculateNow(){
   await autoCalculate();
 }
 
-async async function autoCalculate(){
+async function autoCalculate(){
   const status=document.getElementById("routeStatus");
   const box=document.getElementById("route");
   if(customerLat===null || customerLon===null){
