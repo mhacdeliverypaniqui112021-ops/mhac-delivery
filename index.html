@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a0a0c">
-<title>MHAC DELIVERY • GPS V4 MULTI-STORE</title>
+<title>MHAC DELIVERY • GPS V5 • 2 STORES + ₱5</title>
 <style>
 :root{--black:#08090b;--red:#ed1118;--red2:#ff3036;--white:#fff;--gray:#f3f4f6;--line:#dedfe3;--muted:#70737a}
 *{box-sizing:border-box}
@@ -58,7 +58,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <section class="card">
 <div class="section-title"><h2>🏪 CHOOSE STORE</h2><span class="status">+₱5 for each additional store</span></div>
 <div id="storeGrid" class="pills" style="justify-content:flex-start;margin:0"></div>
-<div class="notice" style="margin-top:12px"><b>Multi-store rule:</b> First selected store has no extra store fee. Every additional store automatically adds <b>₱5</b> to the order total.</div>
+<div class="notice" style="margin-top:12px"><b>Multi-store rule:</b> First selected store has no extra store fee. Every additional store automatically adds <b>₱5</b> to the order total.</div><div id="selectedStoreInfo" class="locationbox">Selected stores: <b>None</b></div>
 </section>
 
 <section class="card">
@@ -83,7 +83,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <div class="sumrow"><span>Additional Store Fee</span><b id="storeFee">₱0.00</b></div>
 <div class="sumrow grand"><span>GRAND TOTAL</span><span id="grand">₱0.00</span></div>
 <br>
-<div class="notice"><b>DELIVERY RATE</b><br>First 1 km = ₱40 • Every succeeding km = +₱10<br>Formula: <b>Food Order + 10% Service Fee + Delivery Fee + Additional Store Fee</b></div>
+<div class="notice"><b>DELIVERY RATE</b><br>First 1 km = ₱40 • Every succeeding km = +₱10 • Maximum 2 stores • 2nd store +₱5<br>Formula: <b>Food Order + 10% Service Fee + Delivery Fee + Additional Store Fee</b></div>
 <br>
 <button onclick="openCustomer()">PLACE ORDER</button>
 </section>
@@ -140,6 +140,9 @@ const municipalities={
 "Nampicuan, Nueva Ecija":["Alemania","Ambasador Alzate Village","Cabaducan East","Cabaducan West","Cabawangan","East Central Poblacion","Edy","Maeling","Mayantoc","Medico","Monic","North Poblacion","Northwest Poblacion","Estacion","West Poblacion","Recuerdo","South Central Poblacion","Southeast Poblacion","Southwest Poblacion","Tony","West Central Poblacion"]
 };
 
+const PICKUP_LAT=15.666166, PICKUP_LON=120.579093;
+const MAX_STORES=2;
+const ADDITIONAL_STORE_FEE=5;
 const stores=["Jollibee","McDonald's","Local Food"];
 let activeStore="Jollibee";
 let labels=["All","Jollibee","McDonald's","Local Food"];
@@ -161,9 +164,21 @@ const foods=[
 
 function renderStores(){
   const box=document.getElementById("storeGrid");
-  box.innerHTML=stores.map(s=>`<button style="width:auto;padding:10px 14px;background:${activeStore===s?'#ed1118':'#111'}" onclick="selectStore('${s.replace(/'/g,"\\'")}')">${s==="Jollibee"?"🍗":s==="McDonald's"?"🍟":"🍽️"} ${s}</button>`).join("");
+  const chosen=selectedStores();
+  box.innerHTML=stores.map(s=>{
+    const selected=chosen.includes(s);
+    const blocked=!selected && chosen.length>=MAX_STORES;
+    return `<button style="width:auto;padding:10px 14px;opacity:${blocked?.45:1};background:${selected?'#ed1118':'#111'}" onclick="selectStore('${s.replace(/'/g,"\\'")}')">${s==="Jollibee"?"🍗":s==="McDonald's"?"🍟":"🍽️"} ${s}${selected?' ✓':''}</button>`
+  }).join("");
+  const info=document.getElementById("selectedStoreInfo");
+  if(info) info.innerHTML=chosen.length?`Selected stores: <b>${chosen.join(" + ")}</b>${chosen.length===2?`<br>Additional store fee: <b>₱${ADDITIONAL_STORE_FEE.toFixed(2)}</b>`:""}`:"Selected stores: <b>None</b>";
 }
 function selectStore(s){
+  const chosen=selectedStores();
+  if(!chosen.includes(s) && chosen.length>=MAX_STORES){
+    alert("Maximum 2 stores only. Remove one store from your cart before adding another store.");
+    return;
+  }
   activeStore=s;
   activeLabel=s;
   renderStores();renderLabels();renderFoods();
@@ -171,7 +186,7 @@ function selectStore(s){
 }
 
 function init(){
-renderStores(); renderLabels(); renderFoods(); renderLabelManager();
+renderStores(); renderLabels(); renderFoods(); renderLabelManager(); renderCart();
 const m=document.getElementById("municipality");
 Object.keys(municipalities).forEach(x=>{let o=document.createElement("option");o.value=x;o.textContent=x;m.appendChild(o)});
 m.onchange=loadBarangays;
@@ -201,7 +216,16 @@ labels=labels.filter(x=>x!==l);
 if(activeLabel===l)activeLabel="All";
 renderLabels();renderFoods();renderLabelManager();
 }
-function add(i){cart[i]=(cart[i]||0)+1;renderCart()}
+function add(i){
+  const store=foods[i][4];
+  const chosen=selectedStores();
+  if(!chosen.includes(store) && chosen.length>=MAX_STORES){
+    alert("Maximum 2 stores only. You already selected: "+chosen.join(" + "));
+    return;
+  }
+  cart[i]=(cart[i]||0)+1;
+  renderCart();
+}
 function qty(i,n){cart[i]=(cart[i]||0)+n;if(cart[i]<=0)delete cart[i];renderCart()}
 function sub(){return Object.keys(cart).reduce((t,i)=>t+foods[i][1]*cart[i],0)}
 function selectedStores(){
@@ -209,10 +233,11 @@ function selectedStores(){
 }
 function additionalStoreFee(){
   const count=selectedStores().length;
-  return count>1?(count-1)*5:0;
+  return count===2 ? ADDITIONAL_STORE_FEE : 0;
 }
 function renderCart(){
 let keys=Object.keys(cart),box=document.getElementById("cart");
+renderStores();
 document.getElementById("itemCount").textContent=keys.reduce((a,i)=>a+cart[i],0)+" items";
 if(!keys.length){box.innerHTML='<p class="status">Your cart is empty.</p>';update();return}
 box.innerHTML=keys.map(i=>`<div class="cartrow"><div><b>${foods[i][2]} ${foods[i][0]}</b><br><small>${foods[i][4]} • ${money(foods[i][1])} × ${cart[i]}</small></div><div class="qty"><button class="dark" onclick="qty(${i},-1)">−</button><b>${cart[i]}</b><button onclick="qty(${i},1)">+</button></div></div>`).join("");
@@ -341,6 +366,7 @@ async function autoCalculate(){
 }
 function confirmOrder(){
 if(!Object.keys(cart).length){alert("Cart is empty.");return}
+if(selectedStores().length>MAX_STORES){alert("Only 2 stores are allowed per order.");return}
 let name=document.getElementById("name").value.trim(),phone=document.getElementById("phone").value.trim(),m=document.getElementById("municipality").value,b=document.getElementById("barangay").value,a=document.getElementById("address").value.trim();
 if(!name||!phone||!m||!b||!a){alert("Please complete Name, Contact, Municipality, Barangay and Address.");return}
 if(roadKm===null || deliveryFee===null){alert("Please allow CUSTOMER GPS and wait for the actual road distance/fee.");return}
