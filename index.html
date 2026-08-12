@@ -106,7 +106,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 
 <br>
 <button onclick="detectLocation()">📍 ALLOW GPS & CALCULATE AUTOMATICALLY</button>
-<div id="gps" class="locationbox">📍 GPS not allowed yet.<br>Tap <b>ALLOW GPS & CALCULATE AUTOMATICALLY</b> and choose <b>Allow</b> in your browser.</div><div class="status">Pickup: MH9H+95P, Burgos St., Poblacion Norte, Paniqui, Tarlac</div>
+<div id="gps" class="locationbox">📍 GPS not allowed yet.<br>Tap <b>ALLOW GPS & CALCULATE AUTOMATICALLY</b> and choose <b>Allow</b> in your browser.</div><div class="status">Pickup: 415 Pasuquin, Paniqui, Tarlac • GPS: 15.666166, 120.579093</div>
 
 <br>
 <button class="outline" onclick="autoCalculate()">🔄 RECALCULATE DISTANCE & DELIVERY FEE</button>
@@ -141,13 +141,12 @@ const foods=[
 ];
 
 /*
-MHAC DELIVERY pickup point
-Verified public listing: MH9H+95P, Burgos St, Poblacion Norte, Paniqui, Tarlac.
+MHAC DELIVERY exact pickup point supplied by the owner: 415 Pasuquin, Paniqui, Tarlac.
 The app geocodes this pickup address, then calculates the actual driving route to the customer's GPS.
 */
-const PICKUP_QUERY="Paniqui Public Plaza, Paniqui, Tarlac, Philippines";
-const PICKUP_LAT=15.66795;
-const PICKUP_LON=120.57894;
+const PICKUP_QUERY="415 Pasuquin, Paniqui, Tarlac, Philippines";
+const PICKUP_LAT=15.666166;
+const PICKUP_LON=120.579093;
 let pickupLat=PICKUP_LAT,pickupLon=PICKUP_LON;
 
 let cart={},customerLat=null,customerLon=null,roadKm=null,deliveryFee=0;
@@ -238,12 +237,7 @@ status.textContent="GPS permission is required for automatic delivery fee.";
 },{enableHighAccuracy:true,timeout:20000,maximumAge:0});
 }
 async function getPickupCoordinates(){
-if(pickupLat!==null&&pickupLon!==null)return {lat:pickupLat,lon:pickupLon};
-let r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=ph&q="+encodeURIComponent(PICKUP_QUERY),{headers:{"Accept":"application/json"}});
-let a=await r.json();
-if(!a[0])throw new Error("MHAC pickup point could not be found");
-pickupLat=+a[0].lat; pickupLon=+a[0].lon;
-return {lat:pickupLat,lon:pickupLon};
+  return {lat:PICKUP_LAT,lon:PICKUP_LON};
 }
 function route(fromLat,fromLon,toLat,toLon){
 let url="https://router.project-osrm.org/route/v1/driving/"+fromLon+","+fromLat+";"+toLon+","+toLat+"?overview=false&steps=false";
