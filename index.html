@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#17171c">
-<title>MHAC DELIVERY - Food Delivery</title><style>
+<title>MHAC DELIVERY</title><style>
 *{box-sizing:border-box}
 
 body{
@@ -17,14 +17,14 @@ color:#17171c
 
 header{
 background:#17171c;
-color:white;
-padding:17px
+color:#fff;
+padding:16px
 }
 
 .wrap{
-max-width:1050px;
+max-width:850px;
 margin:auto;
-padding:16px
+padding:15px
 }
 
 .brand{
@@ -38,38 +38,21 @@ color:#ff4f7b
 
 .hero{
 background:linear-gradient(135deg,#17171c,#572536);
-color:white;
-padding:38px 0
+color:#fff;
+padding:35px 0
 }
 
 .hero h1{
-font-size:42px;
-margin:0 0 10px
+font-size:38px;
+margin:0 0 8px
 }
 
 .hero p{
-color:#ddd;
-margin-bottom:20px
-}
-
-button{
-width:100%;
-border:0;
-border-radius:10px;
-padding:12px;
-font:inherit;
-font-weight:900;
-cursor:pointer;
-background:#ff4f7b;
-color:white
-}
-
-button.dark{
-background:#17171c
+color:#ddd
 }
 
 .card{
-background:white;
+background:#fff;
 border:1px solid #e1e2e6;
 border-radius:17px;
 padding:17px;
@@ -85,58 +68,50 @@ gap:12px
 .food{
 border:1px solid #ddd;
 border-radius:15px;
-padding:15px;
-background:white
+padding:14px
 }
 
 .food-icon{
-font-size:45px
+font-size:42px
 }
 
 .food h3{
-margin:8px 0 5px
+margin:7px 0
 }
 
 .price{
 font-size:19px;
 font-weight:900;
-margin-bottom:10px
+margin-bottom:9px
 }
 
-.row{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px
-}
-
-label{
-display:block;
-font-size:12px;
-font-weight:900;
-margin:10px 0 5px
-}
-
-input,select,textarea{
+button{
 width:100%;
+border:0;
+border-radius:10px;
 padding:12px;
-border:1px solid #d6d7dc;
-border-radius:9px;
 font:inherit;
-background:white
+font-weight:900;
+background:#ff4f7b;
+color:#fff;
+cursor:pointer
 }
 
-textarea{
-min-height:80px;
-resize:vertical
+button.dark{
+background:#17171c
+}
+
+button.green{
+background:#16834d
 }
 
 .cart-item{
 display:flex;
 justify-content:space-between;
 align-items:center;
-gap:10px;
 padding:12px 0;
-border-bottom:1px solid #eee
+border-bottom:1px solid #eee;
+gap:10px
 }
 
 .qty{
@@ -146,51 +121,84 @@ gap:6px
 }
 
 .qty button{
-width:35px;
-padding:7px;
-margin:0
+width:34px;
+padding:7px
 }
 
-.summary-row{
+.summary{
 display:flex;
 justify-content:space-between;
-padding:11px 0;
+padding:10px 0;
 border-bottom:1px solid #eee
 }
 
 .grand{
 font-size:23px;
-font-weight:900;
-padding-top:13px
+font-weight:900
 }
 
 .notice{
-background:#fff4f7;
-border:1px solid #ffd0dc;
-border-radius:11px;
-padding:13px;
+background:#fff5f7;
+border:1px solid #ffd1dc;
+border-radius:10px;
+padding:12px;
 font-size:13px;
 line-height:1.5
 }
 
-.live-fee{
-margin-top:10px;
-padding:12px;
-border-radius:10px;
+.location{
 background:#f1f8ff;
 border:1px solid #cfe7ff;
-font-weight:800
+border-radius:10px;
+padding:12px;
+margin-top:10px;
+font-size:13px
+}
+
+.form{
+display:none;
+margin-top:15px
+}
+
+.form.show{
+display:block
+}
+
+label{
+display:block;
+font-size:12px;
+font-weight:900;
+margin:9px 0 5px
+}
+
+input,select,textarea{
+width:100%;
+padding:11px;
+border:1px solid #d5d6dc;
+border-radius:9px;
+font:inherit
+}
+
+textarea{
+min-height:75px;
+resize:vertical
+}
+
+.row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
 }
 
 .success{
-background:#e9f9f1;
-border:1px solid #b9e9d0;
+background:#eaf9f1;
+border:1px solid #bdebd3;
 border-radius:14px;
-padding:18px
+padding:17px
 }
 
 .order-id{
-font-size:24px;
+font-size:25px;
 font-weight:900;
 color:#ff4f7b
 }
@@ -202,63 +210,75 @@ display:none
 footer{
 text-align:center;
 color:#777;
-padding:30px 15px
+padding:30px 10px
 }
 
-@media(max-width:650px){
-.food-grid{grid-template-columns:1fr}
-.row{grid-template-columns:1fr}
-.hero h1{font-size:34px}
+@media(max-width:600px){
+.food-grid{
+grid-template-columns:1fr
+}
+
+.row{
+grid-template-columns:1fr
+}
+
+.hero h1{
+font-size:32px
+}
 }
 </style></head><body><header>
-<div class="wrap">
-<div class="brand">
+<div class="wrap"><div class="brand">
 MHAC <span class="pink">DELIVERY</span>
+</div><small>🍔 Food Delivery</small>
+
 </div>
-<small>🍔 Food Delivery</small>
-</div>
-</header><section class="hero">
-<div class="wrap"><h1>Order Food. We Deliver. 🛵</h1><p>
-Fast and affordable food delivery around our covered municipalities.
-</p><button onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
-🍔 ORDER FOOD NOW
-</button></div>
-</section><main class="wrap"><!-- FOOD MENU --><div class="card" id="menu"><h2>🍔 FOOD MENU</h2><p style="color:#777">
-Choose your food and add it to your order.
-</p><div class="food-grid" id="foodMenu"></div></div><!-- CART --><div class="card"><h2>🛒 YOUR ORDER</h2><div id="cart">
-<div style="text-align:center;color:#777;padding:20px">
+</header><section class="hero"><div class="wrap"><h1>Order Food. 🛵</h1><p>
+Fast and affordable food delivery.
+</p></div></section><main class="wrap"><!-- FOOD --><div class="card"><h2>🍔 FOOD MENU</h2><div
+id="foodMenu"
+class="food-grid">
+</div></div><!-- CART --><div class="card"><h2>🛒 YOUR ORDER</h2><div id="cart"><p style="text-align:center;color:#777">
 Your cart is empty.
-</div>
-</div></div><!-- DELIVERY INFORMATION --><div class="card"><h2>📍 DELIVERY INFORMATION</h2><div class="row"><div><label>Municipality</label>
+</p></div></div><!-- SUMMARY --><div class="card"><h2>🧾 ORDER TOTAL</h2><div class="summary"><span>Food Order</span>
 
-<select id="municipality">
-<option value="">Select municipality</option>
-</select></div><div><label>Barangay</label>
+<b id="subtotal">
+₱0.00
+</b></div><div class="summary"><span>10% Service Fee</span>
 
-<select id="barangay" disabled><option value="">
-Select municipality first
-</option></select></div></div><label>Complete Address</label>
+<b id="service">
+₱0.00
+</b></div><div class="summary"><span>🛵 Delivery Fee</span>
 
-<textarea
-id="address"
-placeholder="House number, street, subdivision..."
-></textarea><label>Landmark</label>
+<b id="delivery">
+₱0.00
+</b></div><div
+class="summary grand"><span>GRAND TOTAL</span>
 
-<input
-id="landmark"
-placeholder="Example: near barangay hall"
+<span id="grand">
+₱0.00
+</span></div><br><div class="notice"><b>DELIVERY FEE</b><br>
 
-«»
+First 1 KM = ₱40<br>
 
-<div class="row"><div><label>Customer Name</label>
+Every succeeding KM = +₱10<br><br>
+
+📍 Your exact delivery fee will be calculated after your location is provided.
+
+</div><br><button onclick="openCustomerForm()">
+🚀 PLACE ORDER
+</button></div><!-- CUSTOMER INFORMATION --><div
+id="customerForm"
+class="card form"><h2>📍 DELIVERY INFORMATION</h2><p style="color:#777;font-size:13px">
+Please enter your delivery details.
+</p><label>Customer Name</label>
 
 <input
 id="customer"
-placeholder="Your full name"
+placeholder="Full name"
 
 «»
 
-</div><div><label>Mobile Number</label>
+<label>Mobile Number</label>
 
 <input
 id="mobile"
@@ -267,60 +287,58 @@ placeholder="09xxxxxxxxx"
 
 «»
 
-</div></div><div class="row"><div><label>Distance (KM)</label>
+<div class="row"><div><label>Municipality</label>
+
+<select id="municipality"><option value="">
+Select municipality
+</option></select></div><div><label>Barangay</label>
+
+<select
+id="barangay"
+disabled>
+
+<option>
+Select municipality first
+</option></select></div></div><label>Complete Address</label>
+
+<textarea
+id="address"
+placeholder="House number / street / subdivision"
+></textarea><label>Landmark</label>
 
 <input
-id="distance"
-type="number"
-min="1"
-step="0.1"
-placeholder="Example: 3"
+id="landmark"
+placeholder="Near barangay hall, school, etc."
 
 «»
 
-<div id="distanceInfo" class="live-fee">
-📏 Enter distance to calculate delivery fee.
-</div></div><div><label>Payment Method</label>
+<label>Payment Method</label>
 
-<select id="payment"><option>Cash on Delivery</option>
-<option>GCash</option></select></div></div><label>Order Notes</label>
+<select id="payment"><option>
+Cash on Delivery
+</option><option>
+GCash
+</option></select><label>Order Notes</label>
 
 <textarea
 id="notes"
 placeholder="Optional instructions"
-></textarea><div class="notice"><b>🛵 DELIVERY FEE RULE</b><br><br>
+></textarea><h3>📍 DELIVERY LOCATION</h3><button
+class="green"
+onclick="getLocation()">
 
-First 1 km = <b>₱40</b><br>
+📍 USE MY CURRENT LOCATION
 
-Every succeeding km = <b>+₱10</b><br><br>
+</button><div
+id="locationStatus"
+class="location">Location not detected yet.
 
-Example:<br>
-1 km = ₱40<br>
-2 km = ₱50<br>
-3 km = ₱60<br>
-4 km = ₱70<br>
-5 km = ₱80<br><br>
+</div><br><button onclick="submitOrder()">✅ CONFIRM & PLACE ORDER
 
-<b>
-TOTAL = FOOD ORDER + 10% SERVICE FEE + DELIVERY FEE
-</b></div></div><!-- SUMMARY --><div class="card"><h2>🧾 ORDER SUMMARY</h2><div class="summary-row">
-<span>🍔 Food Order</span>
-<b id="subtotal">₱0.00</b>
-</div><div class="summary-row">
-<span>10% Service Fee</span>
-<b id="service">₱0.00</b>
-</div><div class="summary-row">
-<span>🛵 Delivery Fee</span>
-<b id="delivery">₱0.00</b>
-</div><div class="summary-row grand">
-<span>GRAND TOTAL</span>
-<span id="grand">₱0.00</span>
-</div><br><button onclick="placeOrder()">
-🚀 PLACE FOOD ORDER
 </button></div><!-- CONFIRMATION --><div
 id="confirmation"
-class="card hidden">
-</div></main><footer><b>MHAC DELIVERY</b><br>
+class="card hidden"></div></main><footer><b>MHAC DELIVERY</b><br>
+
 🍔 FOOD DELIVERY<br><br>
 
 Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan
@@ -405,31 +423,67 @@ const municipalities={
 
 
 /* =========================
-FOOD MENU
+FOODS
 ========================= */
 
 const foods=[
 
-{name:"Burger Meal",price:129,icon:"🍔"},
+{
+name:"Burger Meal",
+price:129,
+icon:"🍔"
+},
 
-{name:"Chicken Meal",price:149,icon:"🍗"},
+{
+name:"Chicken Meal",
+price:149,
+icon:"🍗"
+},
 
-{name:"Pancit",price:120,icon:"🍜"},
+{
+name:"Pancit",
+price:120,
+icon:"🍜"
+},
 
-{name:"Milk Tea",price:89,icon:"🧋"},
+{
+name:"Milk Tea",
+price:89,
+icon:"🧋"
+},
 
-{name:"Siomai Rice",price:99,icon:"🥟"},
+{
+name:"Siomai Rice",
+price:99,
+icon:"🥟"
+},
 
-{name:"French Fries",price:79,icon:"🍟"},
+{
+name:"French Fries",
+price:79,
+icon:"🍟"
+},
 
-{name:"Chicken Wings",price:169,icon:"🍗"},
+{
+name:"Chicken Wings",
+price:169,
+icon:"🍗"
+},
 
-{name:"Combo Meal",price:199,icon:"🍱"}
+{
+name:"Combo Meal",
+price:199,
+icon:"🍱"
+}
 
 ];
 
 
 let cart={};
+
+let userLatitude=null;
+
+let userLongitude=null;
 
 
 /* =========================
@@ -438,7 +492,8 @@ MONEY
 
 function money(n){
 
-return "₱"+Number(n||0).toLocaleString(
+return "₱"+
+Number(n||0).toLocaleString(
 "en-PH",
 {
 minimumFractionDigits:2,
@@ -450,14 +505,17 @@ maximumFractionDigits:2
 
 
 /* =========================
-INIT
+INITIALIZE
 ========================= */
 
 function init(){
 
-const menu=document.getElementById("foodMenu");
+const menu=
+document.getElementById("foodMenu");
 
-menu.innerHTML=foods.map((food,i)=>`
+
+menu.innerHTML=
+foods.map((food,i)=>`
 
 <div class="food">
 
@@ -473,8 +531,11 @@ ${food.name}
 ${money(food.price)}
 </div>
 
-<button onclick="addFood(${i})">
+<button
+onclick="addFood(${i})">
+
 ADD TO ORDER
+
 </button>
 
 </div>
@@ -486,11 +547,14 @@ const municipality=
 document.getElementById("municipality");
 
 
-Object.keys(municipalities).forEach(name=>{
+Object.keys(municipalities)
+.forEach(name=>{
 
-const option=document.createElement("option");
+const option=
+document.createElement("option");
 
 option.value=name;
+
 option.textContent=name;
 
 municipality.appendChild(option);
@@ -501,13 +565,6 @@ municipality.appendChild(option);
 municipality.addEventListener(
 "change",
 loadBarangays
-);
-
-
-document.getElementById("distance")
-.addEventListener(
-"input",
-updateTotal
 );
 
 }
@@ -525,26 +582,34 @@ document.getElementById("municipality").value;
 const barangay=
 document.getElementById("barangay");
 
+
 barangay.innerHTML=
 "<option value=''>Select barangay</option>";
+
 
 if(!municipality){
 
 barangay.disabled=true;
+
 return;
 
 }
 
-municipalities[municipality].forEach(name=>{
 
-const option=document.createElement("option");
+municipalities[municipality]
+.forEach(name=>{
+
+const option=
+document.createElement("option");
 
 option.value=name;
+
 option.textContent=name;
 
 barangay.appendChild(option);
 
 });
+
 
 barangay.disabled=false;
 
@@ -557,7 +622,8 @@ ADD FOOD
 
 function addFood(index){
 
-cart[index]=(cart[index]||0)+1;
+cart[index]=
+(cart[index]||0)+1;
 
 renderCart();
 
@@ -570,13 +636,16 @@ QUANTITY
 
 function changeQty(index,amount){
 
-cart[index]=(cart[index]||0)+amount;
+cart[index]=
+(cart[index]||0)+amount;
+
 
 if(cart[index]<=0){
 
 delete cart[index];
 
 }
+
 
 renderCart();
 
@@ -591,15 +660,89 @@ function getSubtotal(){
 
 let total=0;
 
-Object.keys(cart).forEach(index=>{
 
-const food=foods[index];
+Object.keys(cart)
+.forEach(index=>{
 
-total+=food.price*cart[index];
+total+=
+foods[index].price*
+cart[index];
 
 });
 
+
 return total;
+
+}
+
+
+/* =========================
+DISTANCE
+========================= */
+
+/*
+Temporary automatic GPS.
+
+The browser gets the customer's
+latitude and longitude.
+
+Actual road KM will be connected
+to a routing service in the next
+upgrade.
+*/
+
+function getLocation(){
+
+const status=
+document.getElementById("locationStatus");
+
+
+if(!navigator.geolocation){
+
+status.innerHTML=
+"❌ GPS is not supported by this browser.";
+
+return;
+
+}
+
+
+status.innerHTML=
+"📍 Detecting your location...";
+
+
+navigator.geolocation.getCurrentPosition(
+
+position=>{
+
+userLatitude=
+position.coords.latitude;
+
+userLongitude=
+position.coords.longitude;
+
+
+status.innerHTML=
+
+"✅ Location detected.<br>"+
+"Latitude: "+
+userLatitude.toFixed(5)+
+"<br>"+
+"Longitude: "+
+userLongitude.toFixed(5)+
+"<br><br>"+
+"📏 Road distance will be calculated by the map system.";
+
+},
+
+error=>{
+
+status.innerHTML=
+"❌ Unable to get location. Please allow GPS/location permission.";
+
+}
+
+);
 
 }
 
@@ -608,28 +751,68 @@ return total;
 DELIVERY FEE
 ========================= */
 
-function deliveryFee(){
+function calculateDeliveryFee(km){
 
-const distance=
-Number(
-document.getElementById("distance").value
-)||0;
-
-if(distance<=0){
+if(!km || km<=0){
 
 return 0;
 
 }
 
-/*
-1 km = 40
-Every succeeding km = +10
-*/
 
 const chargedKm=
-Math.ceil(distance);
+Math.ceil(km);
 
-return 40+(chargedKm-1)*10;
+
+return 40+
+((chargedKm-1)*10);
+
+}
+
+
+/* =========================
+TOTAL
+========================= */
+
+function updateTotal(){
+
+const subtotal=
+getSubtotal();
+
+const service=
+subtotal*0.10;
+
+
+/*
+No fake distance.
+
+Until routing is connected,
+delivery fee remains 0.
+*/
+
+const delivery=0;
+
+const grand=
+subtotal+
+service+
+delivery;
+
+
+document.getElementById("subtotal")
+.textContent=
+money(subtotal);
+
+document.getElementById("service")
+.textContent=
+money(service);
+
+document.getElementById("delivery")
+.textContent=
+money(delivery);
+
+document.getElementById("grand")
+.textContent=
+money(grand);
 
 }
 
@@ -640,15 +823,19 @@ CART
 
 function renderCart(){
 
-const box=document.getElementById("cart");
+const box=
+document.getElementById("cart");
 
-const items=Object.keys(cart);
+
+const items=
+Object.keys(cart);
+
 
 if(items.length===0){
 
 box.innerHTML=`
 
-<div style="
+<p style="
 text-align:center;
 color:#777;
 padding:20px
@@ -656,7 +843,7 @@ padding:20px
 
 🛒 Your cart is empty.
 
-</div>
+</p>
 
 `;
 
@@ -667,9 +854,12 @@ return;
 }
 
 
-box.innerHTML=items.map(index=>{
+box.innerHTML=
+items.map(index=>{
 
-const food=foods[index];
+const food=
+foods[index];
+
 
 return `
 
@@ -678,13 +868,15 @@ return `
 <div>
 
 <b>
-${food.icon} ${food.name}
+${food.icon}
+${food.name}
 </b>
 
 <br>
 
 <small>
-${money(food.price)} × ${cart[index]}
+${money(food.price)}
+× ${cart[index]}
 </small>
 
 </div>
@@ -694,8 +886,7 @@ ${money(food.price)} × ${cart[index]}
 
 <button
 class="dark"
-onclick="changeQty(${index},-1)"
->
+onclick="changeQty(${index},-1)">
 −
 </button>
 
@@ -704,8 +895,7 @@ ${cart[index]}
 </b>
 
 <button
-onclick="changeQty(${index},1)"
->
+onclick="changeQty(${index},1)">
 +
 </button>
 
@@ -724,134 +914,109 @@ updateTotal();
 
 
 /* =========================
-LIVE TOTAL
+OPEN CUSTOMER FORM
 ========================= */
 
-function updateTotal(){
+function openCustomerForm(){
 
-const subtotal=
-getSubtotal();
+if(Object.keys(cart).length===0){
 
-const service=
-subtotal*0.10;
+alert(
+"Please add food to your order first."
+);
 
-const distance=
-Number(
-document.getElementById("distance").value
-)||0;
-
-let delivery=0;
-
-if(distance>0){
-
-const chargedKm=
-Math.ceil(distance);
-
-delivery=
-40+(chargedKm-1)*10;
+return;
 
 }
 
 
-const grand=
-subtotal+
-service+
-delivery;
+const form=
+document.getElementById("customerForm");
 
 
-document.getElementById("subtotal")
-.textContent=money(subtotal);
-
-document.getElementById("service")
-.textContent=money(service);
-
-document.getElementById("delivery")
-.textContent=money(delivery);
-
-document.getElementById("grand")
-.textContent=money(grand);
+form.classList.add("show");
 
 
-/* LIVE DISTANCE DISPLAY */
-
-const info=
-document.getElementById("distanceInfo");
-
-if(distance<=0){
-
-info.innerHTML=
-"📏 Enter distance to calculate delivery fee.";
-
-}else{
-
-info.innerHTML=
-"📏 Distance: <b>"+
-distance+
-" KM</b><br>"+
-"🛵 Delivery Fee: <b>"+
-money(delivery)+
-"</b>";
-
-}
+form.scrollIntoView({
+behavior:"smooth"
+});
 
 }
 
 
 /* =========================
-PLACE ORDER
+SUBMIT ORDER
 ========================= */
 
-function placeOrder(){
+function submitOrder(){
 
-if(Object.keys(cart).length===0){
+const customer=
+document.getElementById("customer")
+.value.trim();
 
-alert(
-"Please add food to your order."
-);
 
-return;
-
-}
+const mobile=
+document.getElementById("mobile")
+.value.trim();
 
 
 const municipality=
-document.getElementById("municipality").value;
+document.getElementById("municipality")
+.value;
+
 
 const barangay=
-document.getElementById("barangay").value;
+document.getElementById("barangay")
+.value;
+
 
 const address=
-document.getElementById("address").value.trim();
-
-const customer=
-document.getElementById("customer").value.trim();
-
-const mobile=
-document.getElementById("mobile").value.trim();
-
-const distance=
-Number(
-document.getElementById("distance").value
-)||0;
+document.getElementById("address")
+.value.trim();
 
 
 if(
-!municipality||
-!barangay||
-!address||
 !customer||
 !mobile||
-distance<=0
+!municipality||
+!barangay||
+!address
 ){
 
 alert(
-"Please complete all delivery information."
+"Please complete your delivery information."
 );
 
 return;
 
 }
 
+
+/*
+At this stage GPS is required
+for future automatic distance.
+*/
+
+if(
+userLatitude===null||
+userLongitude===null
+){
+
+alert(
+"Please tap USE MY CURRENT LOCATION first."
+);
+
+return;
+
+}
+
+
+/*
+Temporary delivery fee.
+
+Actual road distance needs
+routing API integration.
+*/
 
 const subtotal=
 getSubtotal();
@@ -859,8 +1024,12 @@ getSubtotal();
 const service=
 subtotal*0.10;
 
-const delivery=
-deliveryFee();
+
+/*
+No invented distance.
+*/
+
+const delivery=0;
 
 const grand=
 subtotal+
@@ -869,7 +1038,8 @@ delivery;
 
 
 const orderId=
-"MHAC-"+Math.floor(
+"MHAC-"+
+Math.floor(
 100000+
 Math.random()*900000
 );
@@ -915,7 +1085,9 @@ address:address,
 landmark:
 document.getElementById("landmark").value,
 
-distance:distance,
+latitude:userLatitude,
+
+longitude:userLongitude,
 
 payment:
 document.getElementById("payment").value,
@@ -953,13 +1125,14 @@ CONFIRMATION
 
 function showConfirmation(order){
 
-const confirmation=
+const box=
 document.getElementById("confirmation");
 
-confirmation.classList.remove("hidden");
+
+box.classList.remove("hidden");
 
 
-confirmation.innerHTML=`
+box.innerHTML=`
 
 <div class="success">
 
@@ -968,7 +1141,7 @@ confirmation.innerHTML=`
 </h2>
 
 <p>
-Your food order has been successfully submitted.
+Thank you for ordering from MHAC DELIVERY.
 </p>
 
 <div class="order-id">
@@ -978,42 +1151,47 @@ ${order.id}
 <hr>
 
 <p>
-<b>Customer:</b><br>
+<b>Customer:</b>
 ${order.customer}
 </p>
 
 <p>
-<b>Mobile:</b><br>
+<b>Mobile:</b>
 ${order.mobile}
 </p>
 
 <p>
-<b>Address:</b><br>
+<b>Delivery Address:</b><br>
 ${order.address}<br>
 ${order.barangay},
 ${order.municipality}
 </p>
 
 <p>
-<b>Distance:</b>
-${order.distance} KM
+📍 GPS Location Captured
 </p>
 
 <hr>
 
 <p>
-🍔 <b>Food Order:</b>
+🍔 Food Order:
+<b>
 ${money(order.subtotal)}
+</b>
 </p>
 
 <p>
-<b>10% Service Fee:</b>
+10% Service Fee:
+<b>
 ${money(order.serviceFee)}
+</b>
 </p>
 
 <p>
-🛵 <b>Delivery Fee:</b>
+🛵 Delivery Fee:
+<b>
 ${money(order.deliveryFee)}
+</b>
 </p>
 
 <h2>
@@ -1022,33 +1200,42 @@ ${money(order.grandTotal)}
 </h2>
 
 <p>
-💳 <b>Payment:</b>
+💳 Payment:
+<b>
 ${order.payment}
+</b>
 </p>
 
 <p>
-📦 <b>Status:</b>
+📦 Status:
+<b>
 Pending
+</b>
 </p>
 
-<button onclick="copyOrder('${order.id}')">
+<button
+onclick="copyOrder('${order.id}')">
+
 📋 COPY ORDER ID
+
 </button>
 
 <br><br>
 
 <button
 class="dark"
-onclick="newOrder()"
->
-🍔 NEW FOOD ORDER
+onclick="location.reload()">
+
+🍔 NEW ORDER
+
 </button>
 
 </div>
 
 `;
 
-confirmation.scrollIntoView({
+
+box.scrollIntoView({
 behavior:"smooth"
 });
 
@@ -1063,33 +1250,21 @@ function copyOrder(id){
 
 if(navigator.clipboard){
 
-navigator.clipboard.writeText(id)
-.then(()=>{
+navigator.clipboard.writeText(id);
 
 alert(
-"Order ID copied: "+id
+"Order ID copied: "+
+id
 );
-
-});
 
 }else{
 
 alert(
-"Order ID: "+id
+"Order ID: "+
+id
 );
 
 }
-
-}
-
-
-/* =========================
-NEW ORDER
-========================= */
-
-function newOrder(){
-
-location.reload();
 
 }
 
