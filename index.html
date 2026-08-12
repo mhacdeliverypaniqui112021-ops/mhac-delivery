@@ -182,10 +182,8 @@ function loadMenus(){
  let x=null;
  try{x=JSON.parse(localStorage.getItem(MENU_KEY))}catch(e){}
  if(!Array.isArray(x)||!x.length)x=JSON.parse(JSON.stringify(defaultMenus));
- if(!x.some(s=>s.name==="Local Food")){
-   const demo=defaultMenus.find(s=>s.name==="Local Food");
-   if(demo)x.push(JSON.parse(JSON.stringify(demo)));
- }
+ // Always keep the three test stores available during system testing.
+ defaultMenus.forEach(def=>{ if(!x.some(s=>s.name===def.name)) x.push(JSON.parse(JSON.stringify(def))); });
  return x;
 }
 function saveMenus(){localStorage.setItem(MENU_KEY,JSON.stringify(menus))}
@@ -355,7 +353,7 @@ async function recalculateNow(){
   await autoCalculate();
 }
 
-async function autoCalculate(){
+async async function autoCalculate(){
   const status=document.getElementById("routeStatus");
   const box=document.getElementById("route");
   if(customerLat===null || customerLon===null){
