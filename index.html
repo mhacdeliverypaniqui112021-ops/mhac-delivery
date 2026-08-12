@@ -130,7 +130,7 @@ const foods=[
 /*
 IMPORTANT:
 Set these two pickup coordinates to the EXACT MHAC DELIVERY pickup/store location.
-The temporary values below use Paniqui town-center area only as a fallback.
+These are temporary Paniqui-area coordinates and should be replaced with your exact pickup point.
 */
 const PICKUP_LAT=15.6688;
 const PICKUP_LON=120.5800;
@@ -181,9 +181,6 @@ customerLat=p.coords.latitude;customerLon=p.coords.longitude;
 box.innerHTML="✅ GPS detected.<br><b>"+customerLat.toFixed(6)+", "+customerLon.toFixed(6)+"</b>";
 },e=>{box.textContent="❌ Location permission was not allowed. Please enable GPS permission and try again."},{enableHighAccuracy:true,timeout:15000,maximumAge:60000});
 }
-function geocode(query){
-return fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=ph&q="+encodeURIComponent(query),{headers:{"Accept":"application/json"}}).then(r=>r.json()).then(a=>a[0]?{lat:+a[0].lat,lon:+a[0].lon}:null);
-}
 function route(fromLat,fromLon,toLat,toLon){
 let url="https://router.project-osrm.org/route/v1/driving/"+fromLon+","+fromLat+";"+toLon+","+toLat+"?overview=false";
 return fetch(url).then(r=>r.json()).then(x=>x.routes&&x.routes[0]?x.routes[0].distance/1000:null);
@@ -196,20 +193,25 @@ async function autoCalculate(){
 let status=document.getElementById("routeStatus"),box=document.getElementById("route");
 let municipality=document.getElementById("municipality").value,barangay=document.getElementById("barangay").value,address=document.getElementById("address").value.trim();
 if(!municipality||!barangay||!address){alert("Please complete municipality, barangay and address first.");return}
-if(customerLat===null){alert("Please tap USE MY CURRENT LOCATION first.");return}
-status.textContent="⏳ Calculating actual road distance...";
+if(customerLat===null||customerLon===null){
+alert("Please tap USE MY CURRENT LOCATION first and allow GPS permission.");
+return
+}
+status.textContent="⏳ Getting actual road distance from your GPS...";
 box.classList.add("hidden");
 try{
-let destination=await geocode(address+", "+barangay+", "+municipality+", Philippines");
-if(!destination)throw new Error("Address not found");
-let km=await route(PICKUP_LAT,PICKUP_LON,destination.lat,destination.lon);
-if(km===null)throw new Error("Route unavailable");
-roadKm=km;deliveryFee=feeForKm(km);
+let km=await route(PICKUP_LAT,PICKUP_LON,customerLat,customerLon);
+if(km===null)throw new Error("Road route unavailable");
+roadKm=km;
+deliveryFee=feeForKm(km);
 box.classList.remove("hidden");
-box.innerHTML='<div>ROAD DISTANCE</div><div class="bigkm">'+km.toFixed(1)+' km</div><div>DELIVERY FEE</div><div class="bigfee">'+money(deliveryFee)+'</div><small>Fee uses rounded-up kilometers: 1 km ₱40, then +₱10/km.</small>';
-status.textContent="✅ Automatic delivery fee calculated.";
+box.innerHTML='<div>ACTUAL ROAD DISTANCE</div><div class="bigkm">'+km.toFixed(1)+' km</div><div>AUTOMATIC DELIVERY FEE</div><div class="bigfee">'+money(deliveryFee)+'</div><small>Calculated from the MHAC pickup point to your GPS location. Fee: 1 km ₱40, then +₱10 for every succeeding km.</small>';
+status.textContent="✅ Distance and delivery fee calculated automatically.";
 update();
-}catch(e){status.textContent="❌ Could not calculate the road distance. Try a more complete address or use the routing service again.";console.error(e)}
+}catch(e){
+status.textContent="❌ Automatic routing failed. Check your internet/GPS and try again.";
+console.error(e)
+}
 }
 function confirmOrder(){
 if(!Object.keys(cart).length){alert("Cart is empty.");return}
