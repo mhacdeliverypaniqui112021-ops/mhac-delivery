@@ -95,7 +95,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 
 <br>
 <button class="dark" onclick="detectLocation()">📍 USE MY CURRENT LOCATION</button>
-<div id="gps" class="locationbox">Location not detected.</div>
+<div id="gps" class="locationbox">Location not detected.</div><div class="status">Pickup: MH9H+95P, Burgos St., Poblacion Norte, Paniqui, Tarlac</div>
 
 <br>
 <button onclick="autoCalculate()">⚡ AUTOMATICALLY CALCULATE DISTANCE & FEE</button>
@@ -128,12 +128,12 @@ const foods=[
 ];
 
 /*
-IMPORTANT:
-Set these two pickup coordinates to the EXACT MHAC DELIVERY pickup/store location.
-These are temporary Paniqui-area coordinates and should be replaced with your exact pickup point.
+MHAC DELIVERY pickup point
+Verified public listing: MH9H+95P, Burgos St, Poblacion Norte, Paniqui, Tarlac.
+The app geocodes this pickup address, then calculates the actual driving route to the customer's GPS.
 */
-const PICKUP_LAT=15.6688;
-const PICKUP_LON=120.5800;
+const PICKUP_QUERY="MH9H+95P, Burgos St, Poblacion Norte, Paniqui, Tarlac, Philippines";
+let pickupLat=null,pickupLon=null;
 
 let cart={},customerLat=null,customerLon=null,roadKm=null,deliveryFee=0;
 const money=n=>"₱"+Number(n||0).toLocaleString("en-PH",{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -181,8 +181,16 @@ customerLat=p.coords.latitude;customerLon=p.coords.longitude;
 box.innerHTML="✅ GPS detected.<br><b>"+customerLat.toFixed(6)+", "+customerLon.toFixed(6)+"</b>";
 },e=>{box.textContent="❌ Location permission was not allowed. Please enable GPS permission and try again."},{enableHighAccuracy:true,timeout:15000,maximumAge:60000});
 }
+async function getPickupCoordinates(){
+if(pickupLat!==null&&pickupLon!==null)return {lat:pickupLat,lon:pickupLon};
+let r=await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=ph&q="+encodeURIComponent(PICKUP_QUERY),{headers:{"Accept":"application/json"}});
+let a=await r.json();
+if(!a[0])throw new Error("MHAC pickup point could not be found");
+pickupLat=+a[0].lat; pickupLon=+a[0].lon;
+return {lat:pickupLat,lon:pickupLon};
+}
 function route(fromLat,fromLon,toLat,toLon){
-let url="https://router.project-osrm.org/route/v1/driving/"+fromLon+","+fromLat+";"+toLon+","+toLat+"?overview=false";
+let url="https://router.project-osrm.org/route/v1/driving/"+fromLon+","+fromLat+";"+toLon+","+toLat+"?overview=false&steps=false";
 return fetch(url).then(r=>r.json()).then(x=>x.routes&&x.routes[0]?x.routes[0].distance/1000:null);
 }
 function feeForKm(km){
@@ -197,19 +205,20 @@ if(customerLat===null||customerLon===null){
 alert("Please tap USE MY CURRENT LOCATION first and allow GPS permission.");
 return
 }
-status.textContent="⏳ Getting actual road distance from your GPS...";
+status.textContent="⏳ Getting MHAC pickup point and actual road distance...";
 box.classList.add("hidden");
 try{
-let km=await route(PICKUP_LAT,PICKUP_LON,customerLat,customerLon);
+let pickup=await getPickupCoordinates();
+let km=await route(pickup.lat,pickup.lon,customerLat,customerLon);
 if(km===null)throw new Error("Road route unavailable");
 roadKm=km;
 deliveryFee=feeForKm(km);
 box.classList.remove("hidden");
-box.innerHTML='<div>ACTUAL ROAD DISTANCE</div><div class="bigkm">'+km.toFixed(1)+' km</div><div>AUTOMATIC DELIVERY FEE</div><div class="bigfee">'+money(deliveryFee)+'</div><small>Calculated from the MHAC pickup point to your GPS location. Fee: 1 km ₱40, then +₱10 for every succeeding km.</small>';
-status.textContent="✅ Distance and delivery fee calculated automatically.";
+box.innerHTML='<div>MHAC PICKUP</div><div style="font-size:13px;margin:3px 0 10px">Burgos St., Poblacion Norte, Paniqui</div><div>ACTUAL ROAD DISTANCE</div><div class="bigkm">'+km.toFixed(1)+' km</div><div>AUTOMATIC DELIVERY FEE</div><div class="bigfee">'+money(deliveryFee)+'</div><small>Driving route from the MHAC pickup point to your GPS location. Fee: first 1 km ₱40, then +₱10 for each succeeding kilometer.</small>';
+status.textContent="✅ Exact pickup point + road distance + delivery fee calculated.";
 update();
 }catch(e){
-status.textContent="❌ Automatic routing failed. Check your internet/GPS and try again.";
+status.textContent="❌ Could not calculate the route. Make sure GPS is enabled and internet is available, then try again.";
 console.error(e)
 }
 }
