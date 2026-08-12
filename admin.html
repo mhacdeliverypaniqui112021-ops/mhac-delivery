@@ -1,1 +1,25 @@
-<!doctype html><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=./?app=admin"><script>location.href='./?app=admin'</script>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MHAC DELIVERY • Admin App</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f3f4f6;color:#111}header{background:#08090b;color:#fff;border-bottom:4px solid #ed1118}.wrap{max-width:1100px;margin:auto;padding:16px}.top{display:flex;align-items:center;gap:12px}.top img{width:55px;height:55px;object-fit:contain;border-radius:50%}.brand{font-size:24px;font-weight:900}.red{color:#ff3036}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat,.card{background:#fff;border:1px solid #ddd;border-radius:16px;padding:16px;margin-bottom:14px}.stat b{font-size:28px}.order{border:1px solid #ddd;border-radius:14px;padding:14px;margin:10px 0;background:#fff}.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.muted{color:#70737a;font-size:13px}button,select{border:0;border-radius:9px;padding:10px 12px;font-weight:900}button{background:#ed1118;color:#fff;cursor:pointer}button.dark{background:#111}button.gray{background:#e7e8ec;color:#111}select{border:1px solid #ccc;background:#fff}a{color:inherit;text-decoration:none}@media(max-width:700px){.grid{grid-template-columns:1fr 1fr}.row{flex-direction:column}}
+</style></head><body>
+<header><div class="wrap top"><img src="logo.png"><div><div class="brand">MHAC <span class="red">DELIVERY</span></div><small>ADMIN APP • ORDER CONTROL</small></div></div></header>
+<main class="wrap">
+<div class="card"><div class="row"><div><h2 style="margin:0">📊 Orders Dashboard</h2><p class="muted">Orders are shared between Customer/Admin/Rider on the same browser/device in this test version.</p></div><div><button onclick="location.href='index.html'">CUSTOMER APP</button> <button class="dark" onclick="location.href='rider.html'">RIDER APP</button> <button class="gray" onclick="location.href='admin-menu.html'">MENU MANAGER</button></div></div></div>
+<div class="grid"><div class="stat">All Orders<br><b id="all">0</b></div><div class="stat">Pending<br><b id="pending">0</b></div><div class="stat">On The Way<br><b id="way">0</b></div><div class="stat">Delivered<br><b id="done">0</b></div></div>
+<div class="card"><h2>📦 Incoming Orders</h2><div id="orders"></div></div>
+</main>
+<script>
+const KEY="MHAC_DEMO_ORDERS";
+const statuses=["Pending","Accepted","Preparing","Picked Up","On the Way","Delivered","Cancelled"];
+function money(n){return "₱"+Number(n||0).toLocaleString("en-PH",{minimumFractionDigits:2})}
+function get(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
+function save(a){localStorage.setItem(KEY,JSON.stringify(a))}
+function updateStatus(id,status){let a=get(),o=a.find(x=>x.id===id);if(!o)return;o.status=status;localStorage.setItem("MHAC_ORDER_"+id,JSON.stringify(o));save(a);render()}
+function assign(id){let r=prompt("Rider name:","MHAC Rider");if(!r)return;let a=get(),o=a.find(x=>x.id===id);if(!o)return;o.rider=r;o.status=o.status==="Pending"?"Accepted":o.status;localStorage.setItem("MHAC_ORDER_"+id,JSON.stringify(o));save(a);render()}
+function render(){
+ const a=get();document.getElementById("all").textContent=a.length;document.getElementById("pending").textContent=a.filter(x=>x.status==="Pending").length;document.getElementById("way").textContent=a.filter(x=>x.status==="On the Way").length;document.getElementById("done").textContent=a.filter(x=>x.status==="Delivered").length;
+ const box=document.getElementById("orders");if(!a.length){box.innerHTML="<p class='muted'>No orders yet. Use Customer App and test with Local Food.</p>";return}
+ box.innerHTML=a.slice().reverse().map(o=>`<div class="order"><div class="row"><div><h3 style="margin:0">${o.id} • ${o.status}</h3><p><b>${o.name||""}</b> • ${o.phone||""}<br>${o.address||""}, ${o.barangay||""}, ${o.municipality||""}<br>Stores: ${(o.stores||[]).join(" + ")}<br>Distance: ${o.distanceKm?Number(o.distanceKm).toFixed(2)+" km":"—"} • Delivery: ${money(o.deliveryFee)} • Store fee: ${money(o.additionalStoreFee)}</p><p class="muted">Rider: ${o.rider||"Not assigned"} • Payment: ${o.payment||""}</p></div><div style="min-width:180px"><b>${money(o.grandTotal)}</b><br><br><button onclick="assign('${o.id}')">ASSIGN RIDER</button><br><br><select onchange="updateStatus('${o.id}',this.value)">${statuses.map(s=>`<option ${s===o.status?"selected":""}>${s}</option>`).join("")}</select></div></div></div>`).join("")
+}
+window.addEventListener("storage",render);setInterval(render,2000);render();
+</script></body></html>

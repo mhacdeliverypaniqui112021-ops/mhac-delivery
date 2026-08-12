@@ -52,6 +52,11 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <h1>FOOD DELIVERY</h1><p>Your delivery partner • Door to Door</p>
 <div class="pills"><span class="pill">⚡ FAST</span><span class="pill">🛡️ SAFE</span><span class="pill">📦 DOOR TO DOOR</span></div>
 </div></section>
+<div class="wrap" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px">
+<a href="admin.html" style="background:#ed1118;color:#fff;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:900">ADMIN APP</a>
+<a href="rider.html" style="background:#111;color:#fff;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:900">RIDER APP</a>
+<a href="admin-menu.html" style="background:#fff;color:#111;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:900;border:2px solid #fff">MENU MANAGER</a>
+</div>
 
 <main class="wrap">
 
@@ -119,7 +124,15 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 
 <br>
 <button onclick="startLiveGPS()">📍 START LIVE GPS + CALCULATE</button>
-<div id="gps" class="locationbox">📍 GPS not allowed yet.<br>Tap <b>START LIVE GPS + CALCULATE</b> and choose <b>Allow</b> in your browser.</div><div class="status">Pickup: 415 Pasuquin, Paniqui, Tarlac • GPS: 15.666166, 120.579093</div>
+<div id="gps" class="locationbox">📍 GPS not allowed yet.<br>Tap <b>START LIVE GPS + CALCULATE</b> and choose <b>Allow</b> in your browser.</div><div class="status">Pickup: 415 Pasuquin, Paniqui, Tarlac • GPS: 15.666166, 120.579093</div><div class="locationbox" style="margin-top:10px">
+<b>🧪 TEST CUSTOMER LOCATION (TESTING ONLY)</b><br>
+<small>Useful when testing from the shop. Enter a customer's GPS coordinates to calculate the route without moving the phone.</small>
+<div class="row" style="margin-top:8px">
+<div><label>Customer Latitude</label><input id="testLat" type="number" step="0.000001" placeholder="e.g. 15.670000"></div>
+<div><label>Customer Longitude</label><input id="testLon" type="number" step="0.000001" placeholder="e.g. 120.590000"></div>
+</div>
+<button class="dark" onclick="useTestLocation()">🧪 USE TEST LOCATION & CALCULATE</button>
+</div>
 
 <br>
 <button class="outline" onclick="recalculateNow()">🔄 RECALCULATE DISTANCE & DELIVERY FEE</button>
@@ -134,7 +147,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 </main>
 
 <div id="foodModal" class="foodModal" onclick="if(event.target===this)closeFoodModal()"><div class="modalCard"><div class="section-title"><h2 id="modalFoodName">Food</h2><button class="dark" style="width:auto" onclick="closeFoodModal()">✕</button></div><p id="modalFoodPrice" class="price"></p><div id="modalAddons"></div><br><button onclick="addConfiguredFood()">ADD TO ORDER</button></div></div>
-<footer><b>MHAC DELIVERY</b><br>Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan</footer>
+<footer><button onclick="trackOrder()" style="max-width:300px;margin-bottom:15px">📦 TRACK MY ORDER</button><br><b>MHAC DELIVERY</b><br>Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan</footer>
 
 <script>
 const municipalities={
@@ -155,13 +168,26 @@ const defaultMenus=[
   {name:"Chickenjoy Meal",price:149,icon:"🍗",addons:[{name:"Softdrink",price:25},{name:"Large Fries",price:35},{name:"Extra Gravy",price:15}]},
   {name:"Jolly Spaghetti",price:129,icon:"🍝",addons:[{name:"Cheese",price:20},{name:"Chickenjoy",price:99}]}
  ]}]},
+ {name:"Local Food",icon:"🍽️",labels:[{name:"Test Menu",foods:[
+  {name:"Local Burger Meal",price:120,icon:"🍔",addons:[{name:"Softdrink",price:20},{name:"Extra Fries",price:25}]},
+  {name:"Local Chicken Meal",price:140,icon:"🍗",addons:[{name:"Iced Tea",price:20},{name:"Extra Rice",price:15}]}
+ ]}]},
  {name:"McDonald's",icon:"🍟",labels:[{name:"Meals",foods:[
   {name:"McChicken Meal",price:149,icon:"🍔",addons:[{name:"Medium Coke",price:30},{name:"Large Fries",price:25},{name:"Extra Patty",price:60}]},
   {name:"McNuggets Meal",price:159,icon:"🍗",addons:[{name:"Medium Fries",price:25},{name:"Coke",price:30}]}
  ]}]}
 ];
 let menus=loadMenus(),activeStore=menus[0]?.name||null,activeLabel=null,cart={},modalFood=null,modalStore=null;
-function loadMenus(){try{const x=JSON.parse(localStorage.getItem(MENU_KEY));if(Array.isArray(x)&&x.length)return x}catch(e){}return JSON.parse(JSON.stringify(defaultMenus))}
+function loadMenus(){
+ let x=null;
+ try{x=JSON.parse(localStorage.getItem(MENU_KEY))}catch(e){}
+ if(!Array.isArray(x)||!x.length)x=JSON.parse(JSON.stringify(defaultMenus));
+ if(!x.some(s=>s.name==="Local Food")){
+   const demo=defaultMenus.find(s=>s.name==="Local Food");
+   if(demo)x.push(JSON.parse(JSON.stringify(demo)));
+ }
+ return x;
+}
 function saveMenus(){localStorage.setItem(MENU_KEY,JSON.stringify(menus))}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function getStore(name){return menus.find(s=>s.name===name)}
@@ -316,6 +342,14 @@ function feeForKm(km){
   const billableKm=Math.max(1,Math.ceil(km));
   return 40+(billableKm-1)*10;
 }
+function useTestLocation(){
+ const lat=Number(document.getElementById("testLat").value),lon=Number(document.getElementById("testLon").value);
+ if(!Number.isFinite(lat)||!Number.isFinite(lon)||lat<-90||lat>90||lon<-180||lon>180){alert("Enter valid customer latitude and longitude.");return}
+ customerLat=lat;customerLon=lon;
+ const gps=document.getElementById("gps");
+ gps.innerHTML="🧪 <b>TEST CUSTOMER GPS</b><br>Lat: "+lat.toFixed(6)+"<br>Lon: "+lon.toFixed(6);
+ autoCalculate();
+}
 async function recalculateNow(){
   if(customerLat===null||customerLon===null){alert("Start LIVE GPS first.");return}
   await autoCalculate();
@@ -394,6 +428,14 @@ function setDemoStatus(id,status){
  let a=demoOrders(),o=a.find(x=>x.id===id);if(o)o.status=status;
  localStorage.setItem(DEMO_ORDERS_KEY,JSON.stringify(a));renderDash(location.search.includes("rider")?"rider":"admin");
 }
+function trackOrder(){
+ const id=prompt("Enter your MHAC Order ID:");
+ if(!id)return;
+ const o=JSON.parse(localStorage.getItem("MHAC_ORDER_"+id)||"null");
+ if(!o){alert("Order not found on this device.");return}
+ alert("Order "+id+"\\nStatus: "+o.status+"\\nRider: "+(o.rider||"Not assigned")+"\\nDistance: "+(o.distanceKm?Number(o.distanceKm).toFixed(2)+" km":"—"));
+}
+
 function saveDemoOrder(o){
  let a=demoOrders();a.push(o);localStorage.setItem(DEMO_ORDERS_KEY,JSON.stringify(a));
 }
