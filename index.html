@@ -149,7 +149,7 @@ const PICKUP_LAT=15.666166;
 const PICKUP_LON=120.579093;
 let pickupLat=PICKUP_LAT,pickupLon=PICKUP_LON;
 
-let cart={},customerLat=null,customerLon=null,roadKm=null,deliveryFee=0;
+let cart={},customerLat=null,customerLon=null,roadKm=null,deliveryFee=null;
 const money=n=>"₱"+Number(n||0).toLocaleString("en-PH",{minimumFractionDigits:2,maximumFractionDigits:2});
 
 function init(){
@@ -214,34 +214,45 @@ b.disabled=false;
 }
 function detectLocation(){
 if(!navigator.geolocation){
-alert("GPS is not supported by this browser.");
-return;
+  alert("GPS is not supported by this browser.");
+  return;
 }
 let box=document.getElementById("gps");
 let status=document.getElementById("routeStatus");
-box.innerHTML="📍 <b>Allow GPS permission...</b><br>Please tap Allow when your browser asks for your location.";
-status.textContent="Waiting for GPS permission...";
+box.innerHTML="📍 <b>Getting CUSTOMER location...</b><br>Tap Allow when the browser asks for location.";
+status.textContent="Waiting for your phone's GPS...";
 navigator.geolocation.getCurrentPosition(async p=>{
-customerLat=p.coords.latitude;
-customerLon=p.coords.longitude;
-box.innerHTML="✅ <b>GPS LOCATION ALLOWED</b><br>Location detected successfully.<br><small>"+customerLat.toFixed(6)+", "+customerLon.toFixed(6)+"</small>";
-status.textContent="📍 GPS allowed. Calculating delivery distance automatically...";
-await autoCalculate();
+  customerLat=p.coords.latitude;
+  customerLon=p.coords.longitude;
+  const acc=p.coords.accuracy || 0;
+  box.innerHTML="✅ <b>CUSTOMER GPS LOCKED</b><br>"+
+    "Latitude: "+customerLat.toFixed(6)+"<br>"+
+    "Longitude: "+customerLon.toFixed(6)+"<br>"+
+    "Accuracy: ±"+Math.round(acc)+" m";
+  status.textContent="Calculating road distance from MHAC DELIVERY to CUSTOMER GPS...";
+  await autoCalculate();
 },e=>{
-let msg="Please allow location/GPS permission.";
-if(e.code===1) msg="❌ GPS permission was denied. Tap the GPS button again and choose Allow.";
-if(e.code===2) msg="❌ Your location could not be determined. Turn on phone Location/GPS and try again.";
-if(e.code===3) msg="❌ GPS timed out. Try again.";
-box.innerHTML=msg;
-status.textContent="GPS permission is required for automatic delivery fee.";
-},{enableHighAccuracy:true,timeout:20000,maximumAge:0});
+  let msg="Please allow location/GPS permission.";
+  if(e.code===1) msg="❌ GPS permission denied. Browser Settings → Site permissions → Location → Allow.";
+  if(e.code===2) msg="❌ Location unavailable. Turn ON phone Location/GPS.";
+  if(e.code===3) msg="❌ GPS timed out. Try again outdoors or near a window.";
+  box.innerHTML=msg;
+  status.textContent="Customer GPS is required for automatic delivery fee.";
+  roadKm=null; deliveryFee=null; update();
+},{enableHighAccuracy:true,timeout:30000,maximumAge:0});
 }
 async function getPickupCoordinates(){
   return {lat:PICKUP_LAT,lon:PICKUP_LON};
 }
-function route(fromLat,fromLon,toLat,toLon){
-let url="https://router.project-osrm.org/route/v1/driving/"+fromLon+","+fromLat+";"+toLon+","+toLat+"?overview=false&steps=false";
-return fetch(url).then(r=>r.json()).then(x=>x.routes&&x.routes[0]?x.routes[0].distance/1000:null);
+async function route(fromLat,fromLon,toLat,toLon){
+  const url="https://router.project-osrm.org/route/v1/driving/"+
+    fromLon+","+fromLat+";"+toLon+","+toLat+
+    "?overview=false&alternatives=false&steps=false";
+  const r=await fetch(url,{cache:"no-store"});
+  if(!r.ok) throw new Error("Routing HTTP "+r.status);
+  const x=await r.json();
+  if(x.code!=="Ok" || !x.routes || !x.routes[0]) throw new Error("No driving route");
+  return x.routes[0].distance/1000;
 }
 function feeForKm(km){
   if(!Number.isFinite(km) || km <= 0) return null;
@@ -249,55 +260,46 @@ function feeForKm(km){
   return 40+(billableKm-1)*10;
 }
 async function autoCalculate(){
-let status=document.getElementById("routeStatus"),box=document.getElementById("route");
-if(customerLat===null||customerLon===null){
-  alert("Please allow GPS first.");
-  return;
-}
-status.textContent="⏳ Calculating actual driving distance...";
-box.classList.add("hidden");
-try{
-  const pickup=await getPickupCoordinates();
-  const url="https://router.project-osrm.org/route/v1/driving/"+pickup.lon+","+pickup.lat+";"+customerLon+","+customerLat+"?overview=false&alternatives=false&steps=false";
-  const response=await fetch(url);
-  if(!response.ok) throw new Error("Routing service unavailable");
-  const data=await response.json();
-  if(data.code!=="Ok"||!data.routes||!data.routes[0]) throw new Error("No driving route found");
-
-  const km=data.routes[0].distance/1000;
-  if(!Number.isFinite(km)||km<=0) throw new Error("Invalid road distance");
-
-  roadKm=km;
-  const fee=feeForKm(km);
-  if(fee===null) throw new Error("Could not calculate delivery fee");
-
-  deliveryFee=fee;
-  box.classList.remove("hidden");
-  box.innerHTML=
-    '<div>ACTUAL DRIVING DISTANCE</div>'+
-    '<div class="bigkm">'+km.toFixed(2)+' km</div>'+
-    '<div>BILLABLE DISTANCE</div>'+
-    '<div style="font-size:20px;font-weight:900">'+Math.ceil(km)+' km</div>'+
-    '<div>AUTOMATIC DELIVERY FEE</div>'+
-    '<div class="bigfee">'+money(fee)+'</div>'+
-    '<small>First 1 km = ₱40; every succeeding kilometer = +₱10. Distance uses the road route, not straight-line distance.</small>';
-  status.textContent="✅ Actual road distance and delivery fee calculated.";
-  update();
-}catch(e){
-  roadKm=null;
-  deliveryFee=null;
+  const status=document.getElementById("routeStatus");
+  const box=document.getElementById("route");
+  if(customerLat===null || customerLon===null){
+    alert("Tap ALLOW GPS & CALCULATE AUTOMATICALLY first.");
+    return;
+  }
+  status.textContent="⏳ Routing from MHAC DELIVERY to CUSTOMER GPS...";
   box.classList.add("hidden");
-  status.textContent="❌ Could not get actual road distance. Please check GPS/internet and try again.";
-  document.getElementById("delivery").textContent="—";
-  document.getElementById("grand").textContent="—";
-  console.error(e);
-}
+  deliveryFee=null;
+  try{
+    const pickup=await getPickupCoordinates();
+    const km=await route(pickup.lat,pickup.lon,customerLat,customerLon);
+    if(!Number.isFinite(km) || km<=0) throw new Error("Invalid road distance");
+    roadKm=km;
+    deliveryFee=feeForKm(km);
+    const billable=Math.ceil(km);
+    box.classList.remove("hidden");
+    box.innerHTML=
+      "<b>MHAC PICKUP</b><br>15.666166, 120.579093"+
+      "<hr><b>CUSTOMER GPS</b><br>"+customerLat.toFixed(6)+", "+customerLon.toFixed(6)+
+      "<hr><b>ACTUAL ROAD DISTANCE</b><br><span class='bigkm'>"+km.toFixed(2)+" km</span>"+
+      "<br><b>BILLABLE KM</b><br>"+billable+" km"+
+      "<br><b>DELIVERY FEE</b><br><span class='bigfee'>"+money(deliveryFee)+"</span>"+
+      "<br><small>₱40 first 1 km + ₱10 per succeeding billable km.</small>";
+    status.textContent="✅ Distance calculated from customer GPS.";
+    update();
+  }catch(e){
+    console.error(e);
+    roadKm=null; deliveryFee=null;
+    box.classList.remove("hidden");
+    box.innerHTML="❌ Road distance could not be calculated. Check internet/GPS and tap Calculate again.";
+    status.textContent="Delivery fee was NOT estimated.";
+    update();
+  }
 }
 function confirmOrder(){
 if(!Object.keys(cart).length){alert("Cart is empty.");return}
 let name=document.getElementById("name").value.trim(),phone=document.getElementById("phone").value.trim(),m=document.getElementById("municipality").value,b=document.getElementById("barangay").value,a=document.getElementById("address").value.trim();
 if(!name||!phone||!m||!b||!a){alert("Please complete Name, Contact, Municipality, Barangay and Address.");return}
-if(roadKm===null){alert("Please calculate the automatic distance and delivery fee first.");return}
+if(roadKm===null || deliveryFee===null){alert("Please allow CUSTOMER GPS and wait for the actual road distance/fee.");return}
 let s=sub(),sf=s*.10,total=s+sf+deliveryFee,id="MHAC-"+Math.floor(100000+Math.random()*900000);
 let order={id,date:new Date().toLocaleString(),items:Object.keys(cart).map(i=>({name:foods[i][0],qty:cart[i],price:foods[i][1]})),name,phone,municipality:m,barangay:b,address:a,landmark:document.getElementById("landmark").value,payment:document.getElementById("payment").value,notes:document.getElementById("notes").value,distanceKm:roadKm,deliveryFee,subtotal:s,serviceFee:sf,grandTotal:total,status:"Pending"};
 localStorage.setItem("MHAC_ORDER_"+id,JSON.stringify(order)); saveDemoOrder(order);
