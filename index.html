@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a0a0c">
-<title>MHAC DELIVERY • GPS V5 • 2 STORES + ₱5</title>
+<title>MHAC DELIVERY • V6 MENU BUILDER • GPS • 2 STORES</title>
 <style>
 :root{--black:#08090b;--red:#ed1118;--red2:#ff3036;--white:#fff;--gray:#f3f4f6;--line:#dedfe3;--muted:#70737a}
 *{box-sizing:border-box}
@@ -32,6 +32,12 @@ label{display:block;font-size:12px;font-weight:900;margin:10px 0 5px}input,selec
 footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;margin-top:25px}
 .hidden{display:none!important}
 @media(max-width:620px){.foodgrid,.row{grid-template-columns:1fr}.hero img{width:125px;height:125px}.hero h1{font-size:30px}}
+
+.menuManagerStore{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px;background:#fafafa}
+.menuManagerHead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.mini{font-size:12px;color:var(--muted)}
+.managerRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.managerActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.managerActions button{width:auto;padding:9px 12px}
+.addon{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid #eee;padding:7px 0}.addon:last-child{border-bottom:0}
+.foodModal{position:fixed;inset:0;background:#0009;z-index:100;display:none;align-items:flex-end;justify-content:center;padding:10px}.foodModal.show{display:flex}.modalCard{background:#fff;border-radius:18px;padding:18px;max-width:600px;width:100%;max-height:85vh;overflow:auto}.addonChoice{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border:1px solid #ddd;border-radius:10px;margin:7px 0}.addonChoice input{width:auto}
 </style>
 </head>
 <body>
@@ -50,27 +56,27 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <main class="wrap">
 
 <section class="card">
-<div class="section-title"><h2>🍔 CHOOSE YOUR FOOD</h2><span id="itemCount" class="status">0 items</span></div>
-<div id="foodLabels" class="pills" style="justify-content:flex-start;margin:0 0 14px"></div>
+<div class="section-title"><h2>🏪 CHOOSE STORE</h2><span class="status">Maximum 2 stores • 2nd store +₱5</span></div>
+<div id="storeGrid" class="pills" style="justify-content:flex-start;margin:0"></div>
+<div class="notice" style="margin-top:12px"><b>Multi-store rule:</b> First selected store has no extra store fee. A second store automatically adds <b>₱5</b>.</div>
+<div id="selectedStoreInfo" class="locationbox">Selected stores: <b>None</b></div>
+</section>
+
+<section class="card">
+<div class="section-title"><h2>📋 STORE MENU</h2><span id="menuStoreTitle" class="status">Select a store</span></div>
+<div id="menuLabels" class="pills" style="justify-content:flex-start;margin:0 0 14px"></div>
 <div id="foodGrid" class="foodgrid"></div>
 </section>
 
 <section class="card">
-<div class="section-title"><h2>🏪 CHOOSE STORE</h2><span class="status">+₱5 for each additional store</span></div>
-<div id="storeGrid" class="pills" style="justify-content:flex-start;margin:0"></div>
-<div class="notice" style="margin-top:12px"><b>Multi-store rule:</b> First selected store has no extra store fee. Every additional store automatically adds <b>₱5</b> to the order total.</div><div id="selectedStoreInfo" class="locationbox">Selected stores: <b>None</b></div>
+<div class="section-title"><h2>⚙️ CREATE / EDIT MENU</h2><span class="status">Add/remove stores, menu labels, foods & add-ons</span></div>
+<div class="notice">Everything here is saved in this browser. Create a store, add a <b>Menu Label</b>, then add the <b>Main Food + Price</b>. You can also add drink/add-on choices with their own prices.</div>
+<div id="menuManager"></div>
 </section>
 
 <section class="card">
-<div class="section-title"><h2>🏷️ FOOD LABELS</h2><span class="status">Add / remove labels</span></div>
-<div class="row">
-<div><label>New Label</label><input id="newLabel" placeholder="Example: Jollibee"></div>
-<div style="display:flex;align-items:end"><button onclick="addLabel()">＋ ADD LABEL</button></div>
-</div>
-<div id="labelManager" style="margin-top:12px"></div>
-<p class="status">These labels are for organizing/filtering foods. You can add or remove them anytime.</p>
+<h2>🛒 YOUR CART</h2><div id="cart"><p class="status">Your cart is empty.</p></div>
 </section>
-
 <section class="card">
 <h2>🛒 YOUR CART</h2><div id="cart"><p class="status">Your cart is empty.</p></div>
 </section>
@@ -127,6 +133,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <section id="confirmation" class="card hidden"></section>
 </main>
 
+<div id="foodModal" class="foodModal" onclick="if(event.target===this)closeFoodModal()"><div class="modalCard"><div class="section-title"><h2 id="modalFoodName">Food</h2><button class="dark" style="width:auto" onclick="closeFoodModal()">✕</button></div><p id="modalFoodPrice" class="price"></p><div id="modalAddons"></div><br><button onclick="addConfiguredFood()">ADD TO ORDER</button></div></div>
 <footer><b>MHAC DELIVERY</b><br>Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan</footer>
 
 <script>
@@ -141,121 +148,107 @@ const municipalities={
 };
 
 const PICKUP_LAT=15.666166, PICKUP_LON=120.579093;
-const MAX_STORES=2;
-const ADDITIONAL_STORE_FEE=5;
-const stores=["Jollibee","McDonald's","Local Food"];
-let activeStore="Jollibee";
-let labels=["All","Jollibee","McDonald's","Local Food"];
-let activeLabel="All";
-const foods=[
-["Jolly Burger Meal",129,"🍔","Jollibee","Jollibee"],
-["Chickenjoy Meal",149,"🍗","Jollibee","Jollibee"],
-["Jolly Fries",79,"🍟","Jollibee","Jollibee"],
-["Chicken Wings",169,"🍗","Jollibee","Jollibee"],
-["McChicken Meal",149,"🍔","McDonald's","McDonald's"],
-["McNuggets Meal",159,"🍗","McDonald's","McDonald's"],
-["McSpaghetti",129,"🍝","McDonald's","McDonald's"],
-["Large Fries",99,"🍟","McDonald's","McDonald's"],
-["Pancit",120,"🍜","Local Food","Local Food"],
-["Milk Tea",89,"🧋","Local Food","Local Food"],
-["Siomai Rice",99,"🥟","Local Food","Local Food"],
-["Combo Meal",199,"🍱","Local Food","Local Food"]
+const MAX_STORES=2, ADDITIONAL_STORE_FEE=5;
+const MENU_KEY="MHAC_MENU_V6";
+const defaultMenus=[
+ {name:"Jollibee",icon:"🍗",labels:[{name:"Chicken Meals",foods:[
+  {name:"Chickenjoy Meal",price:149,icon:"🍗",addons:[{name:"Softdrink",price:25},{name:"Large Fries",price:35},{name:"Extra Gravy",price:15}]},
+  {name:"Jolly Spaghetti",price:129,icon:"🍝",addons:[{name:"Cheese",price:20},{name:"Chickenjoy",price:99}]}
+ ]}]},
+ {name:"McDonald's",icon:"🍟",labels:[{name:"Meals",foods:[
+  {name:"McChicken Meal",price:149,icon:"🍔",addons:[{name:"Medium Coke",price:30},{name:"Large Fries",price:25},{name:"Extra Patty",price:60}]},
+  {name:"McNuggets Meal",price:159,icon:"🍗",addons:[{name:"Medium Fries",price:25},{name:"Coke",price:30}]}
+ ]}]}
 ];
-
+let menus=loadMenus(),activeStore=menus[0]?.name||null,activeLabel=null,cart={},modalFood=null,modalStore=null;
+function loadMenus(){try{const x=JSON.parse(localStorage.getItem(MENU_KEY));if(Array.isArray(x)&&x.length)return x}catch(e){}return JSON.parse(JSON.stringify(defaultMenus))}
+function saveMenus(){localStorage.setItem(MENU_KEY,JSON.stringify(menus))}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function getStore(name){return menus.find(s=>s.name===name)}
+function selectedStores(){return [...new Set(cart.map(x=>x.store))]}
+function additionalStoreFee(){return selectedStores().length===2?ADDITIONAL_STORE_FEE:0}
 function renderStores(){
-  const box=document.getElementById("storeGrid");
-  const chosen=selectedStores();
-  box.innerHTML=stores.map(s=>{
-    const selected=chosen.includes(s);
-    const blocked=!selected && chosen.length>=MAX_STORES;
-    return `<button style="width:auto;padding:10px 14px;opacity:${blocked?.45:1};background:${selected?'#ed1118':'#111'}" onclick="selectStore('${s.replace(/'/g,"\\'")}')">${s==="Jollibee"?"🍗":s==="McDonald's"?"🍟":"🍽️"} ${s}${selected?' ✓':''}</button>`
-  }).join("");
-  const info=document.getElementById("selectedStoreInfo");
-  if(info) info.innerHTML=chosen.length?`Selected stores: <b>${chosen.join(" + ")}</b>${chosen.length===2?`<br>Additional store fee: <b>₱${ADDITIONAL_STORE_FEE.toFixed(2)}</b>`:""}`:"Selected stores: <b>None</b>";
+ const box=document.getElementById('storeGrid'), chosen=selectedStores();
+ box.innerHTML=menus.map(s=>{const sel=chosen.includes(s.name);const blocked=!sel&&chosen.length>=MAX_STORES;return `<button style="width:auto;padding:10px 14px;opacity:${blocked?.45:1};background:${sel?'#ed1118':'#111'}" onclick="selectStore(${JSON.stringify(s.name)})">${s.icon||'🍽️'} ${esc(s.name)}${sel?' ✓':''}</button>`}).join('') || '<span class="status">No stores yet. Create one below.</span>';
+ document.getElementById('selectedStoreInfo').innerHTML=chosen.length?`Selected stores: <b>${chosen.map(esc).join(' + ')}</b>${chosen.length===2?'<br>Additional store fee: <b>₱5.00</b>':''}`:'Selected stores: <b>None</b>';
 }
-function selectStore(s){
-  const chosen=selectedStores();
-  if(!chosen.includes(s) && chosen.length>=MAX_STORES){
-    alert("Maximum 2 stores only. Remove one store from your cart before adding another store.");
-    return;
-  }
-  activeStore=s;
-  activeLabel=s;
-  renderStores();renderLabels();renderFoods();
-  document.getElementById("foodGrid").scrollIntoView({behavior:"smooth"});
+function selectStore(name){
+ const chosen=selectedStores();
+ if(!chosen.includes(name)&&chosen.length>=MAX_STORES){alert('Maximum 2 stores only. Remove one store from your cart before adding another store.');return}
+ activeStore=name; const st=getStore(name); activeLabel=st?.labels?.[0]?.name||null; renderStores();renderMenu();document.getElementById('menuStoreTitle').textContent=name;document.getElementById('foodGrid').scrollIntoView({behavior:'smooth'});
 }
-
+function renderMenu(){
+ const st=getStore(activeStore), labels=st?.labels||[];
+ document.getElementById('menuLabels').innerHTML=labels.map(l=>`<button style="width:auto;padding:8px 12px;background:${activeLabel===l.name?'#ed1118':'#111'}" onclick="activeLabel=${JSON.stringify(l.name)};renderMenu()">${esc(l.name)}</button>`).join('');
+ const label=labels.find(l=>l.name===activeLabel)||labels[0]; if(label) activeLabel=label.name;
+ const foods=label?.foods||[];
+ document.getElementById('foodGrid').innerHTML=foods.length?foods.map((f,i)=>`<div class="food"><div class="icon">${f.icon||'🍽️'}</div><h3>${esc(f.name)}</h3><div class="status">${esc(st.name)} • ${esc(label.name)}</div><div class="price">${money(f.price)}</div><button onclick="openFoodModal(${JSON.stringify(st.name)},${JSON.stringify(label.name)},${i})">${f.addons?.length?'CHOOSE FOOD + ADD-ONS':'ADD TO ORDER'}</button></div>`).join(''):'<p class="status">No food in this menu label yet.</p>';
+}
+function openFoodModal(store,label,index){
+ const st=getStore(store),lb=st.labels.find(x=>x.name===label);modalStore=store;modalFood={...lb.foods[index],label};
+ document.getElementById('modalFoodName').textContent=modalFood.name;document.getElementById('modalFoodPrice').textContent=money(modalFood.price);
+ const box=document.getElementById('modalAddons'); const groups=modalFood.addons||[];
+ box.innerHTML=groups.length?'<h3>Add-ons</h3>'+groups.map((a,i)=>`<label class="addonChoice"><span>${esc(a.name)} <b>+${money(a.price)}</b></span><input type="checkbox" data-addon="${i}"></label>`).join(''):'<p class="status">No add-ons for this food.</p>';
+ document.getElementById('foodModal').classList.add('show');
+}
+function closeFoodModal(){document.getElementById('foodModal').classList.remove('show');modalFood=null;modalStore=null}
+function addConfiguredFood(){
+ if(!modalFood)return;
+ const chosen=selectedStores();if(!chosen.includes(modalStore)&&chosen.length>=MAX_STORES){alert('Maximum 2 stores only.');return}
+ const adds=[...document.querySelectorAll('#modalAddons input[data-addon]:checked')].map(x=>modalFood.addons[Number(x.dataset.addon)]);
+ cart.push({id:Date.now()+Math.random(),store:modalStore,label:modalFood.label,name:modalFood.name,icon:modalFood.icon||'🍽️',price:Number(modalFood.price),addons:adds,qty:1});
+ closeFoodModal();renderCart();
+}
+function addStore(){
+ const name=document.getElementById('newStoreName').value.trim();if(!name)return alert('Enter store name.');if(getStore(name))return alert('Store already exists.');
+ menus.push({name,icon:document.getElementById('newStoreIcon').value.trim()||'🍽️',labels:[]});saveMenus();document.getElementById('newStoreName').value='';document.getElementById('newStoreIcon').value='';activeStore=name;activeLabel=null;renderAllMenus();
+}
+function removeStore(name){if(selectedStores().includes(name))return alert('Remove this store items from the cart first.');if(!confirm('Remove store '+name+' and all its menus?'))return;menus=menus.filter(s=>s.name!==name);if(activeStore===name)activeStore=menus[0]?.name||null;activeLabel=getStore(activeStore)?.labels?.[0]?.name||null;saveMenus();renderAllMenus()}
+function addLabel(store){const v=document.getElementById('newLabel_'+safeId(store)).value.trim();if(!v)return;const st=getStore(store);if(st.labels.some(l=>l.name.toLowerCase()===v.toLowerCase()))return alert('Menu label already exists.');st.labels.push({name:v,foods:[]});saveMenus();activeStore=store;activeLabel=v;renderAllMenus()}
+function removeLabel(store,label){const st=getStore(store);if(!confirm('Remove menu label '+label+'?'))return;st.labels=st.labels.filter(l=>l.name!==label);if(activeLabel===label)activeLabel=st.labels[0]?.name||null;saveMenus();renderAllMenus()}
+function addFood(store,label){const st=getStore(store),lb=st.labels.find(l=>l.name===label);const n=document.getElementById('foodName_'+safeId(store+label)).value.trim();const p=Number(document.getElementById('foodPrice_'+safeId(store+label)).value);const icon=document.getElementById('foodIcon_'+safeId(store+label)).value.trim()||'🍽️';if(!n||!Number.isFinite(p)||p<0)return alert('Enter food name and valid price.');lb.foods.push({name:n,price:p,icon,addons:[]});saveMenus();document.getElementById('foodName_'+safeId(store+label)).value='';document.getElementById('foodPrice_'+safeId(store+label)).value='';renderAllMenus()}
+function removeFood(store,label,index){if(!confirm('Remove this food?'))return;const lb=getStore(store).labels.find(l=>l.name===label);lb.foods.splice(index,1);saveMenus();renderAllMenus()}
+function editFood(store,label,index){const lb=getStore(store).labels.find(l=>l.name===label),f=lb.foods[index];const n=prompt('Food name:',f.name);if(n===null)return;const p=prompt('Main food price:',f.price);if(p===null)return;f.name=n.trim()||f.name;f.price=Number(p)||0;saveMenus();renderAllMenus()}
+function addAddon(store,label,index){const lb=getStore(store).labels.find(l=>l.name===label),f=lb.foods[index];const n=prompt('Add-on name (example: Coke):');if(!n)return;const p=prompt('Add-on price:','25');if(p===null)return;const price=Number(p);if(!Number.isFinite(price)||price<0)return alert('Invalid price.');f.addons=f.addons||[];f.addons.push({name:n.trim(),price});saveMenus();renderAllMenus()}
+function removeAddon(store,label,index,ai){const f=getStore(store).labels.find(l=>l.name===label).foods[index];f.addons.splice(ai,1);saveMenus();renderAllMenus()}
+function safeId(s){return btoa(unescape(encodeURIComponent(s))).replace(/[^a-zA-Z0-9]/g,'_')}
+function renderMenuManager(){
+ const box=document.getElementById('menuManager');
+ box.innerHTML=`<div class="managerRow"><div><label>New Store Name</label><input id="newStoreName" placeholder="Example: Jollibee"></div><div><label>Store Icon</label><input id="newStoreIcon" placeholder="🍔"></div></div><br><button onclick="addStore()">＋ ADD STORE</button>`+
+ menus.map(st=>`<div class="menuManagerStore"><div class="menuManagerHead"><h3 style="margin:0">${st.icon||'🍽️'} ${esc(st.name)}</h3><button class="dark" style="width:auto" onclick="removeStore(${JSON.stringify(st.name)})">REMOVE STORE</button></div>
+ <div class="managerRow"><div><label>New Menu Label</label><input id="newLabel_${safeId(st.name)}" placeholder="Example: Chicken Meals"></div><div style="display:flex;align-items:end"><button onclick="addLabel(${JSON.stringify(st.name)})">＋ ADD MENU LABEL</button></div></div>
+ ${(st.labels||[]).map(lb=>`<div class="menuManagerStore" style="background:#fff"><div class="menuManagerHead"><b>🏷️ ${esc(lb.name)}</b><button class="dark" style="width:auto" onclick="removeLabel(${JSON.stringify(st.name)},${JSON.stringify(lb.name)})">REMOVE LABEL</button></div>
+ <div class="managerRow"><div><label>Main Food Name</label><input id="foodName_${safeId(st.name+lb.name)}" placeholder="Chickenjoy"></div><div><label>Main Food Price</label><input id="foodPrice_${safeId(st.name+lb.name)}" type="number" min="0" step=".01" placeholder="149"></div></div>
+ <label>Food Icon</label><input id="foodIcon_${safeId(st.name+lb.name)}" placeholder="🍗"><br><button style="margin-top:8px" onclick="addFood(${JSON.stringify(st.name)},${JSON.stringify(lb.name)})">＋ ADD MAIN FOOD</button>
+ ${(lb.foods||[]).map((f,fi)=>`<div class="menuManagerStore" style="margin-top:10px"><div class="menuManagerHead"><b>${f.icon||'🍽️'} ${esc(f.name)} — ${money(f.price)}</b><span class="mini">${(f.addons||[]).length} add-on(s)</span></div>
+ <div class="managerActions"><button class="outline" onclick="editFood(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${fi})">EDIT FOOD</button><button onclick="addAddon(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${fi})">＋ ADD ADD-ON</button><button class="dark" onclick="removeFood(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${fi})">REMOVE FOOD</button></div>
+ <div style="margin-top:8px">${(f.addons||[]).map((a,ai)=>`<div class="addon"><span>↳ ${esc(a.name)} <b>+${money(a.price)}</b></span><button class="dark" style="width:auto;padding:6px 9px" onclick="removeAddon(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${fi},${ai})">REMOVE</button></div>`).join('')||'<span class="mini">No add-ons yet.</span>'}</div>
+ </div>`).join('')||'<p class="mini">No main food yet.</p>'}
+ </div>`).join('')||'<p class="mini">No menu labels yet. Add one above.</p>'}
+ </div>`).join('');
+}
+function renderAllMenus(){renderStores();renderMenu();renderMenuManager();renderCart()}
 function init(){
-renderStores(); renderLabels(); renderFoods(); renderLabelManager(); renderCart();
-const m=document.getElementById("municipality");
-Object.keys(municipalities).forEach(x=>{let o=document.createElement("option");o.value=x;o.textContent=x;m.appendChild(o)});
-m.onchange=loadBarangays;
+ renderAllMenus();
+ const m=document.getElementById("municipality");
+ Object.keys(municipalities).forEach(x=>{let o=document.createElement("option");o.value=x;o.textContent=x;m.appendChild(o)});
+ m.onchange=loadBarangays;
 }
-function renderLabels(){
-document.getElementById("foodLabels").innerHTML=labels.map(l=>`<button style="width:auto;padding:8px 12px;background:${activeLabel===l?'#ed1118':'#111'}" onclick="activeLabel='${l.replace(/'/g,"\\'")}';renderLabels();renderFoods()">${l}</button>`).join("");
-}
-function renderFoods(){
-let grid=document.getElementById("foodGrid");
-let visible=foods.map((f,i)=>({f,i})).filter(x=>x.f[4]===activeStore && (activeLabel==="All"||activeLabel===activeStore||x.f[3]===activeLabel));
-grid.innerHTML=visible.length?visible.map(x=>`<div class="food"><div class="icon">${x.f[2]}</div><h3>${x.f[0]}</h3><div class="status">${x.f[4]}</div><div class="price">${money(x.f[1])}</div><button onclick="add(${x.i})">ADD TO ORDER</button></div>`).join(""):"<p class='status'>No food under this store/label yet.</p>";
-}
-
-function renderLabelManager(){
-document.getElementById("labelManager").innerHTML=labels.filter(l=>l!=="All").map(l=>`<div class="cartrow"><b>🏷️ ${l}</b><button class="dark" style="width:auto;padding:8px 12px" onclick="removeLabel('${l.replace(/'/g,"\\'")}')">REMOVE</button></div>`).join("");
-}
-function addLabel(){
-let v=document.getElementById("newLabel").value.trim();
-if(!v)return;
-if(!labels.some(x=>x.toLowerCase()===v.toLowerCase()))labels.push(v);
-document.getElementById("newLabel").value="";
-renderLabels();renderFoods();renderLabelManager();
-}
-function removeLabel(l){
-if(l==="All")return;
-labels=labels.filter(x=>x!==l);
-if(activeLabel===l)activeLabel="All";
-renderLabels();renderFoods();renderLabelManager();
-}
-function add(i){
-  const store=foods[i][4];
-  const chosen=selectedStores();
-  if(!chosen.includes(store) && chosen.length>=MAX_STORES){
-    alert("Maximum 2 stores only. You already selected: "+chosen.join(" + "));
-    return;
-  }
-  cart[i]=(cart[i]||0)+1;
-  renderCart();
-}
-function qty(i,n){cart[i]=(cart[i]||0)+n;if(cart[i]<=0)delete cart[i];renderCart()}
-function sub(){return Object.keys(cart).reduce((t,i)=>t+foods[i][1]*cart[i],0)}
-function selectedStores(){
-  return [...new Set(Object.keys(cart).map(i=>foods[i][4]))];
-}
-function additionalStoreFee(){
-  const count=selectedStores().length;
-  return count===2 ? ADDITIONAL_STORE_FEE : 0;
-}
+function sub(){return cart.reduce((t,x)=>t+(Number(x.price)+x.addons.reduce((a,z)=>a+Number(z.price),0))*x.qty,0)}
+function itemUnit(x){return Number(x.price)+x.addons.reduce((a,z)=>a+Number(z.price),0)}
+function qty(id,n){const x=cart.find(z=>String(z.id)===String(id));if(!x)return;x.qty+=n;if(x.qty<=0)cart=cart.filter(z=>String(z.id)!==String(id));renderCart()}
 function renderCart(){
-let keys=Object.keys(cart),box=document.getElementById("cart");
-renderStores();
-document.getElementById("itemCount").textContent=keys.reduce((a,i)=>a+cart[i],0)+" items";
-if(!keys.length){box.innerHTML='<p class="status">Your cart is empty.</p>';update();return}
-box.innerHTML=keys.map(i=>`<div class="cartrow"><div><b>${foods[i][2]} ${foods[i][0]}</b><br><small>${foods[i][4]} • ${money(foods[i][1])} × ${cart[i]}</small></div><div class="qty"><button class="dark" onclick="qty(${i},-1)">−</button><b>${cart[i]}</b><button onclick="qty(${i},1)">+</button></div></div>`).join("");
-const ss=selectedStores();
-if(ss.length>1) box.innerHTML+=`<div class="notice">🏪 <b>Multiple stores:</b> ${ss.join(" + ")}<br>Additional store fee: <b>${money(additionalStoreFee())}</b></div>`;
-update();
+ const box=document.getElementById('cart');renderStores();
+ document.getElementById('itemCount')?.remove();
+ if(!cart.length){box.innerHTML='<p class="status">Your cart is empty.</p>';update();return}
+ box.innerHTML=cart.map(x=>`<div class="cartrow"><div><b>${x.icon} ${esc(x.name)}</b><br><small>${esc(x.store)} • ${esc(x.label)} • ${money(itemUnit(x))} × ${x.qty}</small>${x.addons.length?`<br><small>Add-ons: ${x.addons.map(a=>esc(a.name)+' +'+money(a.price)).join(', ')}</small>`:''}</div><div class="qty"><button class="dark" onclick="qty(${JSON.stringify(x.id)},-1)">−</button><b>${x.qty}</b><button onclick="qty(${JSON.stringify(x.id)},1)">+</button></div></div>`).join('');
+ const ss=selectedStores();if(ss.length>1)box.innerHTML+=`<div class="notice">🏪 <b>Multiple stores:</b> ${ss.map(esc).join(' + ')}<br>Additional store fee: <b>${money(additionalStoreFee())}</b></div>`;
+ update();
 }
-function update(){
-let s=sub(),sf=s*.10,storeFee=additionalStoreFee(),g=s+sf+deliveryFee+storeFee;
-document.getElementById("subtotal").textContent=money(s);
-document.getElementById("service").textContent=money(sf);
-document.getElementById("delivery").textContent=money(deliveryFee);
-document.getElementById("storeFee").textContent=money(storeFee);
-document.getElementById("grand").textContent=money(g);
-}
+function update(){let s=sub(),sf=s*.10,storeFee=additionalStoreFee(),g=s+sf+(deliveryFee||0)+storeFee;document.getElementById('subtotal').textContent=money(s);document.getElementById('service').textContent=money(sf);document.getElementById('delivery').textContent=money(deliveryFee||0);document.getElementById('storeFee').textContent=money(storeFee);document.getElementById('grand').textContent=money(g)}
 
 function openCustomer(){
-if(!Object.keys(cart).length){alert("Add food to your cart first.");return}
+if(!cart.length){alert("Add food to your cart first.");return}
 document.getElementById("customerCard").classList.add("show");
 document.getElementById("customerCard").scrollIntoView({behavior:"smooth"});
 setTimeout(()=>detectLocation(),400);
@@ -365,14 +358,13 @@ async function autoCalculate(){
   }
 }
 function confirmOrder(){
-if(!Object.keys(cart).length){alert("Cart is empty.");return}
+if(!cart.length){alert("Cart is empty.");return}
 if(selectedStores().length>MAX_STORES){alert("Only 2 stores are allowed per order.");return}
 let name=document.getElementById("name").value.trim(),phone=document.getElementById("phone").value.trim(),m=document.getElementById("municipality").value,b=document.getElementById("barangay").value,a=document.getElementById("address").value.trim();
 if(!name||!phone||!m||!b||!a){alert("Please complete Name, Contact, Municipality, Barangay and Address.");return}
 if(roadKm===null || deliveryFee===null){alert("Please allow CUSTOMER GPS and wait for the actual road distance/fee.");return}
 let s=sub(),sf=s*.10,storeFee=additionalStoreFee(),total=s+sf+deliveryFee+storeFee,id="MHAC-"+Math.floor(100000+Math.random()*900000);
-let order={id,date:new Date().toLocaleString(),items:Object.keys(cart).map(i=>({name:foods[i][0],store:foods[i][4],qty:cart[i],price:foods[i][1]})),
-stores:selectedStores(),additionalStoreFee:storeFee,name,phone,municipality:m,barangay:b,address:a,landmark:document.getElementById("landmark").value,payment:document.getElementById("payment").value,notes:document.getElementById("notes").value,distanceKm:roadKm,deliveryFee,subtotal:s,serviceFee:sf,grandTotal:total,status:"Pending"};
+let order={id,date:new Date().toLocaleString(),items:cart.map(x=>({name:x.name,store:x.store,label:x.label,qty:x.qty,price:x.price,addons:x.addons})),stores:selectedStores(),additionalStoreFee:storeFee,name,phone,municipality:m,barangay:b,address:a,landmark:document.getElementById("landmark").value,payment:document.getElementById("payment").value,notes:document.getElementById("notes").value,distanceKm:roadKm,deliveryFee,subtotal:s,serviceFee:sf,grandTotal:total,status:"Pending"};
 localStorage.setItem("MHAC_ORDER_"+id,JSON.stringify(order)); saveDemoOrder(order);
 let c=document.getElementById("confirmation");c.classList.remove("hidden");
 c.innerHTML='<div class="success"><h2>✅ ORDER RECEIVED</h2><div class="orderid">'+id+'</div><p><b>'+name+'</b><br>'+phone+'</p><p>'+b+', '+m+'<br>'+a+'</p><hr><p>Food: <b>'+money(s)+'</b></p><p>Service Fee: <b>'+money(sf)+'</b></p><p>Distance: <b>'+roadKm.toFixed(1)+' km</b></p><p>Delivery Fee: <b>'+money(deliveryFee)+'</b></p><p>Additional Store Fee: <b>'+money(storeFee)+'</b></p><h2>GRAND TOTAL: '+money(total)+'</h2><p>Status: <b>Pending</b></p><button onclick="navigator.clipboard.writeText(\''+id+'\');alert(\'Order ID copied\')">COPY ORDER ID</button><br><br><button class="dark" onclick="location.reload()">NEW ORDER</button></div>';
