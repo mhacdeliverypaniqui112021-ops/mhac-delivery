@@ -3,44 +3,112 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#17171c">
+<meta name="theme-color" content="#0a0a0c">
 <title>MHAC DELIVERY</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,system-ui,sans-serif;background:#f5f6f8;color:#17171c}
-header{background:#17171c;color:#fff;padding:12px 16px;position:sticky;top:0;z-index:10}.wrap{max-width:900px;margin:auto;padding:15px}
-.brandbar{display:flex;align-items:center;gap:12px}.logo{width:58px;height:58px;object-fit:contain;border-radius:50%}.brand{font-size:23px;font-weight:900}.pink{color:#ff4f7b}
-.hero{background:linear-gradient(135deg,#17171c,#572536);color:#fff;padding:30px 0}.hero-logo{width:130px;height:130px;object-fit:contain;display:block;margin:0 auto 12px}.hero h1{font-size:34px;text-align:center;margin:0 0 8px}.hero p{text-align:center;color:#ddd}
-.card{background:#fff;border:1px solid #e1e2e6;border-radius:17px;padding:17px;margin-bottom:15px}.food-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.food{border:1px solid #ddd;border-radius:15px;padding:14px}.food-icon{font-size:40px}.food h3{margin:7px 0}.price{font-size:19px;font-weight:900;margin-bottom:9px}
-button{width:100%;border:0;border-radius:10px;padding:12px;font:inherit;font-weight:900;background:#ff4f7b;color:#fff;cursor:pointer}button.dark{background:#17171c}button.green{background:#16834d}
-.cart-item,.summary{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid #eee;gap:10px}.qty{display:flex;align-items:center;gap:6px}.qty button{width:34px;padding:7px}.grand{font-size:23px;font-weight:900}
-.notice{background:#fff5f7;border:1px solid #ffd1dc;border-radius:10px;padding:12px;font-size:13px;line-height:1.5}.form{display:none}.form.show{display:block}
-label{display:block;font-size:12px;font-weight:900;margin:9px 0 5px}input,select,textarea{width:100%;padding:11px;border:1px solid #d5d6dc;border-radius:9px;font:inherit}textarea{min-height:75px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.location{background:#f1f8ff;border:1px solid #cfe7ff;border-radius:10px;padding:12px;margin-top:10px;font-size:13px}.success{background:#eaf9f1;border:1px solid #bdebd3;border-radius:14px;padding:17px}.order-id{font-size:25px;font-weight:900;color:#ff4f7b}.hidden{display:none}
-footer{text-align:center;color:#777;padding:30px 10px}@media(max-width:600px){.food-grid,.row{grid-template-columns:1fr}.hero h1{font-size:30px}}
+:root{--black:#08090b;--red:#ed1118;--red2:#ff3036;--white:#fff;--gray:#f3f4f6;--line:#dedfe3;--muted:#70737a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--gray);color:#111;font-family:Arial,system-ui,sans-serif}
+header{background:var(--black);color:#fff;position:sticky;top:0;z-index:20;border-bottom:3px solid var(--red)}
+.wrap{max-width:980px;margin:auto;padding:0 16px}
+.top{height:74px;display:flex;align-items:center;gap:12px}.top img{width:54px;height:54px;object-fit:contain;border-radius:50%}
+.brand{font-size:23px;font-weight:1000;letter-spacing:.5px}.brand span{color:var(--red2)}
+.hero{background:radial-gradient(circle at 50% 0,#4b080b 0,#150607 40%,#08090b 75%);color:#fff;text-align:center;padding:30px 0 34px;border-bottom:1px solid #2d2d31}
+.hero img{width:150px;height:150px;object-fit:contain;filter:drop-shadow(0 10px 18px #000);}.hero h1{font-size:34px;margin:10px 0 5px}.hero p{margin:0;color:#ddd}
+.pills{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:18px}.pill{border:1px solid #555;border-radius:99px;padding:7px 11px;font-size:12px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin:16px 0;box-shadow:0 4px 16px #0000000b}
+.card h2{margin:0 0 14px;font-size:20px}.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.foodgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.food{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}.food:hover{border-color:var(--red)}
+.food .icon{font-size:42px}.food h3{margin:7px 0}.price{font-size:19px;font-weight:900;margin:6px 0 10px}
+button{border:0;border-radius:11px;padding:12px 14px;font:inherit;font-weight:900;cursor:pointer;background:var(--red);color:#fff;width:100%}
+button:hover{background:var(--red2)}button.dark{background:var(--black)}button.outline{background:#fff;color:var(--black);border:2px solid var(--black)}
+.cartrow,.sumrow{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid #eee}.qty{display:flex;align-items:center;gap:7px}.qty button{width:35px;padding:7px}.grand{font-size:24px;font-weight:1000;border-bottom:0}
+.notice{background:#fff4f4;border:1px solid #ffc7c9;padding:12px;border-radius:12px;font-size:13px;line-height:1.5}
+.form{display:none}.form.show{display:block}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:block;font-size:12px;font-weight:900;margin:10px 0 5px}input,select,textarea{width:100%;padding:12px;border:1px solid #d5d7dc;border-radius:10px;font:inherit;background:#fff}textarea{min-height:75px}
+.locationbox{margin-top:10px;background:#f6f8fa;border:1px solid #dfe3e8;border-radius:12px;padding:12px;font-size:13px}
+.feeBox{background:var(--black);color:#fff;border-radius:14px;padding:15px;margin-top:12px}.feeBox b{color:#ff4247}.bigkm{font-size:28px;font-weight:1000}.bigfee{font-size:25px;font-weight:1000;color:#ff4247}
+.status{font-size:12px;color:var(--muted);margin-top:7px}.success{background:#eefaf3;border:1px solid #bde8ce;border-radius:15px;padding:17px}.orderid{font-size:26px;color:var(--red);font-weight:1000}
+footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;margin-top:25px}
+.hidden{display:none!important}
+@media(max-width:620px){.foodgrid,.row{grid-template-columns:1fr}.hero img{width:125px;height:125px}.hero h1{font-size:30px}}
 </style>
 </head>
 <body>
-<header><div class="wrap"><div class="brandbar"><img src="logo.png" class="logo" alt="MHAC DELIVERY logo"><div><div class="brand">MHAC <span class="pink">DELIVERY</span></div><small>🍔 Food Delivery</small></div></div></div></header>
-<section class="hero"><div class="wrap"><img src="logo.png" class="hero-logo" alt="MHAC DELIVERY"><h1>Order Food. 🛵</h1><p>Fast • Safe • On Time • Door to Door</p></div></section>
+
+<header><div class="wrap top">
+<img src="logo.png" alt="MHAC DELIVERY">
+<div><div class="brand">MHAC <span>DELIVERY</span></div><small>FAST • SAFE • ON TIME</small></div>
+</div></header>
+
+<section class="hero"><div class="wrap">
+<img src="logo.png" alt="MHAC DELIVERY logo">
+<h1>FOOD DELIVERY</h1><p>Your delivery partner • Door to Door</p>
+<div class="pills"><span class="pill">⚡ FAST</span><span class="pill">🛡️ SAFE</span><span class="pill">📦 DOOR TO DOOR</span></div>
+</div></section>
+
 <main class="wrap">
-<div class="card"><h2>🍔 FOOD MENU</h2><div id="foodMenu" class="food-grid"></div></div>
-<div class="card"><h2>🛒 YOUR ORDER</h2><div id="cart"><p style="text-align:center;color:#777">Your cart is empty.</p></div></div>
-<div class="card"><h2>🧾 ORDER TOTAL</h2><div class="summary"><span>Food Order</span><b id="subtotal">₱0.00</b></div><div class="summary"><span>10% Service Fee</span><b id="service">₱0.00</b></div><div class="summary"><span>🛵 Delivery Fee</span><b id="delivery">₱0.00</b></div><div class="summary grand"><span>GRAND TOTAL</span><span id="grand">₱0.00</span></div><br><div class="notice"><b>DELIVERY FEE</b><br>1 KM = ₱40<br>Every succeeding KM = +₱10<br><br>Customer information will appear after <b>PLACE ORDER</b>.</div><br><button onclick="openCustomerForm()">🚀 PLACE ORDER</button></div>
-<div id="customerForm" class="card form">
-<h2>📍 DELIVERY INFORMATION</h2>
-<div class="row"><div><label>Customer Name</label><input id="customer" placeholder="Full name"></div><div><label>Contact Number</label><input id="mobile" type="tel" placeholder="09xxxxxxxxx"></div></div>
-<div class="row"><div><label>Municipality</label><select id="municipality"><option value="">Select municipality</option></select></div><div><label>Barangay</label><select id="barangay" disabled><option>Select municipality first</option></select></div></div>
-<label>Complete Address</label><textarea id="address" placeholder="House number, street, subdivision..."></textarea>
-<div class="row"><div><label>Landmark</label><input id="landmark" placeholder="Near..."></div><div><label>Payment</label><select id="payment"><option>Cash on Delivery</option><option>GCash</option></select></div></div>
-<label>Order Notes</label><textarea id="notes" placeholder="Optional instructions"></textarea><br>
-<button class="green" onclick="getLocation()">📍 USE MY CURRENT LOCATION</button>
-<div id="locationStatus" class="location">Location not detected yet.</div><br>
-<button onclick="calculateAndContinue()">📏 CALCULATE DISTANCE & DELIVERY FEE</button>
-<div id="distanceResult" class="location hidden"></div><br>
-<button onclick="submitOrder()">✅ CONFIRM & PLACE ORDER</button>
+
+<section class="card">
+<div class="section-title"><h2>🍔 CHOOSE YOUR FOOD</h2><span id="itemCount" class="status">0 items</span></div>
+<div id="foodGrid" class="foodgrid"></div>
+</section>
+
+<section class="card">
+<h2>🛒 YOUR CART</h2><div id="cart"><p class="status">Your cart is empty.</p></div>
+</section>
+
+<section class="card">
+<h2>🧾 ORDER SUMMARY</h2>
+<div class="sumrow"><span>Food Order</span><b id="subtotal">₱0.00</b></div>
+<div class="sumrow"><span>10% Service Fee</span><b id="service">₱0.00</b></div>
+<div class="sumrow"><span>Delivery Fee</span><b id="delivery">₱0.00</b></div>
+<div class="sumrow grand"><span>GRAND TOTAL</span><span id="grand">₱0.00</span></div>
+<br>
+<div class="notice"><b>DELIVERY RATE</b><br>First 1 km = ₱40 • Every succeeding km = +₱10<br>Formula: <b>Food Order + 10% Service Fee + Delivery Fee</b></div>
+<br>
+<button onclick="openCustomer()">PLACE ORDER</button>
+</section>
+
+<section id="customerCard" class="card form">
+<h2>📍 CUSTOMER & DELIVERY DETAILS</h2>
+<div class="notice">Fill this out after choosing your food. Your location is used only to calculate the delivery distance.</div>
+
+<div class="row">
+<div><label>Customer Name</label><input id="name" placeholder="Full name"></div>
+<div><label>Contact Number</label><input id="phone" type="tel" placeholder="09xxxxxxxxx"></div>
 </div>
-<div id="confirmation" class="card hidden"></div>
+
+<div class="row">
+<div><label>Municipality</label><select id="municipality"><option value="">Select municipality</option></select></div>
+<div><label>Barangay</label><select id="barangay" disabled><option>Select municipality first</option></select></div>
+</div>
+
+<label>Complete Address</label>
+<textarea id="address" placeholder="House no., street, subdivision..."></textarea>
+<label>Landmark</label><input id="landmark" placeholder="Near barangay hall, school, etc.">
+
+<div class="row">
+<div><label>Payment</label><select id="payment"><option>Cash on Delivery</option><option>GCash</option></select></div>
+<div><label>Order Notes</label><input id="notes" placeholder="Optional"></div>
+</div>
+
+<br>
+<button class="dark" onclick="detectLocation()">📍 USE MY CURRENT LOCATION</button>
+<div id="gps" class="locationbox">Location not detected.</div>
+
+<br>
+<button onclick="autoCalculate()">⚡ AUTOMATICALLY CALCULATE DISTANCE & FEE</button>
+<div id="route" class="feeBox hidden"></div>
+<p id="routeStatus" class="status"></p>
+
+<br>
+<button onclick="confirmOrder()">✅ CONFIRM ORDER</button>
+</section>
+
+<section id="confirmation" class="card hidden"></section>
 </main>
+
 <footer><b>MHAC DELIVERY</b><br>Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan</footer>
 
 <script>
@@ -53,24 +121,108 @@ const municipalities={
 "Anao, Tarlac":["Baguindoc","Bantog","Campos","Carmen","Casili","Don Ramon","Hernando","Poblacion","Rizal","San Francisco East","San Francisco West","San Jose North","San Jose South","San Juan","San Roque","Santo Domingo","Sinense","Suaverdez"],
 "Nampicuan, Nueva Ecija":["Alemania","Ambasador Alzate Village","Cabaducan East","Cabaducan West","Cabawangan","East Central Poblacion","Edy","Maeling","Mayantoc","Medico","Monic","North Poblacion","Northwest Poblacion","Estacion","West Poblacion","Recuerdo","South Central Poblacion","Southeast Poblacion","Southwest Poblacion","Tony","West Central Poblacion"]
 };
-const foods=[["Burger Meal",129,"🍔"],["Chicken Meal",149,"🍗"],["Pancit",120,"🍜"],["Milk Tea",89,"🧋"],["Siomai Rice",99,"🥟"],["French Fries",79,"🍟"],["Chicken Wings",169,"🍗"],["Combo Meal",199,"🍱"]];
-let cart={},latitude=null,longitude=null,calculatedKm=null,calculatedDelivery=0;
+
+const foods=[
+["Burger Meal",129,"🍔"],["Chicken Meal",149,"🍗"],["Pancit",120,"🍜"],["Milk Tea",89,"🧋"],
+["Siomai Rice",99,"🥟"],["French Fries",79,"🍟"],["Chicken Wings",169,"🍗"],["Combo Meal",199,"🍱"]
+];
+
+/*
+IMPORTANT:
+Set these two pickup coordinates to the EXACT MHAC DELIVERY pickup/store location.
+The temporary values below use Paniqui town-center area only as a fallback.
+*/
+const PICKUP_LAT=15.6688;
+const PICKUP_LON=120.5800;
+
+let cart={},customerLat=null,customerLon=null,roadKm=null,deliveryFee=0;
 const money=n=>"₱"+Number(n||0).toLocaleString("en-PH",{minimumFractionDigits:2,maximumFractionDigits:2});
 
 function init(){
-document.getElementById("foodMenu").innerHTML=foods.map((f,i)=>`<div class="food"><div class="food-icon">${f[2]}</div><h3>${f[0]}</h3><div class="price">${money(f[1])}</div><button onclick="addFood(${i})">ADD TO ORDER</button></div>`).join("");
-const m=document.getElementById("municipality");Object.keys(municipalities).forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;m.appendChild(o)});m.onchange=loadBarangays;
+document.getElementById("foodGrid").innerHTML=foods.map((f,i)=>`<div class="food"><div class="icon">${f[2]}</div><h3>${f[0]}</h3><div class="price">${money(f[1])}</div><button onclick="add(${i})">ADD TO ORDER</button></div>`).join("");
+const m=document.getElementById("municipality");
+Object.keys(municipalities).forEach(x=>{let o=document.createElement("option");o.value=x;o.textContent=x;m.appendChild(o)});
+m.onchange=loadBarangays;
 }
-function loadBarangays(){const m=document.getElementById("municipality").value,b=document.getElementById("barangay");b.innerHTML="<option value=''>Select barangay</option>";if(!m){b.disabled=true;return}municipalities[m].forEach(x=>{const o=document.createElement("option");o.value=x;o.textContent=x;b.appendChild(o)});b.disabled=false}
-function addFood(i){cart[i]=(cart[i]||0)+1;renderCart()}
-function changeQty(i,n){cart[i]=(cart[i]||0)+n;if(cart[i]<=0)delete cart[i];renderCart()}
-function subtotal(){return Object.keys(cart).reduce((t,i)=>t+foods[i][1]*cart[i],0)}
-function renderCart(){const box=document.getElementById("cart"),items=Object.keys(cart);if(!items.length){box.innerHTML="<p style='text-align:center;color:#777'>Your cart is empty.</p>";updateTotal();return}box.innerHTML=items.map(i=>`<div class="cart-item"><div><b>${foods[i][2]} ${foods[i][0]}</b><br><small>${money(foods[i][1])} × ${cart[i]}</small></div><div class="qty"><button class="dark" onclick="changeQty(${i},-1)">−</button><b>${cart[i]}</b><button onclick="changeQty(${i},1)">+</button></div></div>`).join("");updateTotal()}
-function updateTotal(){const sub=subtotal(),sf=sub*.10,total=sub+sf+calculatedDelivery;document.getElementById("subtotal").textContent=money(sub);document.getElementById("service").textContent=money(sf);document.getElementById("delivery").textContent=money(calculatedDelivery);document.getElementById("grand").textContent=money(total)}
-function openCustomerForm(){if(!Object.keys(cart).length){alert("Please add food to your order first.");return}document.getElementById("customerForm").classList.add("show");document.getElementById("customerForm").scrollIntoView({behavior:"smooth"})}
-function getLocation(){const s=document.getElementById("locationStatus");if(!navigator.geolocation){s.textContent="❌ GPS is not supported.";return}s.textContent="📍 Detecting your location...";navigator.geolocation.getCurrentPosition(p=>{latitude=p.coords.latitude;longitude=p.coords.longitude;s.innerHTML="✅ Location detected.<br>Latitude: "+latitude.toFixed(6)+"<br>Longitude: "+longitude.toFixed(6)},()=>s.textContent="❌ Please allow location permission and try again.",{enableHighAccuracy:true,timeout:15000})}
-function calculateAndContinue(){if(latitude===null){alert("Please tap USE MY CURRENT LOCATION first.");return}alert("GPS location is ready. To calculate the actual road KM, we need to connect the routing service and set the exact MHAC pickup location. I will do that next without inventing a distance.")}
-function submitOrder(){if(!Object.keys(cart).length){alert("Your cart is empty.");return}const customer=document.getElementById("customer").value.trim(),mobile=document.getElementById("mobile").value.trim(),municipality=document.getElementById("municipality").value,barangay=document.getElementById("barangay").value,address=document.getElementById("address").value.trim();if(!customer||!mobile||!municipality||!barangay||!address){alert("Please complete your name, contact number, municipality, barangay and address.");return}if(latitude===null){alert("Please use your current location first.");return}const sub=subtotal(),sf=sub*.10,total=sub+sf+calculatedDelivery,id="MHAC-"+Math.floor(100000+Math.random()*900000),order={id,date:new Date().toLocaleString(),items:Object.keys(cart).map(i=>({name:foods[i][0],quantity:cart[i],price:foods[i][1]})),customer,mobile,municipality,barangay,address,landmark:document.getElementById("landmark").value,payment:document.getElementById("payment").value,notes:document.getElementById("notes").value,latitude,longitude,distanceKm:calculatedKm,subtotal:sub,serviceFee:sf,deliveryFee:calculatedDelivery,grandTotal:total,status:"Pending"};localStorage.setItem("MHAC_ORDER_"+id,JSON.stringify(order));const c=document.getElementById("confirmation");c.classList.remove("hidden");c.innerHTML=`<div class="success"><h2>✅ ORDER RECEIVED!</h2><div class="order-id">${id}</div><p><b>${customer}</b><br>${mobile}</p><p>${barangay}, ${municipality}<br>${address}</p><hr><p>Food Order: <b>${money(sub)}</b></p><p>10% Service Fee: <b>${money(sf)}</b></p><p>Delivery Fee: <b>${money(calculatedDelivery)}</b></p><h2>GRAND TOTAL: ${money(total)}</h2><p>Status: <b>Pending</b></p><button onclick="navigator.clipboard&&navigator.clipboard.writeText('${id}');alert('Order ID copied')">📋 COPY ORDER ID</button><br><br><button class="dark" onclick="location.reload()">🍔 NEW ORDER</button></div>`;c.scrollIntoView({behavior:"smooth"})}
+function add(i){cart[i]=(cart[i]||0)+1;renderCart()}
+function qty(i,n){cart[i]=(cart[i]||0)+n;if(cart[i]<=0)delete cart[i];renderCart()}
+function sub(){return Object.keys(cart).reduce((t,i)=>t+foods[i][1]*cart[i],0)}
+function renderCart(){
+let keys=Object.keys(cart),box=document.getElementById("cart");
+document.getElementById("itemCount").textContent=keys.reduce((a,i)=>a+cart[i],0)+" items";
+if(!keys.length){box.innerHTML='<p class="status">Your cart is empty.</p>';update();return}
+box.innerHTML=keys.map(i=>`<div class="cartrow"><div><b>${foods[i][2]} ${foods[i][0]}</b><br><small>${money(foods[i][1])} × ${cart[i]}</small></div><div class="qty"><button class="dark" onclick="qty(${i},-1)">−</button><b>${cart[i]}</b><button onclick="qty(${i},1)">+</button></div></div>`).join("");
+update();
+}
+function update(){
+let s=sub(),sf=s*.10,g=s+sf+deliveryFee;
+document.getElementById("subtotal").textContent=money(s);
+document.getElementById("service").textContent=money(sf);
+document.getElementById("delivery").textContent=money(deliveryFee);
+document.getElementById("grand").textContent=money(g);
+}
+function openCustomer(){
+if(!Object.keys(cart).length){alert("Add food to your cart first.");return}
+document.getElementById("customerCard").classList.add("show");
+document.getElementById("customerCard").scrollIntoView({behavior:"smooth"});
+}
+function loadBarangays(){
+let m=document.getElementById("municipality").value,b=document.getElementById("barangay");
+b.innerHTML='<option value="">Select barangay</option>';
+if(!m){b.disabled=true;return}
+municipalities[m].forEach(x=>{let o=document.createElement("option");o.value=x;o.textContent=x;b.appendChild(o)});
+b.disabled=false;
+}
+function detectLocation(){
+if(!navigator.geolocation){alert("Your browser does not support GPS.");return}
+let box=document.getElementById("gps");box.textContent="📍 Getting your location...";
+navigator.geolocation.getCurrentPosition(p=>{
+customerLat=p.coords.latitude;customerLon=p.coords.longitude;
+box.innerHTML="✅ GPS detected.<br><b>"+customerLat.toFixed(6)+", "+customerLon.toFixed(6)+"</b>";
+},e=>{box.textContent="❌ Location permission was not allowed. Please enable GPS permission and try again."},{enableHighAccuracy:true,timeout:15000,maximumAge:60000});
+}
+function geocode(query){
+return fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=ph&q="+encodeURIComponent(query),{headers:{"Accept":"application/json"}}).then(r=>r.json()).then(a=>a[0]?{lat:+a[0].lat,lon:+a[0].lon}:null);
+}
+function route(fromLat,fromLon,toLat,toLon){
+let url="https://router.project-osrm.org/route/v1/driving/"+fromLon+","+fromLat+";"+toLon+","+toLat+"?overview=false";
+return fetch(url).then(r=>r.json()).then(x=>x.routes&&x.routes[0]?x.routes[0].distance/1000:null);
+}
+function feeForKm(km){
+let k=Math.ceil(km);
+return k<=0?0:40+(k-1)*10;
+}
+async function autoCalculate(){
+let status=document.getElementById("routeStatus"),box=document.getElementById("route");
+let municipality=document.getElementById("municipality").value,barangay=document.getElementById("barangay").value,address=document.getElementById("address").value.trim();
+if(!municipality||!barangay||!address){alert("Please complete municipality, barangay and address first.");return}
+if(customerLat===null){alert("Please tap USE MY CURRENT LOCATION first.");return}
+status.textContent="⏳ Calculating actual road distance...";
+box.classList.add("hidden");
+try{
+let destination=await geocode(address+", "+barangay+", "+municipality+", Philippines");
+if(!destination)throw new Error("Address not found");
+let km=await route(PICKUP_LAT,PICKUP_LON,destination.lat,destination.lon);
+if(km===null)throw new Error("Route unavailable");
+roadKm=km;deliveryFee=feeForKm(km);
+box.classList.remove("hidden");
+box.innerHTML='<div>ROAD DISTANCE</div><div class="bigkm">'+km.toFixed(1)+' km</div><div>DELIVERY FEE</div><div class="bigfee">'+money(deliveryFee)+'</div><small>Fee uses rounded-up kilometers: 1 km ₱40, then +₱10/km.</small>';
+status.textContent="✅ Automatic delivery fee calculated.";
+update();
+}catch(e){status.textContent="❌ Could not calculate the road distance. Try a more complete address or use the routing service again.";console.error(e)}
+}
+function confirmOrder(){
+if(!Object.keys(cart).length){alert("Cart is empty.");return}
+let name=document.getElementById("name").value.trim(),phone=document.getElementById("phone").value.trim(),m=document.getElementById("municipality").value,b=document.getElementById("barangay").value,a=document.getElementById("address").value.trim();
+if(!name||!phone||!m||!b||!a){alert("Please complete Name, Contact, Municipality, Barangay and Address.");return}
+if(roadKm===null){alert("Please calculate the automatic distance and delivery fee first.");return}
+let s=sub(),sf=s*.10,total=s+sf+deliveryFee,id="MHAC-"+Math.floor(100000+Math.random()*900000);
+let order={id,date:new Date().toLocaleString(),items:Object.keys(cart).map(i=>({name:foods[i][0],qty:cart[i],price:foods[i][1]})),name,phone,municipality:m,barangay:b,address:a,landmark:document.getElementById("landmark").value,payment:document.getElementById("payment").value,notes:document.getElementById("notes").value,distanceKm:roadKm,deliveryFee,subtotal:s,serviceFee:sf,grandTotal:total,status:"Pending"};
+localStorage.setItem("MHAC_ORDER_"+id,JSON.stringify(order));
+let c=document.getElementById("confirmation");c.classList.remove("hidden");
+c.innerHTML='<div class="success"><h2>✅ ORDER RECEIVED</h2><div class="orderid">'+id+'</div><p><b>'+name+'</b><br>'+phone+'</p><p>'+b+', '+m+'<br>'+a+'</p><hr><p>Food: <b>'+money(s)+'</b></p><p>Service Fee: <b>'+money(sf)+'</b></p><p>Distance: <b>'+roadKm.toFixed(1)+' km</b></p><p>Delivery Fee: <b>'+money(deliveryFee)+'</b></p><h2>GRAND TOTAL: '+money(total)+'</h2><p>Status: <b>Pending</b></p><button onclick="navigator.clipboard.writeText(\''+id+'\');alert(\'Order ID copied\')">COPY ORDER ID</button><br><br><button class="dark" onclick="location.reload()">NEW ORDER</button></div>';
+c.scrollIntoView({behavior:"smooth"});
+}
 init();
 </script>
 </body>
