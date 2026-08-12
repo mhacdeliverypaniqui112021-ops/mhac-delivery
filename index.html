@@ -72,7 +72,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 
 <section id="customerCard" class="card form">
 <h2>📍 CUSTOMER & DELIVERY DETAILS</h2>
-<div class="notice">Fill this out after choosing your food. Your location is used only to calculate the delivery distance.</div>
+<div class="notice">Fill this out after choosing your food. Your location is used only to calculate the delivery distance.<br><b>📍 GPS is required:</b> tap the button below and choose <b>Allow</b>.</div>
 
 <div class="row">
 <div><label>Customer Name</label><input id="name" placeholder="Full name"></div>
@@ -94,11 +94,11 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 </div>
 
 <br>
-<button class="dark" onclick="detectLocation()">📍 USE MY CURRENT LOCATION</button>
-<div id="gps" class="locationbox">Location not detected.</div><div class="status">Pickup: MH9H+95P, Burgos St., Poblacion Norte, Paniqui, Tarlac</div>
+<button onclick="detectLocation()">📍 ALLOW GPS & CALCULATE AUTOMATICALLY</button>
+<div id="gps" class="locationbox">📍 GPS not allowed yet.<br>Tap <b>ALLOW GPS & CALCULATE AUTOMATICALLY</b> and choose <b>Allow</b> in your browser.</div><div class="status">Pickup: MH9H+95P, Burgos St., Poblacion Norte, Paniqui, Tarlac</div>
 
 <br>
-<button onclick="autoCalculate()">⚡ AUTOMATICALLY CALCULATE DISTANCE & FEE</button>
+<button class="outline" onclick="autoCalculate()">🔄 RECALCULATE DISTANCE & DELIVERY FEE</button>
 <div id="route" class="feeBox hidden"></div>
 <p id="routeStatus" class="status"></p>
 
@@ -174,12 +174,28 @@ municipalities[m].forEach(x=>{let o=document.createElement("option");o.value=x;o
 b.disabled=false;
 }
 function detectLocation(){
-if(!navigator.geolocation){alert("Your browser does not support GPS.");return}
-let box=document.getElementById("gps");box.textContent="📍 Getting your location...";
-navigator.geolocation.getCurrentPosition(p=>{
-customerLat=p.coords.latitude;customerLon=p.coords.longitude;
-box.innerHTML="✅ GPS detected.<br><b>"+customerLat.toFixed(6)+", "+customerLon.toFixed(6)+"</b>";
-},e=>{box.textContent="❌ Location permission was not allowed. Please enable GPS permission and try again."},{enableHighAccuracy:true,timeout:15000,maximumAge:60000});
+if(!navigator.geolocation){
+alert("GPS is not supported by this browser.");
+return;
+}
+let box=document.getElementById("gps");
+let status=document.getElementById("routeStatus");
+box.innerHTML="📍 <b>Allow GPS permission...</b><br>Please tap Allow when your browser asks for your location.";
+status.textContent="Waiting for GPS permission...";
+navigator.geolocation.getCurrentPosition(async p=>{
+customerLat=p.coords.latitude;
+customerLon=p.coords.longitude;
+box.innerHTML="✅ <b>GPS LOCATION ALLOWED</b><br>Location detected successfully.<br><small>"+customerLat.toFixed(6)+", "+customerLon.toFixed(6)+"</small>";
+status.textContent="📍 GPS allowed. Calculating delivery distance automatically...";
+await autoCalculate();
+},e=>{
+let msg="Please allow location/GPS permission.";
+if(e.code===1) msg="❌ GPS permission was denied. Tap the GPS button again and choose Allow.";
+if(e.code===2) msg="❌ Your location could not be determined. Turn on phone Location/GPS and try again.";
+if(e.code===3) msg="❌ GPS timed out. Try again.";
+box.innerHTML=msg;
+status.textContent="GPS permission is required for automatic delivery fee.";
+},{enableHighAccuracy:true,timeout:20000,maximumAge:0});
 }
 async function getPickupCoordinates(){
 if(pickupLat!==null&&pickupLon!==null)return {lat:pickupLat,lon:pickupLon};
@@ -202,7 +218,7 @@ let status=document.getElementById("routeStatus"),box=document.getElementById("r
 let municipality=document.getElementById("municipality").value,barangay=document.getElementById("barangay").value,address=document.getElementById("address").value.trim();
 if(!municipality||!barangay||!address){alert("Please complete municipality, barangay and address first.");return}
 if(customerLat===null||customerLon===null){
-alert("Please tap USE MY CURRENT LOCATION first and allow GPS permission.");
+alert("GPS permission is required. Tap ALLOW GPS & CALCULATE AUTOMATICALLY, then choose Allow.");
 return
 }
 status.textContent="⏳ Getting MHAC pickup point and actual road distance...";
