@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a0a0c">
-<title>MHAC DELIVERY</title>
+<title>MHAC DELIVERY • GPS V3 LIVE</title>
 <style>
 :root{--black:#08090b;--red:#ed1118;--red2:#ff3036;--white:#fff;--gray:#f3f4f6;--line:#dedfe3;--muted:#70737a}
 *{box-sizing:border-box}
@@ -105,12 +105,12 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 </div>
 
 <br>
-<button onclick="detectLocation()">📍 ALLOW GPS & CALCULATE AUTOMATICALLY</button>
-<div id="gps" class="locationbox">📍 GPS not allowed yet.<br>Tap <b>ALLOW GPS & CALCULATE AUTOMATICALLY</b> and choose <b>Allow</b> in your browser.</div><div class="status">Pickup: 415 Pasuquin, Paniqui, Tarlac • GPS: 15.666166, 120.579093</div>
+<button onclick="startLiveGPS()">📍 START LIVE GPS + CALCULATE</button>
+<div id="gps" class="locationbox">📍 GPS not allowed yet.<br>Tap <b>START LIVE GPS + CALCULATE</b> and choose <b>Allow</b> in your browser.</div><div class="status">Pickup: 415 Pasuquin, Paniqui, Tarlac • GPS: 15.666166, 120.579093</div>
 
 <br>
-<button class="outline" onclick="autoCalculate()">🔄 RECALCULATE DISTANCE & DELIVERY FEE</button>
-<div id="route" class="feeBox hidden"></div>
+<button class="outline" onclick="recalculateNow()">🔄 RECALCULATE DISTANCE & DELIVERY FEE</button>
+<div id="route" class="feeBox"></div>
 <p id="routeStatus" class="status"></p>
 
 <br>
@@ -212,35 +212,44 @@ if(!m){b.disabled=true;return}
 municipalities[m].forEach(x=>{let o=document.createElement("option");o.value=x;o.textContent=x;b.appendChild(o)});
 b.disabled=false;
 }
-function detectLocation(){
-if(!navigator.geolocation){
-  alert("GPS is not supported by this browser.");
-  return;
+let gpsWatchId=null, lastRoutedLat=null, lastRoutedLon=null;
+function startLiveGPS(){
+  if(!navigator.geolocation){alert("This browser does not support GPS.");return}
+  const box=document.getElementById("gps"),status=document.getElementById("routeStatus");
+  box.innerHTML="⏳ Waiting for LIVE customer GPS permission...";
+  status.textContent="Requesting high-accuracy GPS...";
+  if(gpsWatchId!==null) navigator.geolocation.clearWatch(gpsWatchId);
+  gpsWatchId=navigator.geolocation.watchPosition(async p=>{
+    customerLat=p.coords.latitude;
+    customerLon=p.coords.longitude;
+    const acc=p.coords.accuracy||0;
+    box.innerHTML="🟢 <b>LIVE CUSTOMER GPS</b><br>"+
+      "Lat: "+customerLat.toFixed(6)+"<br>"+
+      "Lon: "+customerLon.toFixed(6)+"<br>"+
+      "Accuracy: ±"+Math.round(acc)+" m";
+    // Re-route on first lock or when GPS moved at least ~50 m.
+    const moved=!lastRoutedLat || Math.hypot(
+      (customerLat-lastRoutedLat)*111000,
+      (customerLon-lastRoutedLon)*111000*Math.cos(customerLat*Math.PI/180)
+    )>=50;
+    if(moved){
+      lastRoutedLat=customerLat; lastRoutedLon=customerLon;
+      await autoCalculate();
+    }else{
+      status.textContent="📍 GPS locked. Move at least 50 m or tap RECALCULATE.";
+    }
+  },e=>{
+    roadKm=null; deliveryFee=null;
+    if(e.code===1) box.innerHTML="❌ Location permission denied. Allow Location for this GitHub Pages site.";
+    else if(e.code===2) box.innerHTML="❌ GPS unavailable. Turn ON Location/GPS.";
+    else if(e.code===3) box.innerHTML="❌ GPS timed out. Try again.";
+    else box.innerHTML="❌ GPS error.";
+    status.textContent="No delivery fee until customer GPS is successfully locked.";
+    update();
+  },{enableHighAccuracy:true,timeout:30000,maximumAge:0});
 }
-let box=document.getElementById("gps");
-let status=document.getElementById("routeStatus");
-box.innerHTML="📍 <b>Getting CUSTOMER location...</b><br>Tap Allow when the browser asks for location.";
-status.textContent="Waiting for your phone's GPS...";
-navigator.geolocation.getCurrentPosition(async p=>{
-  customerLat=p.coords.latitude;
-  customerLon=p.coords.longitude;
-  const acc=p.coords.accuracy || 0;
-  box.innerHTML="✅ <b>CUSTOMER GPS LOCKED</b><br>"+
-    "Latitude: "+customerLat.toFixed(6)+"<br>"+
-    "Longitude: "+customerLon.toFixed(6)+"<br>"+
-    "Accuracy: ±"+Math.round(acc)+" m";
-  status.textContent="Calculating road distance from MHAC DELIVERY to CUSTOMER GPS...";
-  await autoCalculate();
-},e=>{
-  let msg="Please allow location/GPS permission.";
-  if(e.code===1) msg="❌ GPS permission denied. Browser Settings → Site permissions → Location → Allow.";
-  if(e.code===2) msg="❌ Location unavailable. Turn ON phone Location/GPS.";
-  if(e.code===3) msg="❌ GPS timed out. Try again outdoors or near a window.";
-  box.innerHTML=msg;
-  status.textContent="Customer GPS is required for automatic delivery fee.";
-  roadKm=null; deliveryFee=null; update();
-},{enableHighAccuracy:true,timeout:30000,maximumAge:0});
-}
+function detectLocation(){ startLiveGPS(); }
+
 async function getPickupCoordinates(){
   return {lat:PICKUP_LAT,lon:PICKUP_LON};
 }
@@ -259,6 +268,11 @@ function feeForKm(km){
   const billableKm=Math.max(1,Math.ceil(km));
   return 40+(billableKm-1)*10;
 }
+async function recalculateNow(){
+  if(customerLat===null||customerLon===null){alert("Start LIVE GPS first.");return}
+  await autoCalculate();
+}
+
 async function autoCalculate(){
   const status=document.getElementById("routeStatus");
   const box=document.getElementById("route");
@@ -278,7 +292,7 @@ async function autoCalculate(){
     const billable=Math.ceil(km);
     box.classList.remove("hidden");
     box.innerHTML=
-      "<b>MHAC PICKUP</b><br>15.666166, 120.579093"+
+      "<b>MHAC PICKUP</b><br>15.666166, 120.579093 (415 Pasuquin)"+
       "<hr><b>CUSTOMER GPS</b><br>"+customerLat.toFixed(6)+", "+customerLon.toFixed(6)+
       "<hr><b>ACTUAL ROAD DISTANCE</b><br><span class='bigkm'>"+km.toFixed(2)+" km</span>"+
       "<br><b>BILLABLE KM</b><br>"+billable+" km"+
