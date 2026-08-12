@@ -51,7 +51,18 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 
 <section class="card">
 <div class="section-title"><h2>🍔 CHOOSE YOUR FOOD</h2><span id="itemCount" class="status">0 items</span></div>
+<div id="foodLabels" class="pills" style="justify-content:flex-start;margin:0 0 14px"></div>
 <div id="foodGrid" class="foodgrid"></div>
+</section>
+
+<section class="card">
+<div class="section-title"><h2>🏷️ FOOD LABELS</h2><span class="status">Add / remove labels</span></div>
+<div class="row">
+<div><label>New Label</label><input id="newLabel" placeholder="Example: Jollibee"></div>
+<div style="display:flex;align-items:end"><button onclick="addLabel()">＋ ADD LABEL</button></div>
+</div>
+<div id="labelManager" style="margin-top:12px"></div>
+<p class="status">These labels are for organizing/filtering foods. You can add or remove them anytime.</p>
 </section>
 
 <section class="card">
@@ -122,9 +133,11 @@ const municipalities={
 "Nampicuan, Nueva Ecija":["Alemania","Ambasador Alzate Village","Cabaducan East","Cabaducan West","Cabawangan","East Central Poblacion","Edy","Maeling","Mayantoc","Medico","Monic","North Poblacion","Northwest Poblacion","Estacion","West Poblacion","Recuerdo","South Central Poblacion","Southeast Poblacion","Southwest Poblacion","Tony","West Central Poblacion"]
 };
 
+let labels=["All","Jollibee"];
+let activeLabel="All";
 const foods=[
-["Burger Meal",129,"🍔"],["Chicken Meal",149,"🍗"],["Pancit",120,"🍜"],["Milk Tea",89,"🧋"],
-["Siomai Rice",99,"🥟"],["French Fries",79,"🍟"],["Chicken Wings",169,"🍗"],["Combo Meal",199,"🍱"]
+["Burger Meal",129,"🍔","Jollibee"],["Chicken Meal",149,"🍗","Jollibee"],["Pancit",120,"🍜","Local Food"],["Milk Tea",89,"🧋","Drinks"],
+["Siomai Rice",99,"🥟","Local Food"],["French Fries",79,"🍟","Jollibee"],["Chicken Wings",169,"🍗","Jollibee"],["Combo Meal",199,"🍱","Jollibee"]
 ];
 
 /*
@@ -132,17 +145,43 @@ MHAC DELIVERY pickup point
 Verified public listing: MH9H+95P, Burgos St, Poblacion Norte, Paniqui, Tarlac.
 The app geocodes this pickup address, then calculates the actual driving route to the customer's GPS.
 */
-const PICKUP_QUERY="MH9H+95P, Burgos St, Poblacion Norte, Paniqui, Tarlac, Philippines";
-let pickupLat=null,pickupLon=null;
+const PICKUP_QUERY="Paniqui Public Plaza, Paniqui, Tarlac, Philippines";
+const PICKUP_LAT=15.66795;
+const PICKUP_LON=120.57894;
+let pickupLat=PICKUP_LAT,pickupLon=PICKUP_LON;
 
 let cart={},customerLat=null,customerLon=null,roadKm=null,deliveryFee=0;
 const money=n=>"₱"+Number(n||0).toLocaleString("en-PH",{minimumFractionDigits:2,maximumFractionDigits:2});
 
 function init(){
-document.getElementById("foodGrid").innerHTML=foods.map((f,i)=>`<div class="food"><div class="icon">${f[2]}</div><h3>${f[0]}</h3><div class="price">${money(f[1])}</div><button onclick="add(${i})">ADD TO ORDER</button></div>`).join("");
+renderLabels(); renderFoods(); renderLabelManager();
 const m=document.getElementById("municipality");
 Object.keys(municipalities).forEach(x=>{let o=document.createElement("option");o.value=x;o.textContent=x;m.appendChild(o)});
 m.onchange=loadBarangays;
+}
+function renderLabels(){
+document.getElementById("foodLabels").innerHTML=labels.map(l=>`<button style="width:auto;padding:8px 12px;background:${activeLabel===l?'#ed1118':'#111'}" onclick="activeLabel='${l.replace(/'/g,"\\'")}';renderLabels();renderFoods()">${l}</button>`).join("");
+}
+function renderFoods(){
+let grid=document.getElementById("foodGrid");
+let visible=foods.map((f,i)=>({f,i})).filter(x=>activeLabel==="All"||x.f[3]===activeLabel);
+grid.innerHTML=visible.length?visible.map(x=>`<div class="food"><div class="icon">${x.f[2]}</div><h3>${x.f[0]}</h3><div class="status">${x.f[3]}</div><div class="price">${money(x.f[1])}</div><button onclick="add(${x.i})">ADD TO ORDER</button></div>`).join(""):"<p class='status'>No food under this label yet.</p>";
+}
+function renderLabelManager(){
+document.getElementById("labelManager").innerHTML=labels.filter(l=>l!=="All").map(l=>`<div class="cartrow"><b>🏷️ ${l}</b><button class="dark" style="width:auto;padding:8px 12px" onclick="removeLabel('${l.replace(/'/g,"\\'")}')">REMOVE</button></div>`).join("");
+}
+function addLabel(){
+let v=document.getElementById("newLabel").value.trim();
+if(!v)return;
+if(!labels.some(x=>x.toLowerCase()===v.toLowerCase()))labels.push(v);
+document.getElementById("newLabel").value="";
+renderLabels();renderFoods();renderLabelManager();
+}
+function removeLabel(l){
+if(l==="All")return;
+labels=labels.filter(x=>x!==l);
+if(activeLabel===l)activeLabel="All";
+renderLabels();renderFoods();renderLabelManager();
 }
 function add(i){cart[i]=(cart[i]||0)+1;renderCart()}
 function qty(i,n){cart[i]=(cart[i]||0)+n;if(cart[i]<=0)delete cart[i];renderCart()}
@@ -165,6 +204,7 @@ function openCustomer(){
 if(!Object.keys(cart).length){alert("Add food to your cart first.");return}
 document.getElementById("customerCard").classList.add("show");
 document.getElementById("customerCard").scrollIntoView({behavior:"smooth"});
+setTimeout(()=>detectLocation(),400);
 }
 function loadBarangays(){
 let m=document.getElementById("municipality").value,b=document.getElementById("barangay");
@@ -245,11 +285,40 @@ if(!name||!phone||!m||!b||!a){alert("Please complete Name, Contact, Municipality
 if(roadKm===null){alert("Please calculate the automatic distance and delivery fee first.");return}
 let s=sub(),sf=s*.10,total=s+sf+deliveryFee,id="MHAC-"+Math.floor(100000+Math.random()*900000);
 let order={id,date:new Date().toLocaleString(),items:Object.keys(cart).map(i=>({name:foods[i][0],qty:cart[i],price:foods[i][1]})),name,phone,municipality:m,barangay:b,address:a,landmark:document.getElementById("landmark").value,payment:document.getElementById("payment").value,notes:document.getElementById("notes").value,distanceKm:roadKm,deliveryFee,subtotal:s,serviceFee:sf,grandTotal:total,status:"Pending"};
-localStorage.setItem("MHAC_ORDER_"+id,JSON.stringify(order));
+localStorage.setItem("MHAC_ORDER_"+id,JSON.stringify(order)); saveDemoOrder(order);
 let c=document.getElementById("confirmation");c.classList.remove("hidden");
 c.innerHTML='<div class="success"><h2>✅ ORDER RECEIVED</h2><div class="orderid">'+id+'</div><p><b>'+name+'</b><br>'+phone+'</p><p>'+b+', '+m+'<br>'+a+'</p><hr><p>Food: <b>'+money(s)+'</b></p><p>Service Fee: <b>'+money(sf)+'</b></p><p>Distance: <b>'+roadKm.toFixed(1)+' km</b></p><p>Delivery Fee: <b>'+money(deliveryFee)+'</b></p><h2>GRAND TOTAL: '+money(total)+'</h2><p>Status: <b>Pending</b></p><button onclick="navigator.clipboard.writeText(\''+id+'\');alert(\'Order ID copied\')">COPY ORDER ID</button><br><br><button class="dark" onclick="location.reload()">NEW ORDER</button></div>';
 c.scrollIntoView({behavior:"smooth"});
 }
+
+const DEMO_ORDERS_KEY="MHAC_DEMO_ORDERS";
+function demoOrders(){try{return JSON.parse(localStorage.getItem(DEMO_ORDERS_KEY)||"[]")}catch(e){return[]}}
+function roleDashboard(role){
+  document.querySelector("header").classList.add("hidden");
+  document.querySelector(".hero").classList.add("hidden");
+  document.querySelectorAll("main>.card").forEach(x=>x.classList.add("hidden"));
+  document.getElementById("appNav").classList.add("hidden");
+  const box=document.getElementById("roleApp"); box.classList.remove("hidden");
+  const title=role==="admin"?"ADMIN DASHBOARD":"RIDER APP";
+  box.innerHTML=`<section class="card"><div class="section-title"><h2>MHAC DELIVERY • ${title}</h2><button style="width:auto" onclick="location.href='?app=customer'">CUSTOMER APP</button></div>
+  <div class="notice">This dashboard is ready for the next Firebase connection. Orders shown here are demo orders saved on this device.</div>
+  <div id="dash"></div></section>`;
+  renderDash(role);
+}
+function renderDash(role){
+ const orders=demoOrders(),d=document.getElementById("dash");
+ if(!orders.length){d.innerHTML="<p class='status'>No orders yet.</p>";return}
+ d.innerHTML=orders.slice().reverse().map(o=>`<div class="cartrow"><div><b>${o.id||"Order"}</b><br>${o.name||""} • ${o.phone||""}<br>${o.barangay||""}, ${o.municipality||""}<br>Distance: ${o.distanceKm?Number(o.distanceKm).toFixed(1)+" km":"—"} • Delivery: ${money(o.deliveryFee)}</div><div><b>${money(o.grandTotal)}</b><br><select onchange="setDemoStatus('${o.id}',this.value)"><option ${o.status==="Pending"?"selected":""}>Pending</option><option ${o.status==="Accepted"?"selected":""}>Accepted</option><option ${o.status==="Preparing"?"selected":""}>Preparing</option><option ${o.status==="Picked Up"?"selected":""}>Picked Up</option><option ${o.status==="On the Way"?"selected":""}>On the Way</option><option ${o.status==="Delivered"?"selected":""}>Delivered</option><option ${o.status==="Cancelled"?"selected":""}>Cancelled</option></select></div></div>`).join("");
+}
+function setDemoStatus(id,status){
+ let a=demoOrders(),o=a.find(x=>x.id===id);if(o)o.status=status;
+ localStorage.setItem(DEMO_ORDERS_KEY,JSON.stringify(a));renderDash(location.search.includes("rider")?"rider":"admin");
+}
+function saveDemoOrder(o){
+ let a=demoOrders();a.push(o);localStorage.setItem(DEMO_ORDERS_KEY,JSON.stringify(a));
+}
+const params=new URLSearchParams(location.search);
+if(params.get("app")==="admin"||params.get("app")==="rider") roleDashboard(params.get("app"));
 init();
 </script>
 </body>
