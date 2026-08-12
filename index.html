@@ -250,32 +250,53 @@ let url="https://router.project-osrm.org/route/v1/driving/"+fromLon+","+fromLat+
 return fetch(url).then(r=>r.json()).then(x=>x.routes&&x.routes[0]?x.routes[0].distance/1000:null);
 }
 function feeForKm(km){
-let k=Math.ceil(km);
-return k<=0?0:40+(k-1)*10;
+  if(!Number.isFinite(km) || km <= 0) return null;
+  const billableKm=Math.max(1,Math.ceil(km));
+  return 40+(billableKm-1)*10;
 }
 async function autoCalculate(){
 let status=document.getElementById("routeStatus"),box=document.getElementById("route");
-let municipality=document.getElementById("municipality").value,barangay=document.getElementById("barangay").value,address=document.getElementById("address").value.trim();
-if(!municipality||!barangay||!address){alert("Please complete municipality, barangay and address first.");return}
 if(customerLat===null||customerLon===null){
-alert("GPS permission is required. Tap ALLOW GPS & CALCULATE AUTOMATICALLY, then choose Allow.");
-return
+  alert("Please allow GPS first.");
+  return;
 }
-status.textContent="⏳ Getting MHAC pickup point and actual road distance...";
+status.textContent="⏳ Calculating actual driving distance...";
 box.classList.add("hidden");
 try{
-let pickup=await getPickupCoordinates();
-let km=await route(pickup.lat,pickup.lon,customerLat,customerLon);
-if(km===null)throw new Error("Road route unavailable");
-roadKm=km;
-deliveryFee=feeForKm(km);
-box.classList.remove("hidden");
-box.innerHTML='<div>MHAC PICKUP</div><div style="font-size:13px;margin:3px 0 10px">Burgos St., Poblacion Norte, Paniqui</div><div>ACTUAL ROAD DISTANCE</div><div class="bigkm">'+km.toFixed(1)+' km</div><div>AUTOMATIC DELIVERY FEE</div><div class="bigfee">'+money(deliveryFee)+'</div><small>Driving route from the MHAC pickup point to your GPS location. Fee: first 1 km ₱40, then +₱10 for each succeeding kilometer.</small>';
-status.textContent="✅ Exact pickup point + road distance + delivery fee calculated.";
-update();
+  const pickup=await getPickupCoordinates();
+  const url="https://router.project-osrm.org/route/v1/driving/"+pickup.lon+","+pickup.lat+";"+customerLon+","+customerLat+"?overview=false&alternatives=false&steps=false";
+  const response=await fetch(url);
+  if(!response.ok) throw new Error("Routing service unavailable");
+  const data=await response.json();
+  if(data.code!=="Ok"||!data.routes||!data.routes[0]) throw new Error("No driving route found");
+
+  const km=data.routes[0].distance/1000;
+  if(!Number.isFinite(km)||km<=0) throw new Error("Invalid road distance");
+
+  roadKm=km;
+  const fee=feeForKm(km);
+  if(fee===null) throw new Error("Could not calculate delivery fee");
+
+  deliveryFee=fee;
+  box.classList.remove("hidden");
+  box.innerHTML=
+    '<div>ACTUAL DRIVING DISTANCE</div>'+
+    '<div class="bigkm">'+km.toFixed(2)+' km</div>'+
+    '<div>BILLABLE DISTANCE</div>'+
+    '<div style="font-size:20px;font-weight:900">'+Math.ceil(km)+' km</div>'+
+    '<div>AUTOMATIC DELIVERY FEE</div>'+
+    '<div class="bigfee">'+money(fee)+'</div>'+
+    '<small>First 1 km = ₱40; every succeeding kilometer = +₱10. Distance uses the road route, not straight-line distance.</small>';
+  status.textContent="✅ Actual road distance and delivery fee calculated.";
+  update();
 }catch(e){
-status.textContent="❌ Could not calculate the route. Make sure GPS is enabled and internet is available, then try again.";
-console.error(e)
+  roadKm=null;
+  deliveryFee=null;
+  box.classList.add("hidden");
+  status.textContent="❌ Could not get actual road distance. Please check GPS/internet and try again.";
+  document.getElementById("delivery").textContent="—";
+  document.getElementById("grand").textContent="—";
+  console.error(e);
 }
 }
 function confirmOrder(){
