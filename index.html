@@ -1,562 +1,593 @@
 <!doctype html>
+
 <html lang="en">
-<head><link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#17171c">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MHAC DELIVERY</title>
-
-<style>
+<meta name="theme-color" content="#17171c">
+<title>MHAC DELIVERY — Food Delivery</title><style>
 *{box-sizing:border-box}
 
 body{
-margin:0;
-font-family:Arial,system-ui,sans-serif;
-background:#f4f5f7;
-color:#17171c
+ margin:0;
+ font-family:Arial,system-ui,sans-serif;
+ background:#f5f6f8;
+ color:#17171c
 }
 
 header{
-background:#17171c;
-color:white;
-position:sticky;
-top:0;
-z-index:20;
-box-shadow:0 3px 15px #0002
+ background:#17171c;
+ color:white;
+ padding:17px
 }
 
 .wrap{
-max-width:1100px;
-margin:auto;
-padding:15px
+ max-width:1050px;
+ margin:auto;
+ padding:16px
 }
 
 .brand{
-font-size:25px;
-font-weight:900
+ font-size:25px;
+ font-weight:900
 }
 
-.pink{color:#ff4f7b}
+.pink{
+ color:#ff4f7b
+}
 
 .hero{
-background:linear-gradient(135deg,#17171c,#68273c);
-color:white;
-padding:40px 0
+ background:linear-gradient(135deg,#17171c,#572536);
+ color:white;
+ padding:38px 0
 }
 
 .hero h1{
-font-size:42px;
-margin:0 0 10px
+ font-size:42px;
+ margin:0 0 10px
 }
 
 .hero p{
-color:#ddd
-}
-
-.card{
-background:white;
-border:1px solid #e2e3e7;
-border-radius:18px;
-padding:18px;
-margin-bottom:15px
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:12px
-}
-
-.product{
-border:1px solid #ddd;
-border-radius:14px;
-padding:13px;
-background:white
-}
-
-.product:hover{
-box-shadow:0 5px 18px #0001
-}
-
-.product-icon{
-font-size:42px
-}
-
-.price{
-font-size:18px;
-font-weight:900;
-margin:7px 0
+ color:#ddd;
+ margin-bottom:20px
 }
 
 button{
-border:0;
-border-radius:10px;
-padding:12px;
-width:100%;
-background:#ff4f7b;
-color:white;
-font-weight:900;
-cursor:pointer
+ width:100%;
+ border:0;
+ border-radius:10px;
+ padding:12px;
+ font:inherit;
+ font-weight:900;
+ cursor:pointer;
+ background:#ff4f7b;
+ color:white
 }
 
-button.dark{background:#17171c}
-
-button.green{background:#159957}
-
-input,select,textarea{
-width:100%;
-padding:12px;
-border:1px solid #d8d9df;
-border-radius:10px;
-font:inherit
+button.dark{
+ background:#17171c
 }
 
-label{
-display:block;
-font-size:12px;
-font-weight:900;
-margin:10px 0 5px
+button.green{
+ background:#16834d
+}
+
+.card{
+ background:white;
+ border:1px solid #e1e2e6;
+ border-radius:17px;
+ padding:17px;
+ margin-bottom:15px
+}
+
+.food-grid{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:12px
+}
+
+.food{
+ border:1px solid #ddd;
+ border-radius:15px;
+ padding:15px;
+ background:#fff
+}
+
+.food-icon{
+ font-size:45px
+}
+
+.food h3{
+ margin:8px 0 5px
+}
+
+.price{
+ font-size:19px;
+ font-weight:900;
+ margin-bottom:10px
 }
 
 .row{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px
+}
+
+label{
+ display:block;
+ font-size:12px;
+ font-weight:900;
+ margin:10px 0 5px
+}
+
+input,select,textarea{
+ width:100%;
+ padding:12px;
+ border:1px solid #d6d7dc;
+ border-radius:9px;
+ font:inherit;
+ background:white
+}
+
+textarea{
+ min-height:80px;
+ resize:vertical
 }
 
 .cart-item{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:10px 0;
-border-bottom:1px solid #eee
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:10px;
+ padding:12px 0;
+ border-bottom:1px solid #eee
 }
 
 .qty{
-display:flex;
-align-items:center;
-gap:7px
+ display:flex;
+ align-items:center;
+ gap:6px
 }
 
 .qty button{
-width:35px;
-padding:7px
+ width:35px;
+ padding:7px;
+ margin:0
+}
+
+.summary-row{
+ display:flex;
+ justify-content:space-between;
+ padding:10px 0;
+ border-bottom:1px solid #eee
+}
+
+.grand{
+ font-size:23px;
+ font-weight:900;
+ padding-top:13px
 }
 
 .notice{
-background:#fff3f6;
-border:1px solid #ffd0dc;
-padding:13px;
-border-radius:12px;
-font-size:13px
-}
-
-.total{
-font-size:22px;
-font-weight:900;
-border-top:1px solid #ddd;
-padding-top:12px;
-margin-top:10px
+ background:#fff4f7;
+ border:1px solid #ffd0dc;
+ border-radius:11px;
+ padding:13px;
+ font-size:13px;
+ line-height:1.5
 }
 
 .success{
-background:#eafaf2;
-border:1px solid #bcebd5;
-padding:18px;
-border-radius:14px
+ background:#e9f9f1;
+ border:1px solid #b9e9d0;
+ border-radius:14px;
+ padding:18px
 }
 
-.hidden{display:none}
+.order-id{
+ font-size:24px;
+ font-weight:900;
+ color:#ff4f7b
+}
 
-.status{
-display:inline-block;
-padding:7px 12px;
-border-radius:20px;
-background:#fff0b8;
-font-size:12px;
-font-weight:900
+.hidden{
+ display:none
 }
 
 footer{
-text-align:center;
-padding:35px;
-color:#777
+ text-align:center;
+ color:#777;
+ padding:30px 15px
 }
 
-@media(max-width:800px){
-.grid{grid-template-columns:1fr 1fr}
+@media(max-width:650px){
+ .food-grid{
+  grid-template-columns:1fr
+ }
+ .row{
+  grid-template-columns:1fr
+ }
+ .hero h1{
+  font-size:34px
+ }
 }
-
-@media(max-width:500px){
-.grid,.row{grid-template-columns:1fr}
-.hero h1{font-size:32px}
-}
-</style>
-</head>
-
-<body><button id="installBtn"
-style="
-display:none;
-position:fixed;
-bottom:20px;
-right:20px;
-z-index:9999;
-background:#ff4f7b;
-color:white;
-border:0;
-border-radius:50px;
-padding:14px 20px;
-font-weight:900;
-box-shadow:0 5px 20px #0004;
-">
-📲 INSTALL MHAC APP
-</button>
-
-<header>
+</style></head><body><header>
 <div class="wrap">
 <div class="brand">
 MHAC <span class="pink">DELIVERY</span>
 </div>
-<small>Food • Grocery • Market • Medicine • Essentials</small>
+<small>🍔 Food Delivery</small>
 </div>
-</header>
-
-<section class="hero">
-<div class="wrap">
-<h1>Order. We Deliver. 🛵</h1>
-<p>Fast and affordable delivery around Paniqui, Moncada, Ramos, Gerona, Pura, Anao and Nampicuan.</p>
-
-<button onclick="document.getElementById('order').scrollIntoView()">
-ORDER NOW
-</button>
+</header><section class="hero">
+<div class="wrap"><h1>Order Food. We Deliver. 🛵</h1><p>
+Fast and affordable food delivery around our covered municipalities.
+</p><button onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">
+🍔 ORDER FOOD NOW
+</button></div>
+</section><main class="wrap"><!-- FOOD MENU --><div class="card" id="menu"><h2>🍔 FOOD MENU</h2><p style="color:#777">
+Choose your food and add it to your order.
+</p><div class="food-grid" id="foodMenu"></div></div><!-- CART --><div class="card"><h2>🛒 YOUR ORDER</h2><div id="cart">
+<div style="text-align:center;color:#777;padding:20px">
+Your cart is empty.
 </div>
-</section>
-
-<main class="wrap">
-
-<div class="card" id="order">
-<h2>🏪 Choose Store</h2>
-<div id="stores" class="grid"></div>
-</div>
-
-<div class="card">
-<h2>🛍️ Products</h2>
-<div id="products" class="grid">
-<p>Select a store first.</p>
-</div>
-</div>
-
-<div class="card">
-<h2>🛒 Your Cart</h2>
-<div id="cart">Cart is empty.</div>
-</div>
-
-<div class="card">
-
-<h2>📍 Delivery Information</h2>
-
-<div class="row">
-
-<div>
-<label>Municipality</label>
+</div></div><!-- DELIVERY INFORMATION --><div class="card"><h2>📍 DELIVERY INFORMATION</h2><div class="row"><div><label>Municipality</label>
 
 <select id="municipality">
 <option value="">Select municipality</option>
-</select>
-</div>
+</select></div><div><label>Barangay</label>
 
-<div>
-<label>Barangay</label>
+<select id="barangay" disabled><option value="">
+Select municipality first
+</option></select></div></div><label>Complete Address</label>
 
-<select id="barangay" disabled>
-<option>Select municipality first</option>
-</select>
-</div>
+<textarea
+id="address"
+placeholder="House number, street, subdivision..."
+></textarea><label>Landmark</label>
 
-</div>
+<input
+id="landmark"
+placeholder="Example: near barangay hall"
 
-<label>Complete Address</label>
-<textarea id="address" placeholder="House number, street, subdivision..."></textarea>
+«»
 
-<label>Landmark</label>
-<input id="landmark" placeholder="Near barangay hall, school, store...">
+<div class="row"><div><label>Customer Name</label>
 
-<div class="row">
+<input
+id="customer"
+placeholder="Your full name"
 
-<div>
-<label>Customer Name</label>
-<input id="customer">
-</div>
+«»
 
-<div>
-<label>Mobile Number</label>
-<input id="mobile" type="tel">
-</div>
+</div><div><label>Mobile Number</label>
 
-</div>
+<input
+id="mobile"
+type="tel"
+placeholder="09xxxxxxxxx"
 
-<div class="row">
+«»
 
-<div>
-<label>Distance</label>
-<input id="distance" type="number" min="1" step=".1" placeholder="Example: 3">
-</div>
+</div></div><div class="row"><div><label>Distance</label>
 
-<div>
-<label>Payment</label>
+<input
+id="distance"
+type="number"
+min="1"
+step="0.1"
+placeholder="Example: 3"
 
-<select id="payment">
-<option>Cash on Delivery</option>
-<option>GCash</option>
-</select>
+«»
 
-</div>
+</div><div><label>Payment Method</label>
 
-</div>
+<select id="payment"><option>Cash on Delivery</option>
+<option>GCash</option></select></div></div><label>Order Notes</label>
 
-<label>Order Notes</label>
-<textarea id="notes" placeholder="Optional instructions"></textarea>
+<textarea
+id="notes"
+placeholder="Optional instructions"
+></textarea><div class="notice"><b>🛵 DELIVERY FEE</b><br>
 
-<div class="notice">
+First 1 km = <b>₱40</b><br>
 
-<b>🛵 DELIVERY FEE</b><br><br>
+Every succeeding km = <b>+₱10</b><br><br>
 
-First 1 KM = <b>₱40</b><br>
-Every succeeding KM = <b>+₱10</b><br><br>
+Example:<br>
 
-<b>TOTAL = ORDER + 10% SERVICE FEE + DELIVERY FEE</b>
+1 km = ₱40<br>
+2 km = ₱50<br>
+3 km = ₱60<br>
+4 km = ₱70<br><br>
 
-</div>
+<b>💰 GRAND TOTAL = FOOD ORDER + 10% SERVICE FEE + DELIVERY FEE</b>
 
-</div>
-
-<div class="card">
-
-<h2>🧾 Order Summary</h2>
-
-<div class="cart-item">
-<span>Total Order</span>
+</div></div><!-- SUMMARY --><div class="card"><h2>🧾 ORDER SUMMARY</h2><div class="summary-row">
+<span>Food Order</span>
 <b id="subtotal">₱0.00</b>
-</div>
-
-<div class="cart-item">
+</div><div class="summary-row">
 <span>10% Service Fee</span>
 <b id="service">₱0.00</b>
-</div>
-
-<div class="cart-item">
+</div><div class="summary-row">
 <span>Delivery Fee</span>
 <b id="delivery">₱0.00</b>
-</div>
-
-<div class="total">
-GRAND TOTAL:
+</div><div class="summary-row grand">
+<span>GRAND TOTAL</span>
 <span id="grand">₱0.00</span>
-</div>
+</div><br><button onclick="placeOrder()">
+🚀 PLACE FOOD ORDER
+</button></div><!-- CONFIRMATION --><div
+id="confirmation"
+class="card hidden"
+>
+</div></main><footer><b>MHAC DELIVERY</b><br>
+🍔 FOOD DELIVERY<br><br>
 
-<br>
-
-<button onclick="placeOrder()">
-🚀 PLACE ORDER
-</button>
-
-</div>
-
-<div id="confirmation" class="card hidden"></div>
-
-</main>
-
-<footer>
-MHAC DELIVERY<br>
 Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan
-</footer>
 
-<script>
+</footer><script>
+
+/* =========================
+   MUNICIPALITIES & BARANGAYS
+========================= */
 
 const municipalities={
-"Paniqui, Tarlac":["Abogado","Acocolao","Aduas","Apulid","Balaoang","Barang","Brillante","Burgos","Cabayaoasan","Canan","Carino","Cayanga","Colibangbang","Coral","Dapdap","Estacion","Mabilang","Manaois","Matalapitap","Nagmisaan","Nancamarinan","Nipaco","Patalan","Poblacion Norte","Poblacion Sur","Rang-ayan","Salumague","Samput","San Carlos","San Isidro","San Juan de Milla","Santa Ines","Sinigpit","Tablang","Ventenilla"],
 
-"Moncada, Tarlac":["Ablang-Sapang","Aringin","Atencio","Banaoang East","Banaoang West","Baquero Norte","Baquero Sur","Burgos","Calamay","Calapan","Camangaan East","Camangaan West","Camposanto 1 - Norte","Camposanto 1 - Sur","Camposanto 2","Capaoayan","Lapsing","Mabini","Maluac","Poblacion 1","Poblacion 2","Poblacion 3","Poblacion 4","Rizal","San Juan","San Julian","San Leon","San Pedro","San Roque","Santa Lucia East","Santa Lucia West","Santa Maria","Santa Monica","Tubectubang","Tolega Norte","Tolega Sur","Villa"],
+"Paniqui, Tarlac":[
+"Abogado","Acocolao","Aduas","Apulid","Balaoang",
+"Barang","Brillante","Burgos","Cabayaoasan","Canan",
+"Carino","Cayanga","Colibangbang","Coral","Dapdap",
+"Estacion","Mabilang","Manaois","Matalapitap","Nagmisaan",
+"Nancamarinan","Nipaco","Patalan","Poblacion Norte",
+"Poblacion Sur","Rang-ayan","Salumague","Samput",
+"San Carlos","San Isidro","San Juan de Milla",
+"Santa Ines","Sinigpit","Tablang","Ventenilla"
+],
 
-"Ramos, Tarlac":["Coral-Iloco","Guiteb","Pance","Poblacion Center","Poblacion North","Poblacion South","San Juan","San Raymundo","Toledo"],
+"Moncada, Tarlac":[
+"Ablang-Sapang","Aringin","Atencio","Banaoang East",
+"Banaoang West","Baquero Norte","Baquero Sur","Burgos",
+"Calamay","Calapan","Camangaan East","Camangaan West",
+"Camposanto 1 - Norte","Camposanto 1 - Sur","Camposanto 2",
+"Capaoayan","Lapsing","Mabini","Maluac","Poblacion 1",
+"Poblacion 2","Poblacion 3","Poblacion 4","Rizal",
+"San Juan","San Julian","San Leon","San Pedro",
+"San Roque","Santa Lucia East","Santa Lucia West",
+"Santa Maria","Santa Monica","Tubectubang","Tolega Norte",
+"Tolega Sur","Villa"
+],
 
-"Gerona, Tarlac":["Abagon","Amacalan","Apsayan","Ayson","Bawa","Buenlag","Bularit","Calayaan","Carbonel","Cardona","Caturay","Danzo","Dicolor","Don Basilio","Luna","Mabini","Magaspac","Malayep","Matapitap","Matayuncab","New Salem","Oloybuaya","Padapada","Parsolingan","Pinasling","Plastado","Poblacion 1","Poblacion 2","Poblacion 3","Quezon","Rizal","Salapungan","San Agustin","San Antonio","San Bartolome","San Jose","Santa Lucia","Santiago","Sembrano","Singat","Sulipa","Tagumbao","Tangcaran","Villa Paz"],
+"Ramos, Tarlac":[
+"Coral-Iloco","Guiteb","Pance","Poblacion Center",
+"Poblacion North","Poblacion South","San Juan",
+"San Raymundo","Toledo"
+],
 
-"Pura, Tarlac":["Balite","Buenavista","Cadanglaan","Estipona","Linao","Maasin","Matindeg","Maungib","Naya","Nilasin 1st","Nilasin 2nd","Poblacion 1","Poblacion 2","Poblacion 3","Poroc","Singat"],
+"Gerona, Tarlac":[
+"Abagon","Amacalan","Apsayan","Ayson","Bawa",
+"Buenlag","Bularit","Calayaan","Carbonel","Cardona",
+"Caturay","Danzo","Dicolor","Don Basilio","Luna",
+"Mabini","Magaspac","Malayep","Matapitap",
+"Matayuncab","New Salem","Oloybuaya","Padapada",
+"Parsolingan","Pinasling","Plastado","Poblacion 1",
+"Poblacion 2","Poblacion 3","Quezon","Rizal",
+"Salapungan","San Agustin","San Antonio","San Bartolome",
+"San Jose","Santa Lucia","Santiago","Sembrano","Singat",
+"Sulipa","Tagumbao","Tangcaran","Villa Paz"
+],
 
-"Anao, Tarlac":["Baguindoc","Bantog","Campos","Carmen","Casili","Don Ramon","Hernando","Poblacion","Rizal","San Francisco East","San Francisco West","San Jose North","San Jose South","San Juan","San Roque","Santo Domingo","Sinense","Suaverdez"],
+"Pura, Tarlac":[
+"Balite","Buenavista","Cadanglaan","Estipona","Linao",
+"Maasin","Matindeg","Maungib","Naya","Nilasin 1st",
+"Nilasin 2nd","Poblacion 1","Poblacion 2","Poblacion 3",
+"Poroc","Singat"
+],
 
-"Nampicuan, Nueva Ecija":["Alemania","Ambasador Alzate Village","Cabaducan East","Cabaducan West","Cabawangan","East Central Poblacion","Edy","Maeling","Mayantoc","Medico","Monic","North Poblacion","Northwest Poblacion","Estacion","West Poblacion","Recuerdo","South Central Poblacion","Southeast Poblacion","Southwest Poblacion","Tony","West Central Poblacion"]
+"Anao, Tarlac":[
+"Baguindoc","Bantog","Campos","Carmen","Casili",
+"Don Ramon","Hernando","Poblacion","Rizal",
+"San Francisco East","San Francisco West",
+"San Jose North","San Jose South","San Juan",
+"San Roque","Santo Domingo","Sinense","Suaverdez"
+],
+
+"Nampicuan, Nueva Ecija":[
+"Alemania","Ambasador Alzate Village","Cabaducan East",
+"Cabaducan West","Cabawangan","East Central Poblacion",
+"Edy","Maeling","Mayantoc","Medico","Monic",
+"North Poblacion","Northwest Poblacion","Estacion",
+"West Poblacion","Recuerdo","South Central Poblacion",
+"Southeast Poblacion","Southwest Poblacion","Tony",
+"West Central Poblacion"
+]
+
 };
 
 
-const stores=[
+/* =========================
+   FOOD MENU
+========================= */
+
+const foods=[
 
 {
-name:"MHAC FOOD",
-icon:"🍔",
-products:[
-["Burger Meal",129],
-["Chicken Meal",149],
-["Pancit",120],
-["Milk Tea",89]
-]
+name:"Burger Meal",
+price:129,
+icon:"🍔"
 },
 
 {
-name:"MHAC GROCERY",
-icon:"🛒",
-products:[
-["Rice 5kg",310],
-["Cooking Oil",95],
-["Grocery Bundle",250],
-["Drinking Water",50]
-]
+name:"Chicken Meal",
+price:149,
+icon:"🍗"
 },
 
 {
-name:"MHAC MARKET",
-icon:"🥬",
-products:[
-["Vegetable Pack",120],
-["Fruit Pack",150],
-["Meat Pack",280],
-["Market Essentials",180]
-]
+name:"Pancit",
+price:120,
+icon:"🍜"
 },
 
 {
-name:"MHAC MEDICINE",
-icon:"💊",
-products:[
-["Medicine Errand",100],
-["Health Essentials",150],
-["Personal Care",120]
-]
+name:"Milk Tea",
+price:89,
+icon:"🧋"
+},
+
+{
+name:"Siomai Rice",
+price:99,
+icon:"🥟"
+},
+
+{
+name:"French Fries",
+price:79,
+icon:"🍟"
+},
+
+{
+name:"Chicken Wings",
+price:169,
+icon:"🍗"
+},
+
+{
+name:"Combo Meal",
+price:199,
+icon:"🍱"
 }
 
 ];
 
 
-let selectedStore=null;
 let cart={};
 
 
-const money=n=>"₱"+Number(n).toLocaleString(
+/* =========================
+   MONEY
+========================= */
+
+function money(n){
+
+return "₱"+Number(n||0).toLocaleString(
 "en-PH",
 {
 minimumFractionDigits:2,
 maximumFractionDigits:2
-});
+}
+);
 
+}
+
+
+/* =========================
+   INITIALIZE
+========================= */
 
 function init(){
 
-const m=document.getElementById("municipality");
+const menu=document.getElementById("foodMenu");
+
+menu.innerHTML=foods.map((food,i)=>`
+
+<div class="food">
+
+<div class="food-icon">
+${food.icon}
+</div>
+
+<h3>
+${food.name}
+</h3>
+
+<div class="price">
+${money(food.price)}
+</div>
+
+<button onclick="addFood(${i})">
+ADD TO ORDER
+</button>
+
+</div>
+
+`).join("");
+
+
+const municipality=
+document.getElementById("municipality");
+
 
 Object.keys(municipalities).forEach(name=>{
 
-let option=document.createElement("option");
+const option=document.createElement("option");
 
 option.value=name;
 option.textContent=name;
 
-m.appendChild(option);
+municipality.appendChild(option);
 
 });
 
 
-document.getElementById("stores").innerHTML=
-stores.map((s,i)=>`
-
-<div class="card product">
-
-<div class="product-icon">${s.icon}</div>
-
-<h3>${s.name}</h3>
-
-<button onclick="selectStore(${i})">
-VIEW PRODUCTS
-</button>
-
-</div>
-
-`).join("");
+municipality.addEventListener(
+"change",
+loadBarangays
+);
 
 
-m.onchange=function(){
+document.getElementById("distance")
+.addEventListener(
+"input",
+updateTotal
+);
 
-const b=document.getElementById("barangay");
+}
 
-b.innerHTML='<option value="">Select barangay</option>';
 
-if(this.value){
+/* =========================
+   BARANGAYS
+========================= */
 
-municipalities[this.value].forEach(name=>{
+function loadBarangays(){
 
-let option=document.createElement("option");
+const municipality=
+document.getElementById("municipality").value;
+
+const barangay=
+document.getElementById("barangay");
+
+barangay.innerHTML=
+"<option value=''>Select barangay</option>";
+
+if(!municipality){
+
+barangay.disabled=true;
+return;
+
+}
+
+municipalities[municipality].forEach(name=>{
+
+const option=document.createElement("option");
 
 option.value=name;
 option.textContent=name;
 
-b.appendChild(option);
+barangay.appendChild(option);
 
 });
 
-b.disabled=false;
-
-}else{
-
-b.disabled=true;
-
-}
-
-};
-
-
-["distance"].forEach(id=>{
-
-document.getElementById(id)
-.addEventListener("input",updateTotal);
-
-});
+barangay.disabled=false;
 
 }
 
 
-function selectStore(index){
+/* =========================
+   ADD FOOD
+========================= */
 
-selectedStore=index;
-cart={};
-
-const s=stores[index];
-
-document.getElementById("products").innerHTML=
-
-s.products.map((p,i)=>`
-
-<div class="product">
-
-<div class="product-icon">${s.icon}</div>
-
-<h3>${p[0]}</h3>
-
-<div class="price">${money(p[1])}</div>
-
-<button onclick="addProduct(${i})">
-ADD TO CART
-</button>
-
-</div>
-
-`).join("");
-
-renderCart();
-
-}
-
-
-function addProduct(index){
+function addFood(index){
 
 cart[index]=(cart[index]||0)+1;
 
@@ -565,29 +596,36 @@ renderCart();
 }
 
 
-function changeQty(index,value){
+/* =========================
+   CHANGE QUANTITY
+========================= */
 
-cart[index]+=value;
+function changeQty(index,amount){
 
-if(cart[index]<=0)
+cart[index]=(cart[index]||0)+amount;
+
+if(cart[index]<=0){
 delete cart[index];
+}
 
 renderCart();
 
 }
 
 
-function subtotal(){
+/* =========================
+   SUBTOTAL
+========================= */
 
-if(selectedStore===null)
-return 0;
+function getSubtotal(){
 
 let total=0;
 
-stores[selectedStore].products.forEach((p,i)=>{
+Object.keys(cart).forEach(index=>{
 
-if(cart[i])
-total+=p[1]*cart[i];
+const food=foods[index];
+
+total+=food.price*cart[index];
 
 });
 
@@ -596,29 +634,45 @@ return total;
 }
 
 
+/* =========================
+   DELIVERY FEE
+========================= */
+
 function deliveryFee(){
 
-let km=Math.ceil(
-Number(document.getElementById("distance").value)||0
+const km=
+Math.ceil(
+Number(
+document.getElementById("distance").value
+)||0
 );
 
-if(km<=0)
+if(km<=0){
 return 0;
+}
 
 return 40+(km-1)*10;
 
 }
 
 
+/* =========================
+   RENDER CART
+========================= */
+
 function renderCart(){
 
 const box=document.getElementById("cart");
 
-if(selectedStore===null ||
-Object.keys(cart).length===0){
+const items=Object.keys(cart);
 
-box.innerHTML=
-"<p style='color:#777'>Cart is empty.</p>";
+if(items.length===0){
+
+box.innerHTML=`
+<div style="text-align:center;color:#777;padding:20px">
+🛒 Your cart is empty.
+</div>
+`;
 
 updateTotal();
 
@@ -627,13 +681,9 @@ return;
 }
 
 
-const s=stores[selectedStore];
+box.innerHTML=items.map(index=>{
 
-box.innerHTML=
-
-Object.keys(cart).map(i=>{
-
-const p=s.products[i];
+const food=foods[index];
 
 return `
 
@@ -641,23 +691,33 @@ return `
 
 <div>
 
-<b>${p[0]}</b><br>
+<b>
+${food.icon} ${food.name}
+</b>
+
+<br>
 
 <small>
-${money(p[1])} × ${cart[i]}
+${money(food.price)} × ${cart[index]}
 </small>
 
 </div>
 
+
 <div class="qty">
 
-<button onclick="changeQty(${i},-1)">
+<button
+class="dark"
+onclick="changeQty(${index},-1)"
+>
 −
 </button>
 
-<b>${cart[i]}</b>
+<b>${cart[index]}</b>
 
-<button onclick="changeQty(${i},1)">
+<button
+onclick="changeQty(${index},1)"
+>
 +
 </button>
 
@@ -669,42 +729,54 @@ ${money(p[1])} × ${cart[i]}
 
 }).join("");
 
+
 updateTotal();
 
 }
 
 
+/* =========================
+   TOTAL
+========================= */
+
 function updateTotal(){
 
-const sub=subtotal();
+const subtotal=getSubtotal();
 
-const service=sub*.10;
+const service=subtotal*0.10;
 
 const delivery=deliveryFee();
 
-const grand=sub+service+delivery;
+const grand=subtotal+service+delivery;
 
-document.getElementById("subtotal").textContent=money(sub);
 
-document.getElementById("service").textContent=money(service);
+document.getElementById("subtotal")
+.textContent=money(subtotal);
 
-document.getElementById("delivery").textContent=money(delivery);
+document.getElementById("service")
+.textContent=money(service);
 
-document.getElementById("grand").textContent=money(grand);
+document.getElementById("delivery")
+.textContent=money(delivery);
+
+document.getElementById("grand")
+.textContent=money(grand);
 
 }
 
+
+/* =========================
+   PLACE ORDER
+========================= */
 
 function placeOrder(){
 
-if(selectedStore===null){
-alert("Please choose a store.");
-return;
-}
-
 if(Object.keys(cart).length===0){
-alert("Please add products.");
+
+alert("Please add food to your order.");
+
 return;
+
 }
 
 
@@ -724,7 +796,9 @@ const mobile=
 document.getElementById("mobile").value.trim();
 
 const distance=
-Number(document.getElementById("distance").value)||0;
+Number(
+document.getElementById("distance").value
+)||0;
 
 
 if(
@@ -736,20 +810,22 @@ if(
 distance<=0
 ){
 
-alert("Please complete all delivery information.");
+alert(
+"Please complete your delivery information."
+);
 
 return;
 
 }
 
 
-const sub=subtotal();
+const subtotal=getSubtotal();
 
-const service=sub*.10;
+const service=subtotal*0.10;
 
 const delivery=deliveryFee();
 
-const grand=sub+service+delivery;
+const grand=subtotal+service+delivery;
 
 
 const orderId=
@@ -758,24 +834,14 @@ const orderId=
 );
 
 
-const items=
-Object.keys(cart).map(i=>{
+const items=Object.keys(cart).map(index=>({
 
-const p=stores[selectedStore].products[i];
+name:foods[index].name,
+quantity:cart[index],
+price:foods[index].price,
+total:foods[index].price*cart[index]
 
-return {
-
-name:p[0],
-
-price:p[1],
-
-quantity:cart[i],
-
-total:p[1]*cart[i]
-
-};
-
-});
+}));
 
 
 const order={
@@ -784,7 +850,7 @@ id:orderId,
 
 date:new Date().toLocaleString(),
 
-store:stores[selectedStore].name,
+store:"MHAC FOOD",
 
 items:items,
 
@@ -809,7 +875,7 @@ document.getElementById("payment").value,
 notes:
 document.getElementById("notes").value,
 
-subtotal:sub,
+subtotal:subtotal,
 
 serviceFee:service,
 
@@ -828,135 +894,157 @@ JSON.stringify(order)
 );
 
 
-document.getElementById("confirmation").classList.remove("hidden");
+showConfirmation(order);
+
+}
 
 
-document.getElementById("confirmation").innerHTML=`
+/* =========================
+   CONFIRMATION
+========================= */
+
+function showConfirmation(order){
+
+const confirmation=
+document.getElementById("confirmation");
+
+confirmation.classList.remove("hidden");
+
+
+confirmation.innerHTML=`
 
 <div class="success">
 
-<h2>✅ ORDER RECEIVED!</h2>
+<h2>
+✅ ORDER RECEIVED!
+</h2>
 
 <p>
-Order Number:
+Your food order has been successfully submitted.
 </p>
 
-<h2>${orderId}</h2>
-
-<span class="status">
-PENDING
-</span>
+<div class="order-id">
+${order.id}
+</div>
 
 <hr>
 
 <p>
-<b>${order.store}</b>
+<b>Customer:</b>
+${order.customer}
 </p>
 
 <p>
-👤 ${customer}
+<b>Mobile:</b>
+${order.mobile}
 </p>
 
 <p>
-📍 ${barangay}, ${municipality}
+<b>Delivery:</b><br>
+${order.address}<br>
+${order.barangay},
+${order.municipality}
 </p>
 
 <p>
-🏠 ${address}
-</p>
-
-<p>
-📏 Distance: ${distance} KM
+<b>Distance:</b>
+${order.distance} km
 </p>
 
 <hr>
 
 <p>
-Total Order: <b>${money(sub)}</b>
+<b>Food Order:</b>
+${money(order.subtotal)}
 </p>
 
 <p>
-10% Service Fee: <b>${money(service)}</b>
+<b>10% Service Fee:</b>
+${money(order.serviceFee)}
 </p>
 
 <p>
-Delivery Fee: <b>${money(delivery)}</b>
+<b>Delivery Fee:</b>
+${money(order.deliveryFee)}
 </p>
 
 <h2>
-GRAND TOTAL: ${money(grand)}
+GRAND TOTAL:
+${money(order.grandTotal)}
 </h2>
 
-<button onclick="openTracking('${orderId}')">
-🔎 TRACK MY ORDER
+<p>
+💳 <b>Payment:</b>
+${order.payment}
+</p>
+
+<p>
+📦 <b>Status:</b>
+Pending
+</p>
+
+<button onclick="copyOrder('${order.id}')">
+📋 COPY ORDER ID
+</button>
+
+<br><br>
+
+<button
+class="dark"
+onclick="newOrder()"
+>
+🍔 NEW FOOD ORDER
 </button>
 
 </div>
 
 `;
 
-document.getElementById("confirmation")
-.scrollIntoView({behavior:"smooth"});
+confirmation.scrollIntoView({
+behavior:"smooth"
+});
 
 }
 
 
-function openTracking(id){
+/* =========================
+   COPY ORDER ID
+========================= */
 
-location.href=
-"tracking.html?order="+encodeURIComponent(id);
+function copyOrder(id){
+
+if(navigator.clipboard){
+
+navigator.clipboard.writeText(id)
+.then(()=>{
+alert("Order ID copied: "+id);
+});
+
+}else{
+
+alert("Your Order ID is: "+id);
 
 }
 
+}
+
+
+/* =========================
+   NEW ORDER
+========================= */
+
+function newOrder(){
+
+location.reload();
+
+}
+
+
+/* =========================
+   START
+========================= */
 
 init();
 
-</script>
-
-</body><script>
-let deferredPrompt;
-
-window.addEventListener("beforeinstallprompt", (e) => {
-
-  e.preventDefault();
-
-  deferredPrompt = e;
-
-  const btn = document.getElementById("installBtn");
-
-  if(btn){
-    btn.style.display = "block";
-
-    btn.onclick = async () => {
-
-      btn.style.display = "none";
-
-      deferredPrompt.prompt();
-
-      await deferredPrompt.userChoice;
-
-      deferredPrompt = null;
-    };
-  }
-
-});
-
-window.addEventListener("appinstalled", () => {
-
-  const btn = document.getElementById("installBtn");
-
-  if(btn){
-    btn.style.display = "none";
-  }
-
-});
-</script>script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js")
-      .then(() => console.log("MHAC DELIVERY App Ready"))
-      .catch(err => console.log("PWA error:", err));
-  });
-}
-</script>
+</script></body>
 </html>
