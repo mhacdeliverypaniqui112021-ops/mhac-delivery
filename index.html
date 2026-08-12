@@ -5,211 +5,210 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#17171c">
-<title>MHAC DELIVERY — Food Delivery</title><style>
+<title>MHAC DELIVERY - Food Delivery</title><style>
 *{box-sizing:border-box}
 
 body{
- margin:0;
- font-family:Arial,system-ui,sans-serif;
- background:#f5f6f8;
- color:#17171c
+margin:0;
+font-family:Arial,system-ui,sans-serif;
+background:#f5f6f8;
+color:#17171c
 }
 
 header{
- background:#17171c;
- color:white;
- padding:17px
+background:#17171c;
+color:white;
+padding:17px
 }
 
 .wrap{
- max-width:1050px;
- margin:auto;
- padding:16px
+max-width:1050px;
+margin:auto;
+padding:16px
 }
 
 .brand{
- font-size:25px;
- font-weight:900
+font-size:25px;
+font-weight:900
 }
 
 .pink{
- color:#ff4f7b
+color:#ff4f7b
 }
 
 .hero{
- background:linear-gradient(135deg,#17171c,#572536);
- color:white;
- padding:38px 0
+background:linear-gradient(135deg,#17171c,#572536);
+color:white;
+padding:38px 0
 }
 
 .hero h1{
- font-size:42px;
- margin:0 0 10px
+font-size:42px;
+margin:0 0 10px
 }
 
 .hero p{
- color:#ddd;
- margin-bottom:20px
+color:#ddd;
+margin-bottom:20px
 }
 
 button{
- width:100%;
- border:0;
- border-radius:10px;
- padding:12px;
- font:inherit;
- font-weight:900;
- cursor:pointer;
- background:#ff4f7b;
- color:white
+width:100%;
+border:0;
+border-radius:10px;
+padding:12px;
+font:inherit;
+font-weight:900;
+cursor:pointer;
+background:#ff4f7b;
+color:white
 }
 
 button.dark{
- background:#17171c
-}
-
-button.green{
- background:#16834d
+background:#17171c
 }
 
 .card{
- background:white;
- border:1px solid #e1e2e6;
- border-radius:17px;
- padding:17px;
- margin-bottom:15px
+background:white;
+border:1px solid #e1e2e6;
+border-radius:17px;
+padding:17px;
+margin-bottom:15px
 }
 
 .food-grid{
- display:grid;
- grid-template-columns:repeat(2,1fr);
- gap:12px
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px
 }
 
 .food{
- border:1px solid #ddd;
- border-radius:15px;
- padding:15px;
- background:#fff
+border:1px solid #ddd;
+border-radius:15px;
+padding:15px;
+background:white
 }
 
 .food-icon{
- font-size:45px
+font-size:45px
 }
 
 .food h3{
- margin:8px 0 5px
+margin:8px 0 5px
 }
 
 .price{
- font-size:19px;
- font-weight:900;
- margin-bottom:10px
+font-size:19px;
+font-weight:900;
+margin-bottom:10px
 }
 
 .row{
- display:grid;
- grid-template-columns:1fr 1fr;
- gap:10px
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px
 }
 
 label{
- display:block;
- font-size:12px;
- font-weight:900;
- margin:10px 0 5px
+display:block;
+font-size:12px;
+font-weight:900;
+margin:10px 0 5px
 }
 
 input,select,textarea{
- width:100%;
- padding:12px;
- border:1px solid #d6d7dc;
- border-radius:9px;
- font:inherit;
- background:white
+width:100%;
+padding:12px;
+border:1px solid #d6d7dc;
+border-radius:9px;
+font:inherit;
+background:white
 }
 
 textarea{
- min-height:80px;
- resize:vertical
+min-height:80px;
+resize:vertical
 }
 
 .cart-item{
- display:flex;
- justify-content:space-between;
- align-items:center;
- gap:10px;
- padding:12px 0;
- border-bottom:1px solid #eee
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+padding:12px 0;
+border-bottom:1px solid #eee
 }
 
 .qty{
- display:flex;
- align-items:center;
- gap:6px
+display:flex;
+align-items:center;
+gap:6px
 }
 
 .qty button{
- width:35px;
- padding:7px;
- margin:0
+width:35px;
+padding:7px;
+margin:0
 }
 
 .summary-row{
- display:flex;
- justify-content:space-between;
- padding:10px 0;
- border-bottom:1px solid #eee
+display:flex;
+justify-content:space-between;
+padding:11px 0;
+border-bottom:1px solid #eee
 }
 
 .grand{
- font-size:23px;
- font-weight:900;
- padding-top:13px
+font-size:23px;
+font-weight:900;
+padding-top:13px
 }
 
 .notice{
- background:#fff4f7;
- border:1px solid #ffd0dc;
- border-radius:11px;
- padding:13px;
- font-size:13px;
- line-height:1.5
+background:#fff4f7;
+border:1px solid #ffd0dc;
+border-radius:11px;
+padding:13px;
+font-size:13px;
+line-height:1.5
+}
+
+.live-fee{
+margin-top:10px;
+padding:12px;
+border-radius:10px;
+background:#f1f8ff;
+border:1px solid #cfe7ff;
+font-weight:800
 }
 
 .success{
- background:#e9f9f1;
- border:1px solid #b9e9d0;
- border-radius:14px;
- padding:18px
+background:#e9f9f1;
+border:1px solid #b9e9d0;
+border-radius:14px;
+padding:18px
 }
 
 .order-id{
- font-size:24px;
- font-weight:900;
- color:#ff4f7b
+font-size:24px;
+font-weight:900;
+color:#ff4f7b
 }
 
 .hidden{
- display:none
+display:none
 }
 
 footer{
- text-align:center;
- color:#777;
- padding:30px 15px
+text-align:center;
+color:#777;
+padding:30px 15px
 }
 
 @media(max-width:650px){
- .food-grid{
-  grid-template-columns:1fr
- }
- .row{
-  grid-template-columns:1fr
- }
- .hero h1{
-  font-size:34px
- }
+.food-grid{grid-template-columns:1fr}
+.row{grid-template-columns:1fr}
+.hero h1{font-size:34px}
 }
 </style></head><body><header>
 <div class="wrap">
@@ -268,7 +267,7 @@ placeholder="09xxxxxxxxx"
 
 «»
 
-</div></div><div class="row"><div><label>Distance</label>
+</div></div><div class="row"><div><label>Distance (KM)</label>
 
 <input
 id="distance"
@@ -279,7 +278,9 @@ placeholder="Example: 3"
 
 «»
 
-</div><div><label>Payment Method</label>
+<div id="distanceInfo" class="live-fee">
+📏 Enter distance to calculate delivery fee.
+</div></div><div><label>Payment Method</label>
 
 <select id="payment"><option>Cash on Delivery</option>
 <option>GCash</option></select></div></div><label>Order Notes</label>
@@ -287,29 +288,29 @@ placeholder="Example: 3"
 <textarea
 id="notes"
 placeholder="Optional instructions"
-></textarea><div class="notice"><b>🛵 DELIVERY FEE</b><br>
+></textarea><div class="notice"><b>🛵 DELIVERY FEE RULE</b><br><br>
 
 First 1 km = <b>₱40</b><br>
 
 Every succeeding km = <b>+₱10</b><br><br>
 
 Example:<br>
-
 1 km = ₱40<br>
 2 km = ₱50<br>
 3 km = ₱60<br>
-4 km = ₱70<br><br>
+4 km = ₱70<br>
+5 km = ₱80<br><br>
 
-<b>💰 GRAND TOTAL = FOOD ORDER + 10% SERVICE FEE + DELIVERY FEE</b>
-
-</div></div><!-- SUMMARY --><div class="card"><h2>🧾 ORDER SUMMARY</h2><div class="summary-row">
-<span>Food Order</span>
+<b>
+TOTAL = FOOD ORDER + 10% SERVICE FEE + DELIVERY FEE
+</b></div></div><!-- SUMMARY --><div class="card"><h2>🧾 ORDER SUMMARY</h2><div class="summary-row">
+<span>🍔 Food Order</span>
 <b id="subtotal">₱0.00</b>
 </div><div class="summary-row">
 <span>10% Service Fee</span>
 <b id="service">₱0.00</b>
 </div><div class="summary-row">
-<span>Delivery Fee</span>
+<span>🛵 Delivery Fee</span>
 <b id="delivery">₱0.00</b>
 </div><div class="summary-row grand">
 <span>GRAND TOTAL</span>
@@ -318,8 +319,7 @@ Example:<br>
 🚀 PLACE FOOD ORDER
 </button></div><!-- CONFIRMATION --><div
 id="confirmation"
-class="card hidden"
->
+class="card hidden">
 </div></main><footer><b>MHAC DELIVERY</b><br>
 🍔 FOOD DELIVERY<br><br>
 
@@ -328,7 +328,7 @@ Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan
 </footer><script>
 
 /* =========================
-   MUNICIPALITIES & BARANGAYS
+MUNICIPALITIES
 ========================= */
 
 const municipalities={
@@ -405,58 +405,26 @@ const municipalities={
 
 
 /* =========================
-   FOOD MENU
+FOOD MENU
 ========================= */
 
 const foods=[
 
-{
-name:"Burger Meal",
-price:129,
-icon:"🍔"
-},
+{name:"Burger Meal",price:129,icon:"🍔"},
 
-{
-name:"Chicken Meal",
-price:149,
-icon:"🍗"
-},
+{name:"Chicken Meal",price:149,icon:"🍗"},
 
-{
-name:"Pancit",
-price:120,
-icon:"🍜"
-},
+{name:"Pancit",price:120,icon:"🍜"},
 
-{
-name:"Milk Tea",
-price:89,
-icon:"🧋"
-},
+{name:"Milk Tea",price:89,icon:"🧋"},
 
-{
-name:"Siomai Rice",
-price:99,
-icon:"🥟"
-},
+{name:"Siomai Rice",price:99,icon:"🥟"},
 
-{
-name:"French Fries",
-price:79,
-icon:"🍟"
-},
+{name:"French Fries",price:79,icon:"🍟"},
 
-{
-name:"Chicken Wings",
-price:169,
-icon:"🍗"
-},
+{name:"Chicken Wings",price:169,icon:"🍗"},
 
-{
-name:"Combo Meal",
-price:199,
-icon:"🍱"
-}
+{name:"Combo Meal",price:199,icon:"🍱"}
 
 ];
 
@@ -465,7 +433,7 @@ let cart={};
 
 
 /* =========================
-   MONEY
+MONEY
 ========================= */
 
 function money(n){
@@ -482,7 +450,7 @@ maximumFractionDigits:2
 
 
 /* =========================
-   INITIALIZE
+INIT
 ========================= */
 
 function init(){
@@ -546,7 +514,7 @@ updateTotal
 
 
 /* =========================
-   BARANGAYS
+BARANGAYS
 ========================= */
 
 function loadBarangays(){
@@ -584,7 +552,7 @@ barangay.disabled=false;
 
 
 /* =========================
-   ADD FOOD
+ADD FOOD
 ========================= */
 
 function addFood(index){
@@ -597,7 +565,7 @@ renderCart();
 
 
 /* =========================
-   CHANGE QUANTITY
+QUANTITY
 ========================= */
 
 function changeQty(index,amount){
@@ -605,7 +573,9 @@ function changeQty(index,amount){
 cart[index]=(cart[index]||0)+amount;
 
 if(cart[index]<=0){
+
 delete cart[index];
+
 }
 
 renderCart();
@@ -614,7 +584,7 @@ renderCart();
 
 
 /* =========================
-   SUBTOTAL
+SUBTOTAL
 ========================= */
 
 function getSubtotal(){
@@ -635,29 +605,37 @@ return total;
 
 
 /* =========================
-   DELIVERY FEE
+DELIVERY FEE
 ========================= */
 
 function deliveryFee(){
 
-const km=
-Math.ceil(
+const distance=
 Number(
 document.getElementById("distance").value
-)||0
-);
+)||0;
 
-if(km<=0){
+if(distance<=0){
+
 return 0;
+
 }
 
-return 40+(km-1)*10;
+/*
+1 km = 40
+Every succeeding km = +10
+*/
+
+const chargedKm=
+Math.ceil(distance);
+
+return 40+(chargedKm-1)*10;
 
 }
 
 
 /* =========================
-   RENDER CART
+CART
 ========================= */
 
 function renderCart(){
@@ -669,9 +647,17 @@ const items=Object.keys(cart);
 if(items.length===0){
 
 box.innerHTML=`
-<div style="text-align:center;color:#777;padding:20px">
+
+<div style="
+text-align:center;
+color:#777;
+padding:20px
+">
+
 🛒 Your cart is empty.
+
 </div>
+
 `;
 
 updateTotal();
@@ -713,7 +699,9 @@ onclick="changeQty(${index},-1)"
 −
 </button>
 
-<b>${cart[index]}</b>
+<b>
+${cart[index]}
+</b>
 
 <button
 onclick="changeQty(${index},1)"
@@ -736,18 +724,39 @@ updateTotal();
 
 
 /* =========================
-   TOTAL
+LIVE TOTAL
 ========================= */
 
 function updateTotal(){
 
-const subtotal=getSubtotal();
+const subtotal=
+getSubtotal();
 
-const service=subtotal*0.10;
+const service=
+subtotal*0.10;
 
-const delivery=deliveryFee();
+const distance=
+Number(
+document.getElementById("distance").value
+)||0;
 
-const grand=subtotal+service+delivery;
+let delivery=0;
+
+if(distance>0){
+
+const chargedKm=
+Math.ceil(distance);
+
+delivery=
+40+(chargedKm-1)*10;
+
+}
+
+
+const grand=
+subtotal+
+service+
+delivery;
 
 
 document.getElementById("subtotal")
@@ -762,18 +771,43 @@ document.getElementById("delivery")
 document.getElementById("grand")
 .textContent=money(grand);
 
+
+/* LIVE DISTANCE DISPLAY */
+
+const info=
+document.getElementById("distanceInfo");
+
+if(distance<=0){
+
+info.innerHTML=
+"📏 Enter distance to calculate delivery fee.";
+
+}else{
+
+info.innerHTML=
+"📏 Distance: <b>"+
+distance+
+" KM</b><br>"+
+"🛵 Delivery Fee: <b>"+
+money(delivery)+
+"</b>";
+
+}
+
 }
 
 
 /* =========================
-   PLACE ORDER
+PLACE ORDER
 ========================= */
 
 function placeOrder(){
 
 if(Object.keys(cart).length===0){
 
-alert("Please add food to your order.");
+alert(
+"Please add food to your order."
+);
 
 return;
 
@@ -811,7 +845,7 @@ distance<=0
 ){
 
 alert(
-"Please complete your delivery information."
+"Please complete all delivery information."
 );
 
 return;
@@ -819,27 +853,40 @@ return;
 }
 
 
-const subtotal=getSubtotal();
+const subtotal=
+getSubtotal();
 
-const service=subtotal*0.10;
+const service=
+subtotal*0.10;
 
-const delivery=deliveryFee();
+const delivery=
+deliveryFee();
 
-const grand=subtotal+service+delivery;
+const grand=
+subtotal+
+service+
+delivery;
 
 
 const orderId=
 "MHAC-"+Math.floor(
-100000+Math.random()*900000
+100000+
+Math.random()*900000
 );
 
 
-const items=Object.keys(cart).map(index=>({
+const items=
+Object.keys(cart).map(index=>({
 
 name:foods[index].name,
+
 quantity:cart[index],
+
 price:foods[index].price,
-total:foods[index].price*cart[index]
+
+total:
+foods[index].price*
+cart[index]
 
 }));
 
@@ -848,7 +895,8 @@ const order={
 
 id:orderId,
 
-date:new Date().toLocaleString(),
+date:
+new Date().toLocaleString(),
 
 store:"MHAC FOOD",
 
@@ -900,7 +948,7 @@ showConfirmation(order);
 
 
 /* =========================
-   CONFIRMATION
+CONFIRMATION
 ========================= */
 
 function showConfirmation(order){
@@ -930,17 +978,17 @@ ${order.id}
 <hr>
 
 <p>
-<b>Customer:</b>
+<b>Customer:</b><br>
 ${order.customer}
 </p>
 
 <p>
-<b>Mobile:</b>
+<b>Mobile:</b><br>
 ${order.mobile}
 </p>
 
 <p>
-<b>Delivery:</b><br>
+<b>Address:</b><br>
 ${order.address}<br>
 ${order.barangay},
 ${order.municipality}
@@ -948,13 +996,13 @@ ${order.municipality}
 
 <p>
 <b>Distance:</b>
-${order.distance} km
+${order.distance} KM
 </p>
 
 <hr>
 
 <p>
-<b>Food Order:</b>
+🍔 <b>Food Order:</b>
 ${money(order.subtotal)}
 </p>
 
@@ -964,7 +1012,7 @@ ${money(order.serviceFee)}
 </p>
 
 <p>
-<b>Delivery Fee:</b>
+🛵 <b>Delivery Fee:</b>
 ${money(order.deliveryFee)}
 </p>
 
@@ -1008,7 +1056,7 @@ behavior:"smooth"
 
 
 /* =========================
-   COPY ORDER ID
+COPY ORDER
 ========================= */
 
 function copyOrder(id){
@@ -1017,12 +1065,18 @@ if(navigator.clipboard){
 
 navigator.clipboard.writeText(id)
 .then(()=>{
-alert("Order ID copied: "+id);
+
+alert(
+"Order ID copied: "+id
+);
+
 });
 
 }else{
 
-alert("Your Order ID is: "+id);
+alert(
+"Order ID: "+id
+);
 
 }
 
@@ -1030,7 +1084,7 @@ alert("Your Order ID is: "+id);
 
 
 /* =========================
-   NEW ORDER
+NEW ORDER
 ========================= */
 
 function newOrder(){
@@ -1041,7 +1095,7 @@ location.reload();
 
 
 /* =========================
-   START
+START
 ========================= */
 
 init();
