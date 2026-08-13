@@ -45,7 +45,9 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 .menuManagerHead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.mini{font-size:12px;color:var(--muted)}
 .managerRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.managerActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.managerActions button{width:auto;padding:9px 12px}
 .addon{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid #eee;padding:7px 0}.addon:last-child{border-bottom:0}
-.foodModal{position:fixed;inset:0;background:#0009;z-index:100;display:none;align-items:flex-end;justify-content:center;padding:10px}.foodModal.show{display:flex}.modalCard{background:#fff;border-radius:18px;padding:18px;max-width:600px;width:100%;max-height:85vh;overflow:auto}.addonGroup{margin:12px 0}.addonGroup h3{margin:12px 0 7px;font-size:16px}.addonChoice{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border:1px solid #ddd;border-radius:10px;margin:7px 0}.addonChoice input{width:auto}
+.foodModal{position:fixed;inset:0;background:#0009;z-index:100;display:none;align-items:flex-end;justify-content:center;padding:10px}.foodModal.show{display:flex}.modalCard{background:#fff;border-radius:18px;padding:18px;max-width:600px;width:100%;max-height:85vh;overflow:auto}
+.categoryGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}.categoryBtn{background:#fff;border:1px solid #e1e2e6;border-radius:16px;padding:14px;text-align:left;min-height:92px;color:#111;box-shadow:0 3px 10px #0000000a}.categoryBtn .catIcon{font-size:32px;display:block;margin-bottom:6px}.categoryBtn .catName{font-size:17px;font-weight:1000}.categoryBtn .catCount{font-size:12px;color:var(--muted);margin-top:4px}.categoryBtn:hover{border-color:var(--red);background:#fff7f7}.foodList{display:flex;flex-direction:column;gap:0}.foodItem{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid #eee}.foodItem:last-child{border-bottom:0}.foodPhoto{width:72px;height:72px;border-radius:12px;background:#f4f4f5;display:flex;align-items:center;justify-content:center;font-size:38px;overflow:hidden}.foodPhoto img{width:100%;height:100%;object-fit:cover}.foodInfo h3{margin:0 0 5px;font-size:16px}.foodInfo p{margin:0;color:var(--muted);font-size:12px}.foodPrice{font-size:17px;font-weight:1000;margin-top:6px}.addCircle{width:44px;height:44px;border-radius:50%;padding:0;font-size:24px;display:flex;align-items:center;justify-content:center}.stickyCart{position:sticky;bottom:10px;z-index:8;margin-top:14px}.stickyCart button{box-shadow:0 6px 18px #0003}.crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin:-4px 0 10px}.backBtn{width:auto;background:#fff;color:#111;border:1px solid #ddd;padding:8px 11px}.modalHero{display:flex;gap:14px;align-items:center;margin-bottom:10px}.modalHero .foodPhoto{width:100px;height:100px;font-size:50px}.modalTotal{font-size:18px;font-weight:1000}.qtyModal{display:flex;align-items:center;gap:12px}.qtyModal button{width:42px;padding:9px}.qtyModal b{min-width:24px;text-align:center;font-size:18px}@media(max-width:620px){.categoryGrid{grid-template-columns:1fr 1fr}.foodItem{grid-template-columns:60px 1fr auto}.foodPhoto{width:60px;height:60px;font-size:30px}}
+.addonGroup{margin:12px 0}.addonGroup h3{margin:12px 0 7px;font-size:16px}.addonChoice{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border:1px solid #ddd;border-radius:10px;margin:7px 0}.addonChoice input{width:auto}
 
 .topRate{margin-top:16px}.rateCard{background:#08090b;color:#fff;border:2px solid #ed1118;border-radius:18px;padding:16px 18px;line-height:1.55;box-shadow:0 5px 16px #0002}.rateTitle{color:#ff3036;font-size:18px;font-weight:1000;margin-bottom:7px}.rateFormula{font-weight:800;margin-top:3px}.rateCard b{color:#fff}@media(max-width:620px){.rateCard{font-size:14px}.rateTitle{font-size:17px}}
 </style>
@@ -82,7 +84,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <section class="card" id="customerMenus">
   <div class="section-title">
     <h2>🍽️ CHOOSE STORE</h2>
-    <span class="status">Select a store to see its complete menu.</span>
+    <span class="status">Select a store to browse categories and the complete menu.</span>
   </div>
   <div id="storeGrid" class="storeGrid"></div>
   <div class="notice" style="margin-top:12px">
@@ -93,9 +95,15 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <section class="card hidden" id="storeMenuCard">
   <div class="section-title">
     <h2 id="menuStoreTitle">STORE MENU</h2>
-    <button class="outline" style="width:auto" onclick="backToStores()">← BACK TO STORES</button>
+    <button class="backBtn" onclick="backToStores()">← Stores</button>
   </div>
-  <div id="foodGrid" class="foodgrid"></div>
+  <div id="menuBreadcrumb" class="crumb"></div>
+  <div id="categoryGrid" class="categoryGrid"></div>
+  <div id="foodPanel" class="hidden">
+    <div class="section-title" style="margin-top:10px"><h2 id="categoryTitle" style="font-size:18px;margin:0">Category</h2><button class="backBtn" onclick="backToCategories()">← Categories</button></div>
+    <div id="foodGrid" class="foodList"></div>
+  </div>
+  <div id="stickyCart" class="stickyCart hidden"></div>
 </section>
 
 <section class="card">
@@ -172,7 +180,13 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 </section>
 </main>
 
-<div id="foodModal" class="foodModal" onclick="if(event.target===this)closeFoodModal()"><div class="modalCard"><div class="section-title"><h2 id="modalFoodName">Food</h2><button class="dark" style="width:auto" onclick="closeFoodModal()">✕</button></div><p id="modalFoodPrice" class="price"></p><div id="modalAddons"></div><br><button onclick="addConfiguredFood()">ADD TO ORDER</button></div></div>
+<div id="foodModal" class="foodModal" onclick="if(event.target===this)closeFoodModal()"><div class="modalCard">
+  <div class="section-title"><span class="mini">PRODUCT DETAILS</span><button class="dark" style="width:auto" onclick="closeFoodModal()">✕</button></div>
+  <div class="modalHero"><div id="modalFoodPhoto" class="foodPhoto">🍽️</div><div><h2 id="modalFoodName" style="margin:0 0 5px">Food</h2><div id="modalFoodPrice" class="price"></div></div></div>
+  <div id="modalAddons"></div>
+  <div class="qtyModal"><button class="dark" onclick="changeModalQty(-1)">−</button><b id="modalQty">1</b><button onclick="changeModalQty(1)">+</button><span style="margin-left:auto" class="modalTotal" id="modalTotal">₱0.00</span></div>
+  <br><button onclick="addConfiguredFood()">ADD TO CART</button>
+</div></div>
 <footer><b>MHAC DELIVERY</b><br>Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan</footer>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
@@ -334,7 +348,7 @@ function selectStore(name){
  }
  activeStore=name;
  const st=getStore(name);
- activeLabel=st?.labels?.[0]?.name||null;
+ activeLabel=null;
  renderStores();
  renderMenu();
  const card=document.getElementById('storeMenuCard');
@@ -344,71 +358,60 @@ function backToStores(){
  document.getElementById('storeMenuCard')?.classList.add('hidden');
  document.getElementById('customerMenus')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
+function backToCategories(){
+ activeLabel=null;
+ renderMenu();
+}
+function categoryIcon(label){
+ const n=(label||'').toLowerCase();
+ if(n.includes('chicken'))return '🍗'; if(n.includes('burger'))return '🍔'; if(n.includes('drink')||n.includes('beverage'))return '🥤';
+ if(n.includes('spaghetti')||n.includes('pasta'))return '🍝'; if(n.includes('rice')||n.includes('meal'))return '🍚';
+ if(n.includes('fries')||n.includes('side'))return '🍟'; if(n.includes('dessert')||n.includes('sweet'))return '🍨'; return '🍽️';
+}
 function renderMenu(){
  const st=getStore(activeStore);
- const labels=st?.labels||[];
- const title=document.getElementById('menuStoreTitle');
- const grid=document.getElementById('foodGrid');
- if(!title||!grid)return;
- title.innerHTML=st?`${st.icon||'🍽️'} ${esc(st.name)} MENU`:'STORE MENU';
- if(!st){
-   grid.innerHTML='<p class="status">Choose a store above.</p>';
-   return;
+ const title=document.getElementById('menuStoreTitle'),cats=document.getElementById('categoryGrid'),panel=document.getElementById('foodPanel'),grid=document.getElementById('foodGrid'),crumb=document.getElementById('menuBreadcrumb'),catTitle=document.getElementById('categoryTitle'),sticky=document.getElementById('stickyCart');
+ if(!title||!cats||!grid)return;
+ title.innerHTML=st?`${st.icon||'🍽️'} ${esc(st.name)}`:'STORE MENU';
+ if(!st){cats.innerHTML='<p class="status">Choose a store above.</p>';panel.classList.add('hidden');return;}
+ const sections=(st.labels||[]).filter(lb=>(lb.foods||[]).length);
+ if(!sections.length){cats.innerHTML='<p class="status">Walang menu pa sa store na ito. Paki-add muna sa Menu Manager.</p>';panel.classList.add('hidden');return;}
+ if(!activeLabel){
+   crumb.innerHTML=`<span>${esc(st.name)}</span> <b>›</b> <span>Choose a category</span>`;
+   cats.classList.remove('hidden');panel.classList.add('hidden');
+   cats.innerHTML=sections.map(lb=>{const f=lb.foods?.[0]; return `<button class="categoryBtn" onclick="selectCategory(${JSON.stringify(lb.name)})"><span class="catIcon">${categoryIcon(lb.name)}</span><span class="catName">${esc(lb.name)}</span><div class="catCount">${lb.foods.length} item${lb.foods.length===1?'':'s'} • Tap to view menu</div></button>`}).join('');
+ }else{
+   const lb=sections.find(x=>x.name===activeLabel)||sections[0]; activeLabel=lb.name;
+   crumb.innerHTML=`<span>${esc(st.name)}</span> <b>›</b> <b>${esc(lb.name)}</b>`;
+   cats.classList.add('hidden');panel.classList.remove('hidden');catTitle.textContent=`${categoryIcon(lb.name)} ${lb.name}`;
+   grid.innerHTML=lb.foods.map((f,i)=>{const groups=Array.isArray(f.addonGroups)&&f.addonGroups.some(g=>g.options?.length);const legacy=Array.isArray(f.addons)&&f.addons.length;const has=groups||legacy;const photo=f.image||'';return `<div class="foodItem"><div class="foodPhoto">${photo?`<img src="${esc(photo)}" alt="">`:(f.icon||categoryIcon(lb.name))}</div><div class="foodInfo"><h3>${esc(f.name)}</h3><p>${has?'Customize with drinks / add-ons':'Ready to add to cart'}</p><div class="foodPrice">${money(f.price)}</div></div><button class="addCircle" onclick="openFoodModal(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${i})">+</button></div>`}).join('');
  }
- const sections=labels.filter(lb=>(lb.foods||[]).length);
- if(!sections.length){
-   grid.innerHTML='<p class="status">Walang menu pa sa store na ito. Paki-add muna sa Menu Manager.</p>';
-   return;
- }
- grid.innerHTML=sections.map(lb=>`
-   <div style="grid-column:1/-1;margin-top:4px">
-     <h3 style="margin:4px 0 8px;color:#ed1118;font-size:20px">${esc(lb.name)}</h3>
-   </div>
-   ${(lb.foods||[]).map((f,i)=>{
-      const hasGroups=Array.isArray(f.addonGroups)&&f.addonGroups.some(g=>g.options?.length);
-      const hasLegacy=Array.isArray(f.addons)&&f.addons.length;
-      return `<div class="food">
-        <div class="icon">${f.icon||'🍽️'}</div>
-        <h3>${esc(f.name)}</h3>
-        <div class="price">${money(f.price)}</div>
-        <div class="mini">${hasGroups||hasLegacy?'May drinks / add-ons':'Food only'}</div>
-        <button onclick="openFoodModal(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${i})">
-          ${hasGroups||hasLegacy?'CHOOSE + ADD TO CART':'ADD TO CART'}
-        </button>
-      </div>`;
-   }).join('')}
- `).join('');
+ const count=cart.reduce((n,x)=>n+x.qty,0), total=sub();
+ if(sticky){sticky.classList.toggle('hidden',!cart.length);sticky.innerHTML=cart.length?`<button onclick="document.getElementById('cart').scrollIntoView({behavior:'smooth'})">🛒 VIEW CART <span style="float:right">${count} item${count===1?'':'s'} • ${money(total)}</span></button>`:'';}
 }
+function selectCategory(label){activeLabel=label;renderMenu();document.getElementById('foodPanel')?.scrollIntoView({behavior:'smooth',block:'start'});}
 function openFoodModal(store,label,index){
  const st=getStore(store),lb=st.labels.find(x=>x.name===label);
- modalStore=store; modalFood={...lb.foods[index],label};
+ modalStore=store; modalFood={...lb.foods[index],label}; window.modalQty=1;
  document.getElementById('modalFoodName').textContent=modalFood.name;
  document.getElementById('modalFoodPrice').textContent=money(modalFood.price);
+ const photo=document.getElementById('modalFoodPhoto'); if(photo){photo.innerHTML=modalFood.image?`<img src="${esc(modalFood.image)}" alt="">`:(modalFood.icon||categoryIcon(label));}
  const box=document.getElementById('modalAddons');
  const groups=Array.isArray(modalFood.addonGroups)?modalFood.addonGroups:[];
  const legacy=Array.isArray(modalFood.addons)?modalFood.addons:[];
  let html='';
- if(groups.length){
-   html=groups.map((g,gi)=>{
-     const opts=Array.isArray(g.options)?g.options:[];
-     if(!opts.length)return '';
-     const isDrink=/drink/i.test(g.name);
-     return `<div class="addonGroup"><h3>${esc(g.name)}</h3>
-       ${opts.map((a,ai)=>`<label class="addonChoice">
-         <span>${esc(a.name)} <b>+${money(a.price)}</b></span>
-         <input type="${isDrink?'radio':'checkbox'}" name="addonGroup_${gi}" data-group="${gi}" data-option="${ai}">
-       </label>`).join('')}
-     </div>`;
-   }).join('');
- }
- if(legacy.length){
-   html+='<div class="addonGroup"><h3>Add-ons</h3>'+
-     legacy.map((a,i)=>`<label class="addonChoice"><span>${esc(a.name)} <b>+${money(a.price)}</b></span><input type="checkbox" data-legacy-addon="${i}"></label>`).join('')+
-     '</div>';
- }
+ if(groups.length){html=groups.map((g,gi)=>{const opts=Array.isArray(g.options)?g.options:[];if(!opts.length)return '';const isDrink=/drink/i.test(g.name);return `<div class="addonGroup"><h3>${esc(g.name)}${isDrink?' <span class="mini">(choose 1)</span>':''}</h3>${opts.map((a,ai)=>`<label class="addonChoice"><span>${esc(a.name)} <b>${Number(a.price)?'+':''}${money(a.price)}</b></span><input type="${isDrink?'radio':'checkbox'}" name="addonGroup_${gi}" data-group="${gi}" data-option="${ai}" onchange="updateModalTotal()"></label>`).join('')}</div>`}).join('');}
+ if(legacy.length){html+='<div class="addonGroup"><h3>Add-ons</h3>'+legacy.map((a,i)=>`<label class="addonChoice"><span>${esc(a.name)} <b>+${money(a.price)}</b></span><input type="checkbox" data-legacy-addon="${i}" onchange="updateModalTotal()"></label>`).join('')+'</div>';}
  box.innerHTML=html||'<p class="status">No add-ons for this food.</p>';
- document.getElementById('foodModal').classList.add('show');
+ document.getElementById('modalQty').textContent='1'; updateModalTotal(); document.getElementById('foodModal').classList.add('show');
 }
+function modalUnitPrice(){
+ if(!modalFood)return 0; let total=Number(modalFood.price)||0;
+ (modalFood.addonGroups||[]).forEach((g,gi)=>{const opts=g.options||[];document.querySelectorAll(`#modalAddons input[data-group="${gi}"]:checked`).forEach(el=>{const a=opts[Number(el.dataset.option)];if(a)total+=Number(a.price)||0;});});
+ (modalFood.addons||[]).forEach((a,i)=>{const el=document.querySelector(`#modalAddons input[data-legacy-addon="${i}"]`);if(el?.checked)total+=Number(a.price)||0;}); return total;
+}
+function updateModalTotal(){const u=modalUnitPrice();document.getElementById('modalTotal').textContent=money(u*(window.modalQty||1));document.getElementById('modalFoodPrice').textContent=money(u);}
+function changeModalQty(n){window.modalQty=Math.max(1,(window.modalQty||1)+n);document.getElementById('modalQty').textContent=window.modalQty;updateModalTotal();}
 function closeFoodModal(){document.getElementById('foodModal').classList.remove('show');modalFood=null;modalStore=null}
 function addConfiguredFood(){
  if(!modalFood)return;
@@ -434,7 +437,7 @@ function addConfiguredFood(){
  cart.push({
    id:Date.now()+Math.random(),store:modalStore,label:modalFood.label,
    name:modalFood.name,icon:modalFood.icon||'🍽️',price:Number(modalFood.price)||0,
-   addons:adds,qty:1
+   addons:adds,qty:(window.modalQty||1)
  });
  activeStore=modalStore;activeLabel=modalFood.label;
  closeFoodModal();renderAllMenus();
@@ -447,7 +450,7 @@ function addStore(){
 function removeStore(name){if(selectedStores().includes(name))return alert('Remove this store items from the cart first.');if(!confirm('Remove store '+name+' and all its menus?'))return;menus=menus.filter(s=>s.name!==name);if(activeStore===name)activeStore=menus[0]?.name||null;activeLabel=getStore(activeStore)?.labels?.[0]?.name||null;saveMenus();renderAllMenus()}
 function addLabel(store){const v=document.getElementById('newLabel_'+safeId(store)).value.trim();if(!v)return;const st=getStore(store);if(st.labels.some(l=>l.name.toLowerCase()===v.toLowerCase()))return alert('Menu label already exists.');st.labels.push({name:v,foods:[]});saveMenus();activeStore=store;activeLabel=v;renderAllMenus()}
 function removeLabel(store,label){const st=getStore(store);if(!confirm('Remove menu label '+label+'?'))return;st.labels=st.labels.filter(l=>l.name!==label);if(activeLabel===label)activeLabel=st.labels[0]?.name||null;saveMenus();renderAllMenus()}
-function addFood(store,label){const st=getStore(store),lb=st.labels.find(l=>l.name===label);const n=document.getElementById('foodName_'+safeId(store+label)).value.trim();const p=Number(document.getElementById('foodPrice_'+safeId(store+label)).value);const icon=document.getElementById('foodIcon_'+safeId(store+label)).value.trim()||'🍽️';if(!n||!Number.isFinite(p)||p<0)return alert('Enter food name and valid price.');lb.foods.push({name:n,price:p,icon,addons:[]});saveMenus();document.getElementById('foodName_'+safeId(store+label)).value='';document.getElementById('foodPrice_'+safeId(store+label)).value='';renderAllMenus()}
+function addFood(store,label){const st=getStore(store),lb=st.labels.find(l=>l.name===label);const n=document.getElementById('foodName_'+safeId(store+label)).value.trim();const p=Number(document.getElementById('foodPrice_'+safeId(store+label)).value);const icon=document.getElementById('foodIcon_'+safeId(store+label)).value.trim()||'🍽️';const image=document.getElementById('foodImage_'+safeId(store+label)).value.trim();if(!n||!Number.isFinite(p)||p<0)return alert('Enter food name and valid price.');lb.foods.push({name:n,price:p,icon,image,addonGroups:[],addons:[]});saveMenus();document.getElementById('foodName_'+safeId(store+label)).value='';document.getElementById('foodPrice_'+safeId(store+label)).value='';renderAllMenus()}
 function removeFood(store,label,index){if(!confirm('Remove this food?'))return;const lb=getStore(store).labels.find(l=>l.name===label);lb.foods.splice(index,1);saveMenus();renderAllMenus()}
 function editFood(store,label,index){const lb=getStore(store).labels.find(l=>l.name===label),f=lb.foods[index];const n=prompt('Food name:',f.name);if(n===null)return;const p=prompt('Main food price:',f.price);if(p===null)return;f.name=n.trim()||f.name;f.price=Number(p)||0;saveMenus();renderAllMenus()}
 function addAddon(store,label,index){const lb=getStore(store).labels.find(l=>l.name===label),f=lb.foods[index];const n=prompt('Add-on name (example: Coke):');if(!n)return;const p=prompt('Add-on price:','25');if(p===null)return;const price=Number(p);if(!Number.isFinite(price)||price<0)return alert('Invalid price.');f.addons=f.addons||[];f.addons.push({name:n.trim(),price});saveMenus();renderAllMenus()}
@@ -462,7 +465,7 @@ function resetTestMenus(){
    if(i>=0) menus[i]=JSON.parse(JSON.stringify(d)); else menus.push(JSON.parse(JSON.stringify(d)));
  });
  saveMenus();
- activeStore="Jollibee";activeLabel="Burger List";renderAllMenus();
+ activeStore="Jollibee";activeLabel=null;renderAllMenus();
  alert('Test menus restored. Tap Jollibee to test.');
 }
 function renderMenuManager(){
@@ -472,7 +475,7 @@ function renderMenuManager(){
  <div class="managerRow"><div><label>New Menu Label</label><input id="newLabel_${safeId(st.name)}" placeholder="Example: Chicken Meals"></div><div style="display:flex;align-items:end"><button onclick="addLabel(${JSON.stringify(st.name)})">＋ ADD MENU LABEL</button></div></div>
  ${(st.labels||[]).map(lb=>`<div class="menuManagerStore" style="background:#fff"><div class="menuManagerHead"><b>🏷️ ${esc(lb.name)}</b><button class="dark" style="width:auto" onclick="removeLabel(${JSON.stringify(st.name)},${JSON.stringify(lb.name)})">REMOVE LABEL</button></div>
  <div class="managerRow"><div><label>Main Food Name</label><input id="foodName_${safeId(st.name+lb.name)}" placeholder="Chickenjoy"></div><div><label>Main Food Price</label><input id="foodPrice_${safeId(st.name+lb.name)}" type="number" min="0" step=".01" placeholder="149"></div></div>
- <label>Food Icon</label><input id="foodIcon_${safeId(st.name+lb.name)}" placeholder="🍗"><br><button style="margin-top:8px" onclick="addFood(${JSON.stringify(st.name)},${JSON.stringify(lb.name)})">＋ ADD MAIN FOOD</button>
+ <label>Food Icon</label><input id="foodIcon_${safeId(st.name+lb.name)}" placeholder="🍗"><label>Food Image URL (optional)</label><input id="foodImage_${safeId(st.name+lb.name)}" placeholder="https://...jpg"><br><button style="margin-top:8px" onclick="addFood(${JSON.stringify(st.name)},${JSON.stringify(lb.name)})">＋ ADD MAIN FOOD</button>
  ${(lb.foods||[]).map((f,fi)=>`<div class="menuManagerStore" style="margin-top:10px"><div class="menuManagerHead"><b>${f.icon||'🍽️'} ${esc(f.name)} — ${money(f.price)}</b><span class="mini">${(f.addons||[]).length} add-on(s)</span></div>
  <div class="managerActions"><button class="outline" onclick="editFood(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${fi})">EDIT FOOD</button><button onclick="addAddon(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${fi})">＋ ADD ADD-ON</button><button class="dark" onclick="removeFood(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${fi})">REMOVE FOOD</button></div>
  <div style="margin-top:8px">${(f.addons||[]).map((a,ai)=>`<div class="addon"><span>↳ ${esc(a.name)} <b>+${money(a.price)}</b></span><button class="dark" style="width:auto;padding:6px 9px" onclick="removeAddon(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${fi},${ai})">REMOVE</button></div>`).join('')||'<span class="mini">No add-ons yet.</span>'}</div>
