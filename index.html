@@ -50,6 +50,38 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 .addonGroup{margin:12px 0}.addonGroup h3{margin:12px 0 7px;font-size:16px}.addonChoice{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border:1px solid #ddd;border-radius:10px;margin:7px 0}.addonChoice input{width:auto}
 
 .topRate{margin-top:16px}.rateCard{background:#08090b;color:#fff;border:2px solid #ed1118;border-radius:18px;padding:16px 18px;line-height:1.55;box-shadow:0 5px 16px #0002}.rateTitle{color:#ff3036;font-size:18px;font-weight:1000;margin-bottom:7px}.rateFormula{font-weight:800;margin-top:3px}.rateCard b{color:#fff}@media(max-width:620px){.rateCard{font-size:14px}.rateTitle{font-size:17px}}
+
+/* ===== MHAC CUSTOMER APP V4 ===== */
+body{background:#f6f6f6;font-family:Arial,system-ui,sans-serif}
+header{background:#fff;color:#111;border-bottom:3px solid #ed1118;box-shadow:0 2px 10px #00000012}
+.top{height:78px}.brand{font-size:24px}.brand span{color:#ed1118}
+.topRate{padding-top:6px}.rateCard{background:#fff;border:1.5px solid #ed1118;border-radius:16px;padding:13px 15px;box-shadow:0 2px 9px #0000000d}
+.rateTitle{color:#ed1118;font-weight:1000;font-size:14px;margin-bottom:5px}.rateCard>div{font-size:13px;line-height:1.55}.rateFormula{font-weight:900;margin-top:3px}
+.wrap{max-width:720px}.card{border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 2px 12px #0000000d}
+#customerMenus{margin-top:14px}#customerMenus .section-title{display:block}#customerMenus .section-title h2{font-size:23px;margin-bottom:3px}
+.storeGrid{gap:10px}.storeBtn{background:#fff;color:#111;border:1.5px solid #e2e2e2;border-radius:13px;min-height:82px;font-size:17px;box-shadow:0 2px 8px #0000000b}
+.storeBtn.selected{background:#fff;color:#ed1118;border:2px solid #ed1118}.notice{border-color:#f3c8c9;background:#fff7f7;border-radius:12px}
+#storeMenuCard{padding:0;overflow:hidden}
+#storeMenuCard>.section-title{background:#ed1118;color:#fff;padding:14px 16px;margin:0}
+#storeMenuCard>.section-title h2{font-size:20px;margin:0}#storeMenuCard .backBtn{background:transparent;color:#fff;border-color:#ffffff80}
+#menuBreadcrumb{padding:10px 16px 0}#menuSearchWrap{padding:8px 16px 0}
+#menuSearch{height:44px;border-radius:10px;border:1px solid #ddd;padding-left:42px}
+.categoryGrid{display:flex;overflow-x:auto;gap:0;padding:7px 8px 0;margin:0;border-bottom:1px solid #eee;scrollbar-width:none}
+.categoryGrid::-webkit-scrollbar{display:none}.categoryBtn{min-width:122px;background:#fff;border:0;border-bottom:3px solid transparent;border-radius:0;padding:10px 8px 9px;text-align:center;min-height:74px;box-shadow:none}
+.categoryBtn .catIcon{font-size:25px;display:inline;margin-right:4px}.categoryBtn .catName{font-size:13px;font-weight:1000;white-space:nowrap}.categoryBtn .catCount{display:none}
+.categoryBtn:hover{background:#fff;border-color:#ed1118}#foodPanel{padding:0 16px 16px}#foodPanel>.section-title{margin:8px 0 0}
+#foodPanel>.section-title h2{font-size:20px!important}.foodList{margin-top:0}
+.foodItem{grid-template-columns:92px 1fr auto;gap:12px;padding:18px 0;border-bottom:1px solid #eee}
+.foodPhoto{width:92px;height:82px;border-radius:10px;background:#fafafa;font-size:42px}.foodInfo h3{font-size:16px;line-height:1.22;margin:0 0 6px}
+.foodInfo p{font-size:11px}.foodPrice{font-size:16px;margin-top:6px}.addCircle{background:#ed1118;border-radius:50%;width:42px;height:42px;color:#fff;font-size:27px}
+.stickyCart{margin:0;padding-top:4px}.stickyCart button{border-radius:8px;background:#ed1118}
+.foodModal{background:#0008;padding:0;align-items:flex-end}.modalCard{border-radius:20px 20px 0 0;max-width:620px;padding:18px 18px 20px}
+.modalHero{display:block}.modalHero .foodPhoto{width:100%;height:210px;border-radius:12px;margin-bottom:14px}.modalHero .foodPhoto img{object-fit:contain}
+.addonGroup{border:1px solid #e2e2e2;border-radius:14px;padding:10px 12px;margin:10px 0}.addonGroup h3{font-size:15px;margin:0 0 8px}
+.addonChoice{padding:12px 0;border-bottom:1px solid #eee}.addonChoice:last-child{border-bottom:0}.qtyModal{border:1px solid #111;border-radius:30px;padding:3px 7px;margin-top:14px}
+.qtyModal button{width:38px;height:38px;border-radius:50%;padding:0}.modalTotal{color:#ed1118}
+#customerCard{border:2px solid #ed1118}
+@media(max-width:620px){.wrap{padding:0 12px}.brand{font-size:22px}.storeBtn{font-size:16px}.foodItem{grid-template-columns:82px 1fr auto}.foodPhoto{width:82px;height:76px}}
 </style>
 </head>
 <body>
@@ -98,6 +130,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
     <button class="backBtn" onclick="backToStores()">← Stores</button>
   </div>
   <div id="menuBreadcrumb" class="crumb"></div>
+  <div id="menuSearchWrap"><input id="menuSearch" type="search" placeholder="Search in this store menu..." oninput="filterCustomerMenu(this.value)"></div>
   <div id="categoryGrid" class="categoryGrid"></div>
   <div id="foodPanel" class="hidden">
     <div class="section-title" style="margin-top:10px"><h2 id="categoryTitle" style="font-size:18px;margin:0">Category</h2><button class="backBtn" onclick="backToCategories()">← Categories</button></div>
@@ -377,11 +410,13 @@ function renderMenu(){
  const sections=(st.labels||[]).filter(lb=>(lb.foods||[]).length);
  if(!sections.length){cats.innerHTML='<p class="status">Walang menu pa sa store na ito. Paki-add muna sa Menu Manager.</p>';panel.classList.add('hidden');return;}
  if(!activeLabel){
+   const search=document.getElementById('menuSearch'); if(search){search.placeholder=`Search ${st.name} menu...`; search.value='';}
    crumb.innerHTML=`<span>${esc(st.name)}</span> <b>›</b> <span>Choose a category</span>`;
    cats.classList.remove('hidden');panel.classList.add('hidden');
    cats.innerHTML=sections.map(lb=>{const f=lb.foods?.[0]; return `<button class="categoryBtn" onclick="selectCategory(${JSON.stringify(lb.name)})"><span class="catIcon">${categoryIcon(lb.name)}</span><span class="catName">${esc(lb.name)}</span><div class="catCount">${lb.foods.length} item${lb.foods.length===1?'':'s'} • Tap to view menu</div></button>`}).join('');
  }else{
    const lb=sections.find(x=>x.name===activeLabel)||sections[0]; activeLabel=lb.name;
+   const search=document.getElementById('menuSearch'); if(search){search.placeholder=`Search ${lb.name}...`; search.value='';}
    crumb.innerHTML=`<span>${esc(st.name)}</span> <b>›</b> <b>${esc(lb.name)}</b>`;
    cats.classList.add('hidden');panel.classList.remove('hidden');catTitle.textContent=`${categoryIcon(lb.name)} ${lb.name}`;
    grid.innerHTML=lb.foods.map((f,i)=>{const groups=Array.isArray(f.addonGroups)&&f.addonGroups.some(g=>g.options?.length);const legacy=Array.isArray(f.addons)&&f.addons.length;const has=groups||legacy;const photo=f.image||'';return `<div class="foodItem"><div class="foodPhoto">${photo?`<img src="${esc(photo)}" alt="">`:(f.icon||categoryIcon(lb.name))}</div><div class="foodInfo"><h3>${esc(f.name)}</h3><p>${has?'Customize with drinks / add-ons':'Ready to add to cart'}</p><div class="foodPrice">${money(f.price)}</div></div><button class="addCircle" onclick="openFoodModal(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${i})">+</button></div>`}).join('');
@@ -389,7 +424,24 @@ function renderMenu(){
  const count=cart.reduce((n,x)=>n+x.qty,0), total=sub();
  if(sticky){sticky.classList.toggle('hidden',!cart.length);sticky.innerHTML=cart.length?`<button onclick="document.getElementById('cart').scrollIntoView({behavior:'smooth'})">🛒 VIEW CART <span style="float:right">${count} item${count===1?'':'s'} • ${money(total)}</span></button>`:'';}
 }
-function selectCategory(label){activeLabel=label;renderMenu();document.getElementById('foodPanel')?.scrollIntoView({behavior:'smooth',block:'start'});}
+function filterCustomerMenu(q){
+ const term=String(q||'').trim().toLowerCase();
+ if(!activeLabel){
+   document.querySelectorAll('#categoryGrid .categoryBtn').forEach(b=>{
+     b.style.display=(!term||b.textContent.toLowerCase().includes(term))?'':'none';
+   });
+ }else{
+   document.querySelectorAll('#foodGrid .foodItem').forEach(row=>{
+     row.style.display=(!term||row.textContent.toLowerCase().includes(term))?'':'none';
+   });
+ }
+}
+function selectCategory(label){
+ activeLabel=label;
+ const s=document.getElementById('menuSearch'); if(s)s.value='';
+ renderMenu();
+ document.getElementById('foodPanel')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
 function openFoodModal(store,label,index){
  const st=getStore(store),lb=st.labels.find(x=>x.name===label);
  modalStore=store; modalFood={...lb.foods[index],label}; window.modalQty=1;
