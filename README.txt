@@ -1,15 +1,28 @@
-MHAC DELIVERY V8.5
+MHAC DELIVERY — COMPLETE ORDER MANAGEMENT UPGRADE
 
-IMPORTANT MENU FIXES:
-- Customer App now shows MENU LIST immediately near the top.
-- All stores and their menu labels/foods are visible in the menu catalog.
-- Tapping a food opens its Add Drinks / Add-ons choices and ADD TO CART.
-- Customer App and Admin Menu Manager now use the SAME localStorage key: MHAC_MENU_V8_5.
-- Old V8.4 and V6 menu data is automatically migrated when possible.
-- Admin Menu Manager now supports Add-on Groups such as "Add Drinks" and individual choices with additional prices.
-- Maximum 2 stores and second-store +P5 rule remain.
-- Existing GPS, distance and delivery-fee code is preserved.
+Customer:
+- Store-first menu interface
+- Menu Manager shared key MHAC_MENU_V8_5
+- Food + add-ons + cart
+- Maximum 2 stores, second store +P5
+- GPS + OSRM road distance
+- Delivery fee: P40 first billable km + P10 each succeeding km
+- 10% service fee
+- Checkout and order number
+- Live order status tracker
 
-UPLOAD:
-Replace the files in GitHub with all files from this ZIP, then commit.
-If the browser still shows the old menu, refresh/clear site cache once.
+Admin:
+- Orders dashboard
+- Assign rider
+- Update order status
+- View customer, GPS distance, fees, stores and items
+- Shared demo order storage: MHAC_DEMO_ORDERS
+
+Rider:
+- Assigned/active orders
+- Customer details
+- Items, distance, fees
+- Open Maps
+- Update status
+
+NOTE: This build uses browser localStorage for the demo connection. For real multi-device production sync, connect the same schema to Firebase/Firestore in the next production step.

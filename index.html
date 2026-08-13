@@ -150,10 +150,19 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 </section>
 
 <section id="confirmation" class="card hidden"></section>
+
+<section class="card" id="liveTrackerCard">
+  <h2>📦 TRACK MY ORDER</h2>
+  <div class="row">
+    <div><label>Order Number</label><input id="trackId" placeholder="Example: MHAC-123456"></div>
+    <div style="display:flex;align-items:end"><button onclick="showLiveOrder()">TRACK ORDER</button></div>
+  </div>
+  <div id="liveTracker" class="locationbox">Enter your order number to see the latest status.</div>
+</section>
 </main>
 
 <div id="foodModal" class="foodModal" onclick="if(event.target===this)closeFoodModal()"><div class="modalCard"><div class="section-title"><h2 id="modalFoodName">Food</h2><button class="dark" style="width:auto" onclick="closeFoodModal()">✕</button></div><p id="modalFoodPrice" class="price"></p><div id="modalAddons"></div><br><button onclick="addConfiguredFood()">ADD TO ORDER</button></div></div>
-<footer><button onclick="trackOrder()" style="max-width:300px;margin-bottom:15px">📦 TRACK MY ORDER</button><br><b>MHAC DELIVERY</b><br>Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan</footer>
+<footer><b>MHAC DELIVERY</b><br>Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan</footer>
 
 <script>
 const municipalities={
@@ -649,8 +658,18 @@ function trackOrder(){
 }
 
 function saveDemoOrder(o){
- let a=demoOrders();a.push(o);localStorage.setItem(DEMO_ORDERS_KEY,JSON.stringify(a));
+ let a=demoOrders();a=a.filter(x=>x.id!==o.id);a.push(o);localStorage.setItem(DEMO_ORDERS_KEY,JSON.stringify(a));
+ localStorage.setItem("MHAC_ORDER_"+o.id,JSON.stringify(o));
 }
+function showLiveOrder(){
+ const id=(document.getElementById("trackId")?.value||"").trim();
+ const box=document.getElementById("liveTracker");
+ if(!id){box.innerHTML="Please enter your MHAC Order Number.";return}
+ const o=JSON.parse(localStorage.getItem("MHAC_ORDER_"+id)||"null");
+ if(!o){box.innerHTML="❌ Order not found on this device. Use the same browser/device where the order was placed.";return}
+ box.innerHTML=`<b>ORDER ${o.id}</b><br><br><b>STATUS:</b> <span style="color:#ed1118;font-size:20px">${o.status||"Pending"}</span><br>Rider: ${o.rider||"Not assigned"}<br>Stores: ${(o.stores||[]).join(" + ")}<br>Distance: ${o.distanceKm?Number(o.distanceKm).toFixed(2)+" km":"—"}<br>Delivery Fee: ${money(o.deliveryFee)}<br>Grand Total: <b>${money(o.grandTotal)}</b>`;
+}
+setInterval(()=>{ if(document.getElementById("trackId")?.value) showLiveOrder(); },2000);
 const params=new URLSearchParams(location.search);
 if(params.get("app")==="admin"||params.get("app")==="rider") roleDashboard(params.get("app"));
 init();
