@@ -1,0 +1,23 @@
+MHAC DELIVERY - FULL CUSTOMER ONLINE ORDER PACKAGE
+Version: V7 FULL PACKAGE
+Build date: 2026-08-13
+
+Included:
+- Customer interface with top DELIVERY RATE
+- Store selection and multi-store limit (maximum 2 stores)
+- Jollibee category flow and food/add-on choices
+- Cart and order summary
+- 10% service fee
+- GPS/road-distance delivery fee calculation
+- +P5 second-store fee
+- Customer checkout and order ID
+- Online Firebase order/menu integration files
+- Admin app
+- Rider app
+- Admin menu manager
+- Firebase configuration/rules templates
+
+IMPORTANT:
+Upload/replace ALL files in this ZIP in the GitHub Pages repository.
+Do not upload only index.html; the supporting JS/config/admin/rider files are included.
+If GitHub Pages shows an older version, hard-refresh the browser or open the site in a private/incognito tab after deployment.
