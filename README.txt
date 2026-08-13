@@ -1,28 +1,16 @@
-MHAC DELIVERY — COMPLETE ORDER MANAGEMENT UPGRADE
+MHAC DELIVERY — ONLINE ORDER V2
 
-Customer:
-- Store-first menu interface
-- Menu Manager shared key MHAC_MENU_V8_5
-- Food + add-ons + cart
-- Maximum 2 stores, second store +P5
-- GPS + OSRM road distance
-- Delivery fee: P40 first billable km + P10 each succeeding km
-- 10% service fee
-- Checkout and order number
-- Live order status tracker
+Customer app:
+  index.html
+Admin app:
+  admin.html
+Rider app:
+  rider.html
+Menu manager:
+  admin-menu.html
+Firebase config:
+  firebase-config.js
+Online bridge:
+  mhac-online.js
 
-Admin:
-- Orders dashboard
-- Assign rider
-- Update order status
-- View customer, GPS distance, fees, stores and items
-- Shared demo order storage: MHAC_DEMO_ORDERS
-
-Rider:
-- Assigned/active orders
-- Customer details
-- Items, distance, fees
-- Open Maps
-- Update status
-
-NOTE: This build uses browser localStorage for the demo connection. For real multi-device production sync, connect the same schema to Firebase/Firestore in the next production step.
+Read FIREBASE_SETUP.txt before publishing the online version.

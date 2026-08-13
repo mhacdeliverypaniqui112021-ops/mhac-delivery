@@ -62,6 +62,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <h1>FOOD DELIVERY</h1><p>Your delivery partner • Door to Door</p>
 <div class="pills"><span class="pill">⚡ FAST</span><span class="pill">🛡️ SAFE</span><span class="pill">📦 DOOR TO DOOR</span></div>
 </div></section>
+<div style="text-align:center;margin:8px 0;font-size:12px;font-weight:900"><span data-online-status>🟡 OFFLINE / LOCAL MODE</span></div>
 <section class="topRate wrap">
 <div class="rateCard">
   <div class="rateTitle">DELIVERY RATE</div>
@@ -174,6 +175,11 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <div id="foodModal" class="foodModal" onclick="if(event.target===this)closeFoodModal()"><div class="modalCard"><div class="section-title"><h2 id="modalFoodName">Food</h2><button class="dark" style="width:auto" onclick="closeFoodModal()">✕</button></div><p id="modalFoodPrice" class="price"></p><div id="modalAddons"></div><br><button onclick="addConfiguredFood()">ADD TO ORDER</button></div></div>
 <footer><b>MHAC DELIVERY</b><br>Paniqui • Moncada • Ramos • Gerona • Pura • Anao • Nampicuan</footer>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="mhac-online.js"></script>
 <script>
 const municipalities={
 "Paniqui, Tarlac":["Abogado","Acocolao","Aduas","Apulid","Balaoang","Barang","Brillante","Burgos","Cabayaoasan","Canan","Carino","Cayanga","Colibangbang","Coral","Dapdap","Estacion","Mabilang","Manaois","Matalapitap","Nagmisaan","Nancamarinan","Nipaco","Patalan","Poblacion Norte","Poblacion Sur","Rang-ayan","Salumague","Samput","San Carlos","San Isidro","San Juan de Milla","Santa Ines","Sinigpit","Tablang","Ventenilla"],
@@ -622,7 +628,7 @@ async function autoCalculate(){
     update();
   }
 }
-function confirmOrder(){
+async function confirmOrder(){
 if(!cart.length){alert("Cart is empty.");return}
 if(selectedStores().length>MAX_STORES){alert("Only 2 stores are allowed per order.");return}
 let name=document.getElementById("name").value.trim(),phone=document.getElementById("phone").value.trim(),m=document.getElementById("municipality").value,b=document.getElementById("barangay").value,a=document.getElementById("address").value.trim();
@@ -631,6 +637,7 @@ if(roadKm===null || deliveryFee===null){alert("Please allow CUSTOMER GPS and wai
 let s=sub(),sf=s*.10,storeFee=additionalStoreFee(),total=s+sf+deliveryFee+storeFee,id="MHAC-"+Math.floor(100000+Math.random()*900000);
 let order={id,date:new Date().toLocaleString(),items:cart.map(x=>({name:x.name,store:x.store,label:x.label,qty:x.qty,price:x.price,addons:x.addons})),stores:selectedStores(),additionalStoreFee:storeFee,name,phone,municipality:m,barangay:b,address:a,landmark:document.getElementById("landmark").value,payment:document.getElementById("payment").value,notes:document.getElementById("notes").value,distanceKm:roadKm,deliveryFee,subtotal:s,serviceFee:sf,grandTotal:total,status:"Pending"};
 localStorage.setItem("MHAC_ORDER_"+id,JSON.stringify(order)); saveDemoOrder(order);
+try{ await saveOnlineOrder({...order,createdAt:firebase.firestore.FieldValue.serverTimestamp()}); order._online=true; localStorage.setItem("MHAC_ORDER_"+id,JSON.stringify(order)); }catch(e){ console.warn("Online order save failed:",e); }
 let c=document.getElementById("confirmation");c.classList.remove("hidden");
 c.innerHTML='<div class="success"><h2>✅ ORDER RECEIVED</h2><div class="orderid">'+id+'</div><p><b>'+name+'</b><br>'+phone+'</p><p>'+b+', '+m+'<br>'+a+'</p><hr><p>Food: <b>'+money(s)+'</b></p><p>Service Fee: <b>'+money(sf)+'</b></p><p>Distance: <b>'+roadKm.toFixed(1)+' km</b></p><p>Delivery Fee: <b>'+money(deliveryFee)+'</b></p><p>Additional Store Fee: <b>'+money(storeFee)+'</b></p><h2>GRAND TOTAL: '+money(total)+'</h2><p>Status: <b>Pending</b></p><button onclick="navigator.clipboard.writeText(\''+id+'\');alert(\'Order ID copied\')">COPY ORDER ID</button><br><br><button class="dark" onclick="location.reload()">NEW ORDER</button></div>';
 c.scrollIntoView({behavior:"smooth"});
@@ -675,14 +682,16 @@ function showLiveOrder(){
  const id=(document.getElementById("trackId")?.value||"").trim();
  const box=document.getElementById("liveTracker");
  if(!id){box.innerHTML="Please enter your MHAC Order Number.";return}
- const o=JSON.parse(localStorage.getItem("MHAC_ORDER_"+id)||"null");
- if(!o){box.innerHTML="❌ Order not found on this device. Use the same browser/device where the order was placed.";return}
- box.innerHTML=`<b>ORDER ${o.id}</b><br><br><b>STATUS:</b> <span style="color:#ed1118;font-size:20px">${o.status||"Pending"}</span><br>Rider: ${o.rider||"Not assigned"}<br>Stores: ${(o.stores||[]).join(" + ")}<br>Distance: ${o.distanceKm?Number(o.distanceKm).toFixed(2)+" km":"—"}<br>Delivery Fee: ${money(o.deliveryFee)}<br>Grand Total: <b>${money(o.grandTotal)}</b>`;
+ const local=JSON.parse(localStorage.getItem("MHAC_ORDER_"+id)||"null");
+ if(local) renderTrackedOrder(local,box); else box.innerHTML="⏳ Searching online order...";
+ if(window.listenOnlineOrder){ window.listenOnlineOrder(id,o=>{if(o) renderTrackedOrder(o,box);}); }
 }
+function renderTrackedOrder(o,box){box.innerHTML=`<b>ORDER ${o.id}</b><br><br><b>STATUS:</b> <span style="color:#ed1118;font-size:20px">${o.status||"Pending"}</span><br>Rider: ${o.rider||"Not assigned"}<br>Stores: ${(o.stores||[]).join(" + ")}<br>Distance: ${o.distanceKm?Number(o.distanceKm).toFixed(2)+" km":"—"}<br>Delivery Fee: ${money(o.deliveryFee)}<br>Grand Total: <b>${money(o.grandTotal)}</b>`;}
 setInterval(()=>{ if(document.getElementById("trackId")?.value) showLiveOrder(); },2000);
 const params=new URLSearchParams(location.search);
 if(params.get("app")==="admin"||params.get("app")==="rider") roleDashboard(params.get("app"));
 init();
+if(window.listenOnlineMenus){window.listenOnlineMenus(m=>{menus=m;saveMenus();activeStore=menus[0]?.name||null;activeLabel=menus[0]?.labels?.[0]?.name||null;renderAllMenus();});}
 </script>
 </body>
 </html>
