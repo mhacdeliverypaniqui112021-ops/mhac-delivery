@@ -1,9 +1,1 @@
-{
-  "name": "MHAC DELIVERY Rider",
-  "short_name": "MHAC DELIVERY Rider",
-  "start_url": "rider/index.html",
-  "display": "standalone",
-  "background_color": "#f5f5f5",
-  "theme_color": "#111111",
-  "icons": []
-}
+{"name":"MHAC DELIVERY Customer","short_name":"MHAC Customer","start_url":"./","display":"standalone","theme_color":"#ed1c24","background_color":"#ffffff"}

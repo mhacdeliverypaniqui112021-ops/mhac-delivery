@@ -1,39 +1,29 @@
-MHAC DELIVERY FULL PACKAGE
-============================
+MHAC DELIVERY V9 - FULL TEST PACKAGE
+=========================================
+IMPORTANT STRUCTURE
+- index.html = CUSTOMER APP (root)
+- admin/index.html = ADMIN APP
+- rider/index.html = RIDER APP
+- shared/style.css + shared/data.js
+- assets/ = logo/menu images
 
-Included:
-- customer/  Customer ordering app (PWA-ready)
-- admin/     Admin dashboard: view orders, confirm, assign rider, update status
-- rider/     Rider dashboard: assigned orders only, update ON THE WAY / DELIVERED
-- shared/    Shared CSS/data
-- assets/    MHAC logo + self-contained placeholder food images
+WHY V9
+The previous package used customer/index.html. If the ZIP was uploaded with a different folder level, the Rider page could load without its CSS/assets. V9 keeps the Customer App at the repository root and uses clean relative paths for Admin/Rider.
 
-TESTING (LOCAL)
-1. Extract the ZIP.
-2. Serve the package folder with any static web server (GitHub Pages works).
-3. Open customer/index.html.
-4. Tap Jollibee -> Chickenjoy -> product + -> choose add-on -> cart -> checkout.
-5. Open admin/index.html and refresh: the test order is visible in the same browser/local mode.
-6. Assign Rider 1.
-7. Open rider/index.html and refresh: only assigned orders are shown.
-8. Change status to ON THE WAY then DELIVERED.
+TEST FLOW
+1. Upload the CONTENTS of this ZIP to the root of the GitHub Pages repository.
+2. Open /mhac-delivery/
+3. Tap Jollibee -> Chickenjoy -> +.
+4. Choose the drink/add-on.
+5. Add items and CHECKOUT.
+6. Open /mhac-delivery/admin/
+7. Confirm and assign Rider 1.
+8. Open /mhac-delivery/rider/
+9. Refresh. Only assigned orders appear.
+10. Tap ON THE WAY then DELIVERED.
 
-IMPORTANT ONLINE MODE
-This package is fully functional for local browser testing using localStorage. For REAL multi-device online orders (customer phone -> admin phone -> rider phone), connect Firebase Firestore/Auth and replace the localStorage data layer with Firebase. The current package intentionally does not invent your Firebase project credentials.
+LOCAL TEST LIMITATION
+This version uses browser localStorage. Customer/Admin/Rider can share the same test order when opened on the SAME browser/device/origin. It is NOT yet a real multi-device online database.
 
-PWA INSTALL
-- Customer, Admin, and Rider each have a manifest.
-- On Android Chrome, open the app URL and use browser menu -> Install app / Add to Home screen.
-- This produces installable web apps.
-- A true APK/AAB can be produced later with Capacitor once the Firebase project and production URLs are finalized.
-
-RATE LOGIC
-- First 1 km = P40
-- Each succeeding km = +P10
-- Maximum 2 stores
-- Second store = +P5
-- Service fee = 10% of food subtotal
-- Grand total = Food Order + Service Fee + Delivery Fee + Additional Store Fee
-
-NOTE
-Food images in this test package are placeholders based on the supplied MHAC screenshot logo. Send the actual menu/product photos and we can replace them one-by-one in the final production menu.
+NEXT PRODUCTION STEP
+Connect Firebase Firestore/Auth so Customer phone -> Admin phone -> assigned Rider phone works online in real time. Do not replace the Firebase config until the project's actual credentials are available.
