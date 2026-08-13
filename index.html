@@ -35,6 +35,14 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 .storeBtn{background:#111;color:#fff;border:0;border-radius:15px;padding:18px 12px;font-size:19px;font-weight:1000;min-height:68px;box-shadow:0 3px 10px #0002}
 .storeBtn:active{transform:scale(.98)}
 .storeBtn.selected{background:var(--red)}
+
+.rateTop{background:#090a0c;color:#fff;border:2px solid var(--red);border-radius:16px;padding:14px 16px;margin-top:14px;line-height:1.55;font-size:13px;box-shadow:0 4px 16px #0002}
+.rateTitle{color:#ff3036;font-size:16px;font-weight:1000;margin-bottom:5px}
+.rateFormula{font-weight:800;margin-top:2px}
+.appLinks{margin-top:14px}
+.appBtn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:1000;border-radius:14px;padding:13px 22px;font-size:17px;min-width:150px}
+.adminBtn{background:var(--red);color:#fff}
+.riderBtn{background:#111;color:#fff}
 @media(max-width:620px){.storeGrid{grid-template-columns:1fr 1fr}.storeBtn{font-size:17px}}
 
 @media(max-width:620px){.foodgrid,.row{grid-template-columns:1fr}.hero img{width:125px;height:125px}.hero h1{font-size:30px}}
@@ -55,15 +63,16 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <div><div class="brand">MHAC <span>DELIVERY</span></div><small>FAST • SAFE • ON TIME</small></div>
 </div></header>
 
-<section class="hero"><div class="wrap">
-<img src="logo.png" alt="MHAC DELIVERY logo">
-<h1>FOOD DELIVERY</h1><p>Your delivery partner • Door to Door</p>
-<div class="pills"><span class="pill">⚡ FAST</span><span class="pill">🛡️ SAFE</span><span class="pill">📦 DOOR TO DOOR</span></div>
-</div></section>
-<div class="wrap" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px">
-<a href="admin.html" style="background:#ed1118;color:#fff;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:900">ADMIN APP</a>
-<a href="rider.html" style="background:#111;color:#fff;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:900">RIDER APP</a>
-<a href="admin-menu.html" style="background:#fff;color:#111;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:900;border:2px solid #fff">MENU MANAGER</a>
+
+<section class="rateTop wrap">
+  <div class="rateTitle">DELIVERY RATE</div>
+  <div>First 1 km = <b>₱40</b> • Every succeeding km = <b>+₱10</b></div>
+  <div>Maximum 2 stores • 2nd store <b>+₱5</b></div>
+  <div class="rateFormula">Formula: Food Order + 10% Service Fee + Delivery Fee + Additional Store Fee</div>
+</section>
+<div class="wrap appLinks" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+<a href="admin.html" class="appBtn adminBtn">ADMIN APP</a>
+<a href="rider.html" class="appBtn riderBtn">RIDER APP</a>
 </div>
 
 <main class="wrap">
@@ -99,8 +108,6 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <div class="sumrow"><span>Delivery Fee</span><b id="delivery">₱0.00</b></div>
 <div class="sumrow"><span>Additional Store Fee</span><b id="storeFee">₱0.00</b></div>
 <div class="sumrow grand"><span>GRAND TOTAL</span><span id="grand">₱0.00</span></div>
-<br>
-<div class="notice"><b>DELIVERY RATE</b><br>First 1 km = ₱40 • Every succeeding km = +₱10 • Maximum 2 stores • 2nd store +₱5<br>Formula: <b>Food Order + 10% Service Fee + Delivery Fee + Additional Store Fee</b></div>
 <br>
 <button onclick="openCustomer()">PLACE ORDER</button>
 </section>
