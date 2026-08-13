@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a0a0c">
-<title>MHAC DELIVERY • V6 MENU BUILDER • GPS • 2 STORES</title>
+<title>MHAC DELIVERY • CUSTOMER APP</title>
 <style>
 :root{--black:#08090b;--red:#ed1118;--red2:#ff3036;--white:#fff;--gray:#f3f4f6;--line:#dedfe3;--muted:#70737a}
 *{box-sizing:border-box}
@@ -13,7 +13,7 @@ header{background:var(--black);color:#fff;position:sticky;top:0;z-index:20;borde
 .wrap{max-width:980px;margin:auto;padding:0 16px}
 .top{height:74px;display:flex;align-items:center;gap:12px}.top img{width:54px;height:54px;object-fit:contain;border-radius:50%}
 .brand{font-size:23px;font-weight:1000;letter-spacing:.5px}.brand span{color:var(--red2)}
-.hero{background:radial-gradient(circle at 50% 0,#4b080b 0,#150607 40%,#08090b 75%);color:#fff;text-align:center;padding:30px 0 34px;border-bottom:1px solid #2d2d31}
+.hero{display:none!important;background:radial-gradient(circle at 50% 0,#4b080b 0,#150607 40%,#08090b 75%);color:#fff;text-align:center;padding:30px 0 34px;border-bottom:1px solid #2d2d31}
 .hero img{width:150px;height:150px;object-fit:contain;filter:drop-shadow(0 10px 18px #000);}.hero h1{font-size:34px;margin:10px 0 5px}.hero p{margin:0;color:#ddd}
 .pills{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:18px}.pill{border:1px solid #555;border-radius:99px;padding:7px 11px;font-size:12px}
 .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin:16px 0;box-shadow:0 4px 16px #0000000b}
@@ -35,14 +35,6 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 .storeBtn{background:#111;color:#fff;border:0;border-radius:15px;padding:18px 12px;font-size:19px;font-weight:1000;min-height:68px;box-shadow:0 3px 10px #0002}
 .storeBtn:active{transform:scale(.98)}
 .storeBtn.selected{background:var(--red)}
-
-.rateTop{background:#090a0c;color:#fff;border:2px solid var(--red);border-radius:16px;padding:14px 16px;margin-top:14px;line-height:1.55;font-size:13px;box-shadow:0 4px 16px #0002}
-.rateTitle{color:#ff3036;font-size:16px;font-weight:1000;margin-bottom:5px}
-.rateFormula{font-weight:800;margin-top:2px}
-.appLinks{margin-top:14px}
-.appBtn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-weight:1000;border-radius:14px;padding:13px 22px;font-size:17px;min-width:150px}
-.adminBtn{background:var(--red);color:#fff}
-.riderBtn{background:#111;color:#fff}
 @media(max-width:620px){.storeGrid{grid-template-columns:1fr 1fr}.storeBtn{font-size:17px}}
 
 @media(max-width:620px){.foodgrid,.row{grid-template-columns:1fr}.hero img{width:125px;height:125px}.hero h1{font-size:30px}}
@@ -54,6 +46,8 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 .managerRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.managerActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.managerActions button{width:auto;padding:9px 12px}
 .addon{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid #eee;padding:7px 0}.addon:last-child{border-bottom:0}
 .foodModal{position:fixed;inset:0;background:#0009;z-index:100;display:none;align-items:flex-end;justify-content:center;padding:10px}.foodModal.show{display:flex}.modalCard{background:#fff;border-radius:18px;padding:18px;max-width:600px;width:100%;max-height:85vh;overflow:auto}.addonGroup{margin:12px 0}.addonGroup h3{margin:12px 0 7px;font-size:16px}.addonChoice{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border:1px solid #ddd;border-radius:10px;margin:7px 0}.addonChoice input{width:auto}
+
+.topRate{margin-top:16px}.rateCard{background:#08090b;color:#fff;border:2px solid #ed1118;border-radius:18px;padding:16px 18px;line-height:1.55;box-shadow:0 5px 16px #0002}.rateTitle{color:#ff3036;font-size:18px;font-weight:1000;margin-bottom:7px}.rateFormula{font-weight:800;margin-top:3px}.rateCard b{color:#fff}@media(max-width:620px){.rateCard{font-size:14px}.rateTitle{font-size:17px}}
 </style>
 </head>
 <body>
@@ -63,24 +57,31 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <div><div class="brand">MHAC <span>DELIVERY</span></div><small>FAST • SAFE • ON TIME</small></div>
 </div></header>
 
-
-<section class="rateTop wrap">
+<section class="hero"><div class="wrap">
+<img src="logo.png" alt="MHAC DELIVERY logo">
+<h1>FOOD DELIVERY</h1><p>Your delivery partner • Door to Door</p>
+<div class="pills"><span class="pill">⚡ FAST</span><span class="pill">🛡️ SAFE</span><span class="pill">📦 DOOR TO DOOR</span></div>
+</div></section>
+<section class="topRate wrap">
+<div class="rateCard">
   <div class="rateTitle">DELIVERY RATE</div>
   <div>First 1 km = <b>₱40</b> • Every succeeding km = <b>+₱10</b></div>
-  <div>Maximum 2 stores • 2nd store <b>+₱5</b></div>
+  <div>Maximum 2 stores • 2nd store = <b>+₱5</b></div>
   <div class="rateFormula">Formula: Food Order + 10% Service Fee + Delivery Fee + Additional Store Fee</div>
+</div>
 </section>
-<div class="wrap appLinks" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
-<a href="admin.html" class="appBtn adminBtn">ADMIN APP</a>
-<a href="rider.html" class="appBtn riderBtn">RIDER APP</a>
+<div class="wrap" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px">
+<a href="admin.html" style="background:#ed1118;color:#fff;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:900">ADMIN APP</a>
+<a href="rider.html" style="background:#111;color:#fff;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:900">RIDER APP</a>
+
 </div>
 
 <main class="wrap">
 
 <section class="card" id="customerMenus">
   <div class="section-title">
-    <h2>🍽️ MENU LIST</h2>
-    <span class="status">Choose a store to see its complete menu</span>
+    <h2>🍽️ CHOOSE STORE</h2>
+    <span class="status">Select a store to see its complete menu.</span>
   </div>
   <div id="storeGrid" class="storeGrid"></div>
   <div class="notice" style="margin-top:12px">
@@ -108,6 +109,8 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <div class="sumrow"><span>Delivery Fee</span><b id="delivery">₱0.00</b></div>
 <div class="sumrow"><span>Additional Store Fee</span><b id="storeFee">₱0.00</b></div>
 <div class="sumrow grand"><span>GRAND TOTAL</span><span id="grand">₱0.00</span></div>
+<br>
+<div class="notice"><b>DELIVERY RATE</b><br>First 1 km = ₱40 • Every succeeding km = +₱10 • Maximum 2 stores • 2nd store +₱5<br>Formula: <b>Food Order + 10% Service Fee + Delivery Fee + Additional Store Fee</b></div>
 <br>
 <button onclick="openCustomer()">PLACE ORDER</button>
 </section>
