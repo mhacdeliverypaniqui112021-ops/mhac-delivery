@@ -24,3 +24,5 @@ Second store = +₱5. Maximum 2 stores.
 
 IMPORTANT:
 This V8 demo shares orders/menu using browser localStorage. It is not yet a real multi-device backend. Firebase/online database is the next production step.
+
+V8.1 FIX: corrected async road-distance calculation and ensured Jollibee, McDonald's and Local Food test stores load even when older menu data exists.

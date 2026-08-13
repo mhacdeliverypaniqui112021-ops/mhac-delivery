@@ -65,6 +65,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <div id="storeGrid" class="pills" style="justify-content:flex-start;margin:0"><button onclick="selectStore('Jollibee')">🍗 Jollibee</button><button onclick="selectStore('McDonald's')">🍟 McDonald's</button><button onclick="selectStore('Local Food')">🍽️ Local Food</button></div>
 <div class="notice" style="margin-top:12px"><b>Multi-store rule:</b> First selected store has no extra store fee. A second store automatically adds <b>₱5</b>.</div>
 <div id="selectedStoreInfo" class="locationbox">Selected stores: <b>None</b></div>
+<div class="notice" style="margin-top:10px">👆 <b>Testing:</b> Tap Jollibee, McDonald's, or Local Food. The menu will appear below. Choose a food, select add-ons, then <b>ADD TO ORDER</b>.</div>
 </section>
 
 <section class="card">
@@ -177,13 +178,21 @@ const defaultMenus=[
   {name:"McNuggets Meal",price:159,icon:"🍗",addons:[{name:"Medium Fries",price:25},{name:"Coke",price:30}]}
  ]}]}
 ];
-let menus=loadMenus(),activeStore=menus[0]?.name||null,activeLabel=menus[0]?.labels?.[0]?.name||null,cart={},modalFood=null,modalStore=null;
+let menus=loadMenus(),activeStore=menus[0]?.name||null,activeLabel=menus[0]?.labels?.[0]?.name||null,cart=[],modalFood=null,modalStore=null;
 function loadMenus(){
  let x=null;
  try{x=JSON.parse(localStorage.getItem(MENU_KEY))}catch(e){}
  if(!Array.isArray(x)||!x.length)x=JSON.parse(JSON.stringify(defaultMenus));
  // Always keep the three test stores available during system testing.
- defaultMenus.forEach(def=>{ if(!x.some(s=>s.name===def.name)) x.push(JSON.parse(JSON.stringify(def))); });
+ defaultMenus.forEach(def=>{
+   const existing=x.find(s=>s.name===def.name);
+   if(!existing){ x.push(JSON.parse(JSON.stringify(def))); return; }
+   // If an existing test store has no usable menu, restore its sample menu
+   // without overwriting a menu that the admin has already created.
+   const hasFood=Array.isArray(existing.labels) && existing.labels.some(l=>Array.isArray(l.foods) && l.foods.length);
+   if(!hasFood && def.labels?.length) existing.labels=JSON.parse(JSON.stringify(def.labels));
+   if(!existing.icon) existing.icon=def.icon;
+ });
  return x;
 }
 function saveMenus(){localStorage.setItem(MENU_KEY,JSON.stringify(menus))}
