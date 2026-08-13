@@ -11,7 +11,19 @@ const KEY="MHAC_MENU_V8_5"; const LEGACY=["MHAC_MENU_V8_4","MHAC_MENU_V6"];
 const defaults=[
 {name:"Jollibee",icon:"🍗",labels:[{name:"Burger List",foods:[{name:"Burger Solo",price:99,icon:"🍔",addonGroups:[{name:"Add Drinks",options:[{name:"Coke",price:20},{name:"Sprite",price:20},{name:"Royal",price:20},{name:"Iced Tea",price:25}]},{name:"Add-ons",options:[{name:"Extra Cheese",price:15},{name:"Extra Patty",price:45},{name:"Extra Sauce",price:10}]}]},{name:"Chicken Solo",price:129,icon:"🍗",addonGroups:[{name:"Add Drinks",options:[{name:"Coke",price:20},{name:"Sprite",price:20},{name:"Royal",price:20},{name:"Iced Tea",price:25}]},{name:"Add-ons",options:[{name:"Extra Rice",price:25},{name:"Extra Gravy",price:15},{name:"Extra Chicken",price:99}]}]}]}]},
 {name:"McDonald's",icon:"🍟",labels:[{name:"Burger List",foods:[{name:"McBurger Solo",price:99,icon:"🍔",addonGroups:[{name:"Add Drinks",options:[{name:"Coke",price:25},{name:"Sprite",price:25},{name:"Iced Tea",price:30}]},{name:"Add-ons",options:[{name:"Extra Cheese",price:15},{name:"Extra Patty",price:50}]}]},{name:"McChicken",price:129,icon:"🍗",addonGroups:[{name:"Add Drinks",options:[{name:"Coke",price:25},{name:"Sprite",price:25},{name:"Iced Tea",price:30}]},{name:"Add-ons",options:[{name:"Extra Rice",price:25},{name:"Extra Sauce",price:10}]}]}]}]},
-{name:"Local Food",icon:"🍽️",labels:[{name:"Burger List",foods:[{name:"Local Burger Solo",price:99,icon:"🍔",addonGroups:[{name:"Add Drinks",options:[{name:"Softdrink",price:20},{name:"Iced Tea",price:20}]},{name:"Add-ons",options:[{name:"Extra Cheese",price:15},{name:"Extra Patty",price:40}]}]},{name:"Local Chicken Solo",price:129,icon:"🍗",addonGroups:[{name:"Add Drinks",options:[{name:"Softdrink",price:20},{name:"Iced Tea",price:20}]},{name:"Add-ons",options:[{name:"Extra Rice",price:20},{name:"Extra Gravy",price:10}]}]}]}]}
+{name:"Local Food",icon:"🍽️",labels:[{name:"Burger List",foods:[{name:"Local Burger Solo",price:99,icon:"🍔",addonGroups:[{name:"Add Drinks",options:[{name:"Softdrink",price:20},{name:"Iced Tea",price:20}]},{name:"Add-ons",options:[{name:"Extra Cheese",price:15},{name:"Extra Patty",price:40}]}]},{name:"Local Chicken Solo",price:129,icon:"🍗",addonGroups:[{name:"Add Drinks",options:[{name:"Softdrink",price:20},{name:"Iced Tea",price:20}]},{name:"Add-ons",options:[{name:"Extra Rice",price:20},{name:"Extra Gravy",price:10}]}]}]}]} ,
+{name:"Mang Inasal",icon:"🍗",labels:[
+ {name:"Chicken List",foods:[{name:"Chicken BBQ Solo",price:129,icon:"🍗",addonGroups:[
+  {name:"Add Drinks",options:[{name:"Iced Tea",price:25},{name:"Coke",price:25},{name:"Sprite",price:25}]},
+  {name:"Add-ons",options:[{name:"Extra Rice",price:25},{name:"Extra Sauce",price:10}]}
+ ]}]}
+]},
+{name:"KFC",icon:"🍗",labels:[
+ {name:"Chicken List",foods:[{name:"1pc Chicken Solo",price:129,icon:"🍗",addonGroups:[
+  {name:"Add Drinks",options:[{name:"Coke",price:25},{name:"Sprite",price:25},{name:"Iced Tea",price:30}]},
+  {name:"Add-ons",options:[{name:"Extra Rice",price:25},{name:"Extra Gravy",price:15}]}
+ ]}]}
+]}
 ];
 let menus=load(),active=menus[0]?.name||null;
 function load(){let x=null;try{x=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!Array.isArray(x)||!x.length){for(const k of LEGACY){try{let old=JSON.parse(localStorage.getItem(k));if(Array.isArray(old)&&old.length){x=old;break}}catch(e){}}}if(!Array.isArray(x)||!x.length)x=JSON.parse(JSON.stringify(defaults));

@@ -31,6 +31,12 @@ label{display:block;font-size:12px;font-weight:900;margin:10px 0 5px}input,selec
 .status{font-size:12px;color:var(--muted);margin-top:7px}.success{background:#eefaf3;border:1px solid #bde8ce;border-radius:15px;padding:17px}.orderid{font-size:26px;color:var(--red);font-weight:1000}
 footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;margin-top:25px}
 .hidden{display:none!important}
+.storeGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
+.storeBtn{background:#111;color:#fff;border:0;border-radius:15px;padding:18px 12px;font-size:19px;font-weight:1000;min-height:68px;box-shadow:0 3px 10px #0002}
+.storeBtn:active{transform:scale(.98)}
+.storeBtn.selected{background:var(--red)}
+@media(max-width:620px){.storeGrid{grid-template-columns:1fr 1fr}.storeBtn{font-size:17px}}
+
 @media(max-width:620px){.foodgrid,.row{grid-template-columns:1fr}.hero img{width:125px;height:125px}.hero h1{font-size:30px}}
 
 .catalogStore{background:#fff;border:2px solid #ddd;border-radius:16px;padding:14px;margin:12px 0;box-shadow:0 4px 12px rgba(0,0,0,.06)}
@@ -62,34 +68,28 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 
 <main class="wrap">
 
-<section class="card">
-<div class="section-title"><h2>📋 MENU LIST</h2><span class="status">Tap any food to choose add-ons and add to cart</span></div>
-<div id="allMenuCatalog"></div>
+<section class="card" id="customerMenus">
+  <div class="section-title">
+    <h2>🍽️ MENU LIST</h2>
+    <span class="status">Choose a store to see its complete menu</span>
+  </div>
+  <div id="storeGrid" class="storeGrid"></div>
+  <div class="notice" style="margin-top:12px">
+    <b>Maximum 2 stores per order.</b> The second selected store automatically adds <b>₱5</b>.
+  </div>
+</section>
 
-<div class="section-title"><h2>🏪 CHOOSE STORE</h2><span class="status">Maximum 2 stores • 2nd store +₱5</span></div>
-<div id="storeGrid" class="pills" style="justify-content:flex-start;margin:0"><button onclick="selectStore('Jollibee')">🍗 Jollibee</button><button onclick="selectStore('McDonald's')">🍟 McDonald's</button><button onclick="selectStore('Local Food')">🍽️ Local Food</button></div>
-<div class="notice" style="margin-top:12px"><b>Multi-store rule:</b> First selected store has no extra store fee. A second store automatically adds <b>₱5</b>.</div>
-<div id="selectedStoreInfo" class="locationbox">Selected stores: <b>None</b></div>
-<div class="notice" style="margin-top:10px">👆 <b>Testing:</b> Tap Jollibee, McDonald's, or Local Food. The menu will appear below. Choose a food, select add-ons, then <b>ADD TO ORDER</b>.</div>
+<section class="card hidden" id="storeMenuCard">
+  <div class="section-title">
+    <h2 id="menuStoreTitle">STORE MENU</h2>
+    <button class="outline" style="width:auto" onclick="backToStores()">← BACK TO STORES</button>
+  </div>
+  <div id="foodGrid" class="foodgrid"></div>
 </section>
 
 <section class="card">
-<div class="section-title"><h2>📋 STORE MENU</h2><span id="menuStoreTitle" class="status">Select a store</span></div>
-<div id="menuLabels" class="pills" style="justify-content:flex-start;margin:0 0 14px"></div>
-<div id="foodGrid" class="foodgrid"></div>
-</section>
-
-<section class="card">
-<div class="section-title"><h2>⚙️ CREATE / EDIT MENU</h2><span class="status">Add/remove stores, menu labels, foods & add-ons</span></div>
-<div class="notice">Everything here is saved in this browser. Create a store, add a <b>Menu Label</b>, then add the <b>Main Food + Price</b>. You can also add drink/add-on choices with their own prices.</div>
-<div id="menuManager"></div>
-</section>
-
-<section class="card">
-<h2>🛒 YOUR CART</h2><div id="cart"><p class="status">Your cart is empty.</p></div>
-</section>
-<section class="card">
-<h2>🛒 YOUR CART</h2><div id="cart"><p class="status">Your cart is empty.</p></div>
+  <h2>🛒 YOUR CART</h2>
+  <div id="cart"><p class="status">Your cart is empty.</p></div>
 </section>
 
 <section class="card">
@@ -228,6 +228,34 @@ const defaultMenus=[
        {name:"Add-ons",options:[{name:"Extra Rice",price:20},{name:"Extra Gravy",price:10}]}
      ]}
    ]}
+ ]} ,
+ {name:"Mang Inasal",icon:"🍗",labels:[
+   {name:"Chicken List",foods:[
+     {name:"Chicken BBQ Solo",price:129,icon:"🍗",addonGroups:[
+       {name:"Add Drinks",options:[{name:"Iced Tea",price:25},{name:"Coke",price:25},{name:"Sprite",price:25}]},
+       {name:"Add-ons",options:[{name:"Extra Rice",price:25},{name:"Extra Sauce",price:10}]}
+     ]}
+   ]},
+   {name:"Rice Meals",foods:[
+     {name:"Pork BBQ Meal",price:119,icon:"🍖",addonGroups:[
+       {name:"Add Drinks",options:[{name:"Iced Tea",price:25},{name:"Coke",price:25}]},
+       {name:"Add-ons",options:[{name:"Extra Rice",price:25},{name:"Extra Egg",price:20}]}
+     ]}
+   ]}
+ ]},
+ {name:"KFC",icon:"🍗",labels:[
+   {name:"Chicken List",foods:[
+     {name:"1pc Chicken Solo",price:129,icon:"🍗",addonGroups:[
+       {name:"Add Drinks",options:[{name:"Coke",price:25},{name:"Sprite",price:25},{name:"Iced Tea",price:30}]},
+       {name:"Add-ons",options:[{name:"Extra Rice",price:25},{name:"Extra Gravy",price:15}]}
+     ]}
+   ]},
+   {name:"Burger List",foods:[
+     {name:"KFC Burger Solo",price:109,icon:"🍔",addonGroups:[
+       {name:"Add Drinks",options:[{name:"Coke",price:25},{name:"Sprite",price:25}]},
+       {name:"Add-ons",options:[{name:"Extra Cheese",price:15}]}
+     ]}
+   ]}
  ]}
 ];
 let menus=loadMenus(),activeStore=menus[0]?.name||null,activeLabel=menus[0]?.labels?.[0]?.name||null,cart=[],modalFood=null,modalStore=null;
@@ -262,41 +290,69 @@ function getStore(name){return menus.find(s=>s.name===name)}
 function selectedStores(){return [...new Set(cart.map(x=>x.store))]}
 function additionalStoreFee(){return selectedStores().length===2?ADDITIONAL_STORE_FEE:0}
 function renderStores(){
- const box=document.getElementById('storeGrid'), chosen=selectedStores();
- box.innerHTML=menus.map(s=>{const sel=chosen.includes(s.name);const blocked=!sel&&chosen.length>=MAX_STORES;return `<button style="width:auto;padding:10px 14px;opacity:${blocked?.45:1};background:${sel?'#ed1118':'#111'}" onclick="selectStore(${JSON.stringify(s.name)})">${s.icon||'🍽️'} ${esc(s.name)}${sel?' ✓':''}</button>`}).join('') || '<span class="status">No stores yet. Create one below.</span>';
- document.getElementById('selectedStoreInfo').innerHTML=chosen.length?`Selected stores: <b>${chosen.map(esc).join(' + ')}</b>${chosen.length===2?'<br>Additional store fee: <b>₱5.00</b>':''}`:`Selected stores: <b>None</b><br><small>Choose a store below, or tap ADD TO ORDER on a food to automatically choose its store.</small>`;
+ const box=document.getElementById('storeGrid');
+ if(!box)return;
+ const chosen=selectedStores();
+ box.innerHTML=menus.map(s=>{
+   const sel=chosen.includes(s.name);
+   const blocked=!sel&&chosen.length>=MAX_STORES;
+   return `<button class="storeBtn ${sel?'selected':''}" ${blocked?'disabled':''}
+     style="opacity:${blocked?.45:1}"
+     onclick="selectStore(${JSON.stringify(s.name)})">${s.icon||'🍽️'} ${esc(s.name)}${sel?' ✓':''}</button>`;
+ }).join('') || '<p class="status">No stores available.</p>';
 }
 function selectStore(name){
  const chosen=selectedStores();
- if(!chosen.includes(name)&&chosen.length>=MAX_STORES){alert('Maximum 2 stores only. Remove one store from your cart before adding another store.');return}
- activeStore=name; const st=getStore(name); activeLabel=st?.labels?.[0]?.name||null; renderStores();renderMenu();document.getElementById('menuStoreTitle').textContent=name;document.getElementById('foodGrid').scrollIntoView({behavior:'smooth'});
+ if(!chosen.includes(name)&&chosen.length>=MAX_STORES){
+   alert('Maximum 2 stores only. Remove one store from your cart before adding another store.');
+   return;
+ }
+ activeStore=name;
+ const st=getStore(name);
+ activeLabel=st?.labels?.[0]?.name||null;
+ renderStores();
+ renderMenu();
+ const card=document.getElementById('storeMenuCard');
+ if(card){card.classList.remove('hidden');card.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+function backToStores(){
+ document.getElementById('storeMenuCard')?.classList.add('hidden');
+ document.getElementById('customerMenus')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function renderMenu(){
- const st=getStore(activeStore), labels=st?.labels||[];
+ const st=getStore(activeStore);
+ const labels=st?.labels||[];
  const title=document.getElementById('menuStoreTitle');
- title.textContent=st?`${st.icon||'🍽️'} ${st.name} MENU`:'Select a store';
- document.getElementById('menuLabels').innerHTML=labels.map(l=>
-   `<button style="width:auto;padding:9px 13px;background:${activeLabel===l.name?'#ed1118':'#111'}"
-      onclick="activeLabel=${JSON.stringify(l.name)};renderMenu()">${esc(l.name)}</button>`).join('');
- const label=labels.find(l=>l.name===activeLabel)||labels[0];
- if(label) activeLabel=label.name;
- const foods=label?.foods||[];
- document.getElementById('foodGrid').innerHTML=foods.length
- ?foods.map((f,i)=>{
-    const hasGroups=Array.isArray(f.addonGroups)&&f.addonGroups.some(g=>g.options?.length);
-    const hasLegacy=f.addons?.length;
-    return `<div class="food">
-      <div class="icon">${f.icon||'🍽️'}</div>
-      <h3>${esc(f.name)}</h3>
-      <div class="status">${esc(st.name)} • ${esc(label.name)}</div>
-      <div class="price">${money(f.price)}</div>
-      <div class="mini">${hasGroups||hasLegacy?'Choose drinks / add-ons after selecting this food.':'No add-ons.'}</div>
-      <button onclick="openFoodModal(${JSON.stringify(st.name)},${JSON.stringify(label.name)},${i})">
-        ${hasGroups||hasLegacy?'CHOOSE FOOD + ADD-ONS':'ADD TO ORDER'}
-      </button>
-    </div>`;
-  }).join('')
- :'<p class="status">No food in this menu label yet.</p>';
+ const grid=document.getElementById('foodGrid');
+ if(!title||!grid)return;
+ title.innerHTML=st?`${st.icon||'🍽️'} ${esc(st.name)} MENU`:'STORE MENU';
+ if(!st){
+   grid.innerHTML='<p class="status">Choose a store above.</p>';
+   return;
+ }
+ const sections=labels.filter(lb=>(lb.foods||[]).length);
+ if(!sections.length){
+   grid.innerHTML='<p class="status">Walang menu pa sa store na ito. Paki-add muna sa Menu Manager.</p>';
+   return;
+ }
+ grid.innerHTML=sections.map(lb=>`
+   <div style="grid-column:1/-1;margin-top:4px">
+     <h3 style="margin:4px 0 8px;color:#ed1118;font-size:20px">${esc(lb.name)}</h3>
+   </div>
+   ${(lb.foods||[]).map((f,i)=>{
+      const hasGroups=Array.isArray(f.addonGroups)&&f.addonGroups.some(g=>g.options?.length);
+      const hasLegacy=Array.isArray(f.addons)&&f.addons.length;
+      return `<div class="food">
+        <div class="icon">${f.icon||'🍽️'}</div>
+        <h3>${esc(f.name)}</h3>
+        <div class="price">${money(f.price)}</div>
+        <div class="mini">${hasGroups||hasLegacy?'May drinks / add-ons':'Food only'}</div>
+        <button onclick="openFoodModal(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${i})">
+          ${hasGroups||hasLegacy?'CHOOSE + ADD TO CART':'ADD TO CART'}
+        </button>
+      </div>`;
+   }).join('')}
+ `).join('');
 }
 function openFoodModal(store,label,index){
  const st=getStore(store),lb=st.labels.find(x=>x.name===label);
@@ -409,7 +465,7 @@ function renderAllCatalog(){
          return `<div class="catalogFood"><div class="cfinfo"><div class="cfname">${f.icon||"🍽️"} ${esc(f.name)}</div><div class="cfprice">${money(f.price)}</div><small>${groups.length||legacy.length?"Add drinks / add-ons available":"No add-ons"}</small></div><button onclick="openFoodModal(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${i})">${groups.length||legacy.length?"CHOOSE":"ADD TO CART"}</button></div>`;}).join("")).join(""):`<p class="status">No menu yet. Admin can add menu items here.</p>`)+`</div>`;
  }).join("")||'<p class="status">No stores or menus yet.</p>';
 }
-function renderAllMenus(){renderStores();renderAllCatalog();renderMenu();renderMenuManager();renderCart()}
+function renderAllMenus(){renderStores();renderMenu();renderCart()}
 function init(){
  renderAllMenus();
  const m=document.getElementById("municipality");
