@@ -91,12 +91,6 @@ header{background:#fff;color:#111;border-bottom:3px solid #ed1118;box-shadow:0 2
 <div><div class="brand">MHAC <span>DELIVERY</span></div><small>FAST • SAFE • ON TIME</small></div>
 </div></header>
 
-<section class="hero"><div class="wrap">
-<img src="logo.png" alt="MHAC DELIVERY logo">
-<h1>FOOD DELIVERY</h1><p>Your delivery partner • Door to Door</p>
-<div class="pills"><span class="pill">⚡ FAST</span><span class="pill">🛡️ SAFE</span><span class="pill">📦 DOOR TO DOOR</span></div>
-</div></section>
-<div style="text-align:center;margin:8px 0;font-size:12px;font-weight:900"><span data-online-status>🟡 OFFLINE / LOCAL MODE</span></div>
 <section class="topRate wrap">
 <div class="rateCard">
   <div class="rateTitle">DELIVERY RATE</div>
@@ -105,6 +99,8 @@ header{background:#fff;color:#111;border-bottom:3px solid #ed1118;box-shadow:0 2
   <div class="rateFormula">Formula: Food Order + 10% Service Fee + Delivery Fee + Additional Store Fee</div>
 </div>
 </section>
+<div style="text-align:center;margin:8px 0;font-size:12px;font-weight:900"><span data-online-status>🟡 OFFLINE / LOCAL MODE</span></div>
+
 <div class="wrap" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px">
 <a href="admin.html" style="background:#ed1118;color:#fff;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:900">ADMIN APP</a>
 <a href="rider.html" style="background:#111;color:#fff;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:900">RIDER APP</a>
@@ -151,8 +147,6 @@ header{background:#fff;color:#111;border-bottom:3px solid #ed1118;box-shadow:0 2
 <div class="sumrow"><span>Delivery Fee</span><b id="delivery">₱0.00</b></div>
 <div class="sumrow"><span>Additional Store Fee</span><b id="storeFee">₱0.00</b></div>
 <div class="sumrow grand"><span>GRAND TOTAL</span><span id="grand">₱0.00</span></div>
-<br>
-<div class="notice"><b>DELIVERY RATE</b><br>First 1 km = ₱40 • Every succeeding km = +₱10 • Maximum 2 stores • 2nd store +₱5<br>Formula: <b>Food Order + 10% Service Fee + Delivery Fee + Additional Store Fee</b></div>
 <br>
 <button onclick="openCustomer()">PLACE ORDER</button>
 </section>
@@ -240,32 +234,56 @@ const municipalities={
 
 const PICKUP_LAT=15.666166, PICKUP_LON=120.579093;
 const MAX_STORES=2, ADDITIONAL_STORE_FEE=5;
-const MENU_KEY="MHAC_MENU_V8_5";
-const LEGACY_MENU_KEYS=["MHAC_MENU_V8_4","MHAC_MENU_V6"];
+const MENU_KEY="MHAC_MENU_V8_6_CUSTOMER";
+const LEGACY_MENU_KEYS=["MHAC_MENU_V8_5","MHAC_MENU_V8_4","MHAC_MENU_V6"];
 const defaultMenus=[
  {name:"Jollibee",icon:"🍗",labels:[
-   {name:"Burger List",foods:[
-     {name:"Burger Solo",price:99,icon:"🍔",addonGroups:[
-       {name:"Add Drinks",options:[
-         {name:"Coke",price:20},{name:"Sprite",price:20},{name:"Royal",price:20},{name:"Iced Tea",price:25}
-       ]},
-       {name:"Add-ons",options:[
-         {name:"Extra Cheese",price:15},{name:"Extra Patty",price:45},{name:"Extra Sauce",price:10}
-       ]}
+   {name:"Chickenjoy",foods:[
+     {name:"1-pc. Chickenjoy w/ Drink",price:99,icon:"🍗",addonGroups:[
+       {name:"Choice A",options:[{name:"Coke Regular",price:0},{name:"Coke Zero Regular",price:0},{name:"Go Coke Float",price:45}]},
+       {name:"Add-ons",options:[{name:"Extra Rice",price:30},{name:"Extra Gravy",price:15},{name:"Extra Chickenjoy",price:75}]}
+     ]},
+     {name:"2-pc. Chickenjoy w/ Drink",price:165,icon:"🍗",addonGroups:[
+       {name:"Choice A",options:[{name:"Coke Regular",price:0},{name:"Coke Zero Regular",price:0},{name:"Go Coke Float",price:45}]},
+       {name:"Add-ons",options:[{name:"Extra Rice",price:30},{name:"Extra Gravy",price:15}]}
+     ]},
+     {name:"4-pc. Chickenjoy Family Box Solo",price:370,icon:"🍗",addonGroups:[
+       {name:"Add-ons",options:[{name:"Extra Rice",price:30},{name:"Extra Gravy",price:15}]}
+     ]},
+     {name:"6-pc. Chickenjoy with Palabok Family Pan",price:999,icon:"🍗",addonGroups:[
+       {name:"Add-ons",options:[{name:"Extra Rice",price:30},{name:"Extra Gravy",price:15}]}
+     ]},
+     {name:"8-pc. Chickenjoy with Palabok Family Pan",price:1099,icon:"🍗",addonGroups:[
+       {name:"Add-ons",options:[{name:"Extra Rice",price:30},{name:"Extra Gravy",price:15}]}
      ]}
    ]},
-   {name:"Chicken List",foods:[
-     {name:"Chicken Solo",price:129,icon:"🍗",addonGroups:[
-       {name:"Add Drinks",options:[
-         {name:"Coke",price:20},{name:"Sprite",price:20},{name:"Royal",price:20},{name:"Iced Tea",price:25}
-       ]},
-       {name:"Add-ons",options:[
-         {name:"Extra Rice",price:25},{name:"Extra Gravy",price:15},{name:"Extra Chicken",price:99}
-       ]}
-     ]}
+   {name:"Jolly Spaghetti",foods:[
+     {name:"Jolly Spaghetti Solo",price:75,icon:"🍝",addonGroups:[{name:"Add Drinks",options:[{name:"Coke Regular",price:0},{name:"Coke Zero Regular",price:0},{name:"Iced Tea",price:20}]},{name:"Add-ons",options:[{name:"Extra Cheese",price:15},{name:"Extra Sauce",price:15}]}]},
+     {name:"Jolly Spaghetti w/ Chickenjoy",price:145,icon:"🍝",addonGroups:[{name:"Add Drinks",options:[{name:"Coke Regular",price:0},{name:"Coke Zero Regular",price:0},{name:"Go Coke Float",price:45}]}]}
+   ]},
+   {name:"Burgers",foods:[
+     {name:"Yumburger",price:45,icon:"🍔",addonGroups:[{name:"Add Drinks",options:[{name:"Coke Regular",price:20},{name:"Coke Zero Regular",price:20}]},{name:"Add-ons",options:[{name:"Extra Cheese",price:15},{name:"Extra Patty",price:45}]}]},
+     {name:"Cheesy Yumburger",price:75,icon:"🍔",addonGroups:[{name:"Add Drinks",options:[{name:"Coke Regular",price:20},{name:"Coke Zero Regular",price:20}]},{name:"Add-ons",options:[{name:"Extra Patty",price:45}]}]}
+   ]},
+   {name:"Super Meals",foods:[
+     {name:"Chickenjoy Value Meal",price:145,icon:"🍗",addonGroups:[{name:"Choice A",options:[{name:"Coke Regular",price:0},{name:"Coke Zero Regular",price:0},{name:"Go Coke Float",price:45}]},{name:"Add-ons",options:[{name:"Extra Rice",price:30},{name:"Extra Gravy",price:15}]}]},
+     {name:"Chickenjoy w/ Jolly Spaghetti Meal",price:195,icon:"🍗",addonGroups:[{name:"Choice A",options:[{name:"Coke Regular",price:0},{name:"Coke Zero Regular",price:0},{name:"Go Coke Float",price:45}]}]}
+   ]},
+   {name:"Sides",foods:[
+     {name:"Regular Fries",price:50,icon:"🍟",addonGroups:[{name:"Add-ons",options:[{name:"Cheese Sauce",price:15}]}]},
+     {name:"Peach Mango Pie",price:45,icon:"🥧",addonGroups:[]}
+   ]},
+   {name:"Drinks",foods:[
+     {name:"Coke Regular",price:50,icon:"🥤",addonGroups:[]},
+     {name:"Coke Zero Regular",price:50,icon:"🥤",addonGroups:[]},
+     {name:"Go Coke Float",price:75,icon:"🥤",addonGroups:[]}
+   ]},
+   {name:"Desserts",foods:[
+     {name:"Chocolate Sundae",price:50,icon:"🍨",addonGroups:[]},
+     {name:"Peach Mango Pie",price:45,icon:"🥧",addonGroups:[]}
    ]}
- ]},
- {name:"McDonald's",icon:"🍟",labels:[
+]},
+{name:"McDonald's",icon:"🍟",labels:[
    {name:"Burger List",foods:[
      {name:"McBurger Solo",price:99,icon:"🍔",addonGroups:[
        {name:"Add Drinks",options:[
@@ -331,6 +349,7 @@ const defaultMenus=[
  ]}
 ];
 let menus=loadMenus(),activeStore=menus[0]?.name||null,activeLabel=menus[0]?.labels?.[0]?.name||null,cart=[],modalFood=null,modalStore=null;
+function getStoreFromArray(arr,name){return Array.isArray(arr)?arr.find(s=>s.name===name):null}
 function loadMenus(){
  let x=null;
  try{x=JSON.parse(localStorage.getItem(MENU_KEY))}catch(e){}
@@ -344,6 +363,14 @@ function loadMenus(){
      f.addonGroups=[{name:"Add-ons",options:f.addons.map(a=>({name:a.name,price:Number(a.price)||0}))}];
    }
  })));
+ // Upgrade the old built-in Jollibee test menu to the new customer-facing category flow.
+ // Custom Jollibee menus are preserved.
+ const oldJ=getStoreFromArray(x,"Jollibee");
+ if(oldJ && Array.isArray(oldJ.labels)){
+   const oldNames=oldJ.labels.map(l=>String(l.name||'').toLowerCase()).sort().join('|');
+   const looksLikeOldTest=['burger list','chicken list'].join('|')===oldNames;
+   if(looksLikeOldTest || oldJ.labels.length===0) oldJ.labels=JSON.parse(JSON.stringify(defaultMenus.find(d=>d.name==="Jollibee").labels));
+ }
  // Keep the three test stores available. If a store exists in this version but has
  // no menu labels/foods, restore the clean testing menu.
  defaultMenus.forEach(def=>{
