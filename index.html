@@ -33,6 +33,8 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 .hidden{display:none!important}
 @media(max-width:620px){.foodgrid,.row{grid-template-columns:1fr}.hero img{width:125px;height:125px}.hero h1{font-size:30px}}
 
+.catalogStore{background:#fff;border:2px solid #ddd;border-radius:16px;padding:14px;margin:12px 0;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.catalogStore h3{margin:0 0 10px;font-size:20px}.catalogLabel{margin:12px 0 6px;font-weight:900;color:#ed1118;text-transform:uppercase}.catalogFood{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid #eee}.catalogFood .cfinfo{min-width:0}.catalogFood .cfname{font-weight:900}.catalogFood .cfprice{font-weight:900;margin-top:3px}.catalogFood button{width:auto;padding:8px 11px;white-space:nowrap}
 .menuManagerStore{border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px;background:#fafafa}
 .menuManagerHead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.mini{font-size:12px;color:var(--muted)}
 .managerRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.managerActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.managerActions button{width:auto;padding:9px 12px}
@@ -61,6 +63,9 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 <main class="wrap">
 
 <section class="card">
+<div class="section-title"><h2>📋 MENU LIST</h2><span class="status">Tap any food to choose add-ons and add to cart</span></div>
+<div id="allMenuCatalog"></div>
+
 <div class="section-title"><h2>🏪 CHOOSE STORE</h2><span class="status">Maximum 2 stores • 2nd store +₱5</span></div>
 <div id="storeGrid" class="pills" style="justify-content:flex-start;margin:0"><button onclick="selectStore('Jollibee')">🍗 Jollibee</button><button onclick="selectStore('McDonald's')">🍟 McDonald's</button><button onclick="selectStore('Local Food')">🍽️ Local Food</button></div>
 <div class="notice" style="margin-top:12px"><b>Multi-store rule:</b> First selected store has no extra store fee. A second store automatically adds <b>₱5</b>.</div>
@@ -163,7 +168,8 @@ const municipalities={
 
 const PICKUP_LAT=15.666166, PICKUP_LON=120.579093;
 const MAX_STORES=2, ADDITIONAL_STORE_FEE=5;
-const MENU_KEY="MHAC_MENU_V8_4";
+const MENU_KEY="MHAC_MENU_V8_5";
+const LEGACY_MENU_KEYS=["MHAC_MENU_V8_4","MHAC_MENU_V6"];
 const defaultMenus=[
  {name:"Jollibee",icon:"🍗",labels:[
    {name:"Burger List",foods:[
@@ -228,7 +234,16 @@ let menus=loadMenus(),activeStore=menus[0]?.name||null,activeLabel=menus[0]?.lab
 function loadMenus(){
  let x=null;
  try{x=JSON.parse(localStorage.getItem(MENU_KEY))}catch(e){}
+ if(!Array.isArray(x)||!x.length){
+   for(const k of LEGACY_MENU_KEYS){ try{const old=JSON.parse(localStorage.getItem(k)); if(Array.isArray(old)&&old.length){x=old; break}}catch(e){} }
+ }
  if(!Array.isArray(x)||!x.length) x=JSON.parse(JSON.stringify(defaultMenus));
+ // Migrate old single add-on arrays into grouped add-ons.
+ x.forEach(st=> (st.labels||[]).forEach(lb=> (lb.foods||[]).forEach(f=>{
+   if((!Array.isArray(f.addonGroups)||!f.addonGroups.length) && Array.isArray(f.addons) && f.addons.length){
+     f.addonGroups=[{name:"Add-ons",options:f.addons.map(a=>({name:a.name,price:Number(a.price)||0}))}];
+   }
+ })));
  // Keep the three test stores available. If a store exists in this version but has
  // no menu labels/foods, restore the clean testing menu.
  defaultMenus.forEach(def=>{
@@ -358,7 +373,7 @@ function addAddon(store,label,index){const lb=getStore(store).labels.find(l=>l.n
 function removeAddon(store,label,index,ai){const f=getStore(store).labels.find(l=>l.name===label).foods[index];f.addons.splice(ai,1);saveMenus();renderAllMenus()}
 function safeId(s){return btoa(unescape(encodeURIComponent(s))).replace(/[^a-zA-Z0-9]/g,'_')}
 function resetTestMenus(){
- if(!confirm('Reset Jollibee, McDonald\\'s and Local Food to the built-in test menus?'))return;
+ if(!confirm('Reset Jollibee, McDonald\'s and Local Food to the built-in test menus?'))return;
  const names=defaultMenus.map(x=>x.name);
  names.forEach(n=>{
    const d=defaultMenus.find(x=>x.name===n);
@@ -384,7 +399,17 @@ function renderMenuManager(){
  </div>`).join('')||'<p class="mini">No menu labels yet. Add one above.</p>'}
  </div>`).join('');
 }
-function renderAllMenus(){renderStores();renderMenu();renderMenuManager();renderCart()}
+function renderAllCatalog(){
+ const box=document.getElementById("allMenuCatalog"); if(!box)return;
+ box.innerHTML=menus.map(st=>{
+   const labels=(st.labels||[]).filter(lb=>(lb.foods||[]).length);
+   return `<div class="catalogStore"><h3>${st.icon||"🍽️"} ${esc(st.name)} MENU</h3>`+
+     (labels.length?labels.map(lb=>`<div class="catalogLabel">${esc(lb.name)}</div>`+
+       lb.foods.map((f,i)=>{const groups=(f.addonGroups||[]).filter(g=>(g.options||[]).length);const legacy=f.addons||[];
+         return `<div class="catalogFood"><div class="cfinfo"><div class="cfname">${f.icon||"🍽️"} ${esc(f.name)}</div><div class="cfprice">${money(f.price)}</div><small>${groups.length||legacy.length?"Add drinks / add-ons available":"No add-ons"}</small></div><button onclick="openFoodModal(${JSON.stringify(st.name)},${JSON.stringify(lb.name)},${i})">${groups.length||legacy.length?"CHOOSE":"ADD TO CART"}</button></div>`;}).join("")).join(""):`<p class="status">No menu yet. Admin can add menu items here.</p>`)+`</div>`;
+ }).join("")||'<p class="status">No stores or menus yet.</p>';
+}
+function renderAllMenus(){renderStores();renderAllCatalog();renderMenu();renderMenuManager();renderCart()}
 function init(){
  renderAllMenus();
  const m=document.getElementById("municipality");
