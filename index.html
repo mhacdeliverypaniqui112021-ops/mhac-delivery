@@ -37,7 +37,7 @@ footer{background:var(--black);color:#bbb;text-align:center;padding:30px 15px;ma
 .menuManagerHead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.mini{font-size:12px;color:var(--muted)}
 .managerRow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.managerActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.managerActions button{width:auto;padding:9px 12px}
 .addon{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid #eee;padding:7px 0}.addon:last-child{border-bottom:0}
-.foodModal{position:fixed;inset:0;background:#0009;z-index:100;display:none;align-items:flex-end;justify-content:center;padding:10px}.foodModal.show{display:flex}.modalCard{background:#fff;border-radius:18px;padding:18px;max-width:600px;width:100%;max-height:85vh;overflow:auto}.addonChoice{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border:1px solid #ddd;border-radius:10px;margin:7px 0}.addonChoice input{width:auto}
+.foodModal{position:fixed;inset:0;background:#0009;z-index:100;display:none;align-items:flex-end;justify-content:center;padding:10px}.foodModal.show{display:flex}.modalCard{background:#fff;border-radius:18px;padding:18px;max-width:600px;width:100%;max-height:85vh;overflow:auto}.addonGroup{margin:12px 0}.addonGroup h3{margin:12px 0 7px;font-size:16px}.addonChoice{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px;border:1px solid #ddd;border-radius:10px;margin:7px 0}.addonChoice input{width:auto}
 </style>
 </head>
 <body>
@@ -163,34 +163,80 @@ const municipalities={
 
 const PICKUP_LAT=15.666166, PICKUP_LON=120.579093;
 const MAX_STORES=2, ADDITIONAL_STORE_FEE=5;
-const MENU_KEY="MHAC_MENU_V6";
+const MENU_KEY="MHAC_MENU_V8_4";
 const defaultMenus=[
- {name:"Jollibee",icon:"🍗",labels:[{name:"Chicken Meals",foods:[
-  {name:"Chickenjoy Meal",price:149,icon:"🍗",addons:[{name:"Softdrink",price:25},{name:"Large Fries",price:35},{name:"Extra Gravy",price:15}]},
-  {name:"Jolly Spaghetti",price:129,icon:"🍝",addons:[{name:"Cheese",price:20},{name:"Chickenjoy",price:99}]}
- ]}]},
- {name:"Local Food",icon:"🍽️",labels:[{name:"Test Menu",foods:[
-  {name:"Local Burger Meal",price:120,icon:"🍔",addons:[{name:"Softdrink",price:20},{name:"Extra Fries",price:25}]},
-  {name:"Local Chicken Meal",price:140,icon:"🍗",addons:[{name:"Iced Tea",price:20},{name:"Extra Rice",price:15}]}
- ]}]},
- {name:"McDonald's",icon:"🍟",labels:[{name:"Meals",foods:[
-  {name:"McChicken Meal",price:149,icon:"🍔",addons:[{name:"Medium Coke",price:30},{name:"Large Fries",price:25},{name:"Extra Patty",price:60}]},
-  {name:"McNuggets Meal",price:159,icon:"🍗",addons:[{name:"Medium Fries",price:25},{name:"Coke",price:30}]}
- ]}]}
+ {name:"Jollibee",icon:"🍗",labels:[
+   {name:"Burger List",foods:[
+     {name:"Burger Solo",price:99,icon:"🍔",addonGroups:[
+       {name:"Add Drinks",options:[
+         {name:"Coke",price:20},{name:"Sprite",price:20},{name:"Royal",price:20},{name:"Iced Tea",price:25}
+       ]},
+       {name:"Add-ons",options:[
+         {name:"Extra Cheese",price:15},{name:"Extra Patty",price:45},{name:"Extra Sauce",price:10}
+       ]}
+     ]}
+   ]},
+   {name:"Chicken List",foods:[
+     {name:"Chicken Solo",price:129,icon:"🍗",addonGroups:[
+       {name:"Add Drinks",options:[
+         {name:"Coke",price:20},{name:"Sprite",price:20},{name:"Royal",price:20},{name:"Iced Tea",price:25}
+       ]},
+       {name:"Add-ons",options:[
+         {name:"Extra Rice",price:25},{name:"Extra Gravy",price:15},{name:"Extra Chicken",price:99}
+       ]}
+     ]}
+   ]}
+ ]},
+ {name:"McDonald's",icon:"🍟",labels:[
+   {name:"Burger List",foods:[
+     {name:"McBurger Solo",price:99,icon:"🍔",addonGroups:[
+       {name:"Add Drinks",options:[
+         {name:"Coke",price:25},{name:"Sprite",price:25},{name:"Iced Tea",price:30}
+       ]},
+       {name:"Add-ons",options:[
+         {name:"Extra Cheese",price:15},{name:"Extra Patty",price:50}
+       ]}
+     ]}
+   ]},
+   {name:"Chicken List",foods:[
+     {name:"Chicken Solo",price:129,icon:"🍗",addonGroups:[
+       {name:"Add Drinks",options:[
+         {name:"Coke",price:25},{name:"Sprite",price:25},{name:"Iced Tea",price:30}
+       ]},
+       {name:"Add-ons",options:[
+         {name:"Extra Rice",price:25},{name:"Extra Sauce",price:10}
+       ]}
+     ]}
+   ]}
+ ]},
+ {name:"Local Food",icon:"🍽️",labels:[
+   {name:"Burger List",foods:[
+     {name:"Local Burger Solo",price:99,icon:"🍔",addonGroups:[
+       {name:"Add Drinks",options:[{name:"Softdrink",price:20},{name:"Iced Tea",price:20}]},
+       {name:"Add-ons",options:[{name:"Extra Cheese",price:15},{name:"Extra Patty",price:40}]}
+     ]}
+   ]},
+   {name:"Chicken List",foods:[
+     {name:"Local Chicken Solo",price:129,icon:"🍗",addonGroups:[
+       {name:"Add Drinks",options:[{name:"Softdrink",price:20},{name:"Iced Tea",price:20}]},
+       {name:"Add-ons",options:[{name:"Extra Rice",price:20},{name:"Extra Gravy",price:10}]}
+     ]}
+   ]}
+ ]}
 ];
 let menus=loadMenus(),activeStore=menus[0]?.name||null,activeLabel=menus[0]?.labels?.[0]?.name||null,cart=[],modalFood=null,modalStore=null;
 function loadMenus(){
  let x=null;
  try{x=JSON.parse(localStorage.getItem(MENU_KEY))}catch(e){}
- if(!Array.isArray(x)||!x.length)x=JSON.parse(JSON.stringify(defaultMenus));
- // Always keep the three test stores available during system testing.
+ if(!Array.isArray(x)||!x.length) x=JSON.parse(JSON.stringify(defaultMenus));
+ // Keep the three test stores available. If a store exists in this version but has
+ // no menu labels/foods, restore the clean testing menu.
  defaultMenus.forEach(def=>{
    const existing=x.find(s=>s.name===def.name);
-   if(!existing){ x.push(JSON.parse(JSON.stringify(def))); return; }
-   // If an existing test store has no usable menu, restore its sample menu
-   // without overwriting a menu that the admin has already created.
-   const hasFood=Array.isArray(existing.labels) && existing.labels.some(l=>Array.isArray(l.foods) && l.foods.length);
-   if(!hasFood && def.labels?.length) existing.labels=JSON.parse(JSON.stringify(def.labels));
+   if(!existing){x.push(JSON.parse(JSON.stringify(def)));return}
+   if(!Array.isArray(existing.labels)||!existing.labels.length){
+     existing.labels=JSON.parse(JSON.stringify(def.labels));
+   }
    if(!existing.icon) existing.icon=def.icon;
  });
  return x;
@@ -212,29 +258,89 @@ function selectStore(name){
 }
 function renderMenu(){
  const st=getStore(activeStore), labels=st?.labels||[];
- document.getElementById('menuLabels').innerHTML=labels.map(l=>`<button style="width:auto;padding:8px 12px;background:${activeLabel===l.name?'#ed1118':'#111'}" onclick="activeLabel=${JSON.stringify(l.name)};renderMenu()">${esc(l.name)}</button>`).join('');
- const label=labels.find(l=>l.name===activeLabel)||labels[0]; if(label) activeLabel=label.name;
+ const title=document.getElementById('menuStoreTitle');
+ title.textContent=st?`${st.icon||'🍽️'} ${st.name} MENU`:'Select a store';
+ document.getElementById('menuLabels').innerHTML=labels.map(l=>
+   `<button style="width:auto;padding:9px 13px;background:${activeLabel===l.name?'#ed1118':'#111'}"
+      onclick="activeLabel=${JSON.stringify(l.name)};renderMenu()">${esc(l.name)}</button>`).join('');
+ const label=labels.find(l=>l.name===activeLabel)||labels[0];
+ if(label) activeLabel=label.name;
  const foods=label?.foods||[];
- document.getElementById('foodGrid').innerHTML=foods.length?foods.map((f,i)=>`<div class="food"><div class="icon">${f.icon||'🍽️'}</div><h3>${esc(f.name)}</h3><div class="status">${esc(st.name)} • ${esc(label.name)}</div><div class="price">${money(f.price)}</div><button onclick="openFoodModal(${JSON.stringify(st.name)},${JSON.stringify(label.name)},${i})">${f.addons?.length?'CHOOSE FOOD + ADD-ONS':'ADD TO ORDER'}</button></div>`).join(''):'<p class="status">No food in this menu label yet.</p>';
+ document.getElementById('foodGrid').innerHTML=foods.length
+ ?foods.map((f,i)=>{
+    const hasGroups=Array.isArray(f.addonGroups)&&f.addonGroups.some(g=>g.options?.length);
+    const hasLegacy=f.addons?.length;
+    return `<div class="food">
+      <div class="icon">${f.icon||'🍽️'}</div>
+      <h3>${esc(f.name)}</h3>
+      <div class="status">${esc(st.name)} • ${esc(label.name)}</div>
+      <div class="price">${money(f.price)}</div>
+      <div class="mini">${hasGroups||hasLegacy?'Choose drinks / add-ons after selecting this food.':'No add-ons.'}</div>
+      <button onclick="openFoodModal(${JSON.stringify(st.name)},${JSON.stringify(label.name)},${i})">
+        ${hasGroups||hasLegacy?'CHOOSE FOOD + ADD-ONS':'ADD TO ORDER'}
+      </button>
+    </div>`;
+  }).join('')
+ :'<p class="status">No food in this menu label yet.</p>';
 }
 function openFoodModal(store,label,index){
- const st=getStore(store),lb=st.labels.find(x=>x.name===label);modalStore=store;modalFood={...lb.foods[index],label};
- document.getElementById('modalFoodName').textContent=modalFood.name;document.getElementById('modalFoodPrice').textContent=money(modalFood.price);
- const box=document.getElementById('modalAddons'); const groups=modalFood.addons||[];
- box.innerHTML=groups.length?'<h3>Add-ons</h3>'+groups.map((a,i)=>`<label class="addonChoice"><span>${esc(a.name)} <b>+${money(a.price)}</b></span><input type="checkbox" data-addon="${i}"></label>`).join(''):'<p class="status">No add-ons for this food.</p>';
+ const st=getStore(store),lb=st.labels.find(x=>x.name===label);
+ modalStore=store; modalFood={...lb.foods[index],label};
+ document.getElementById('modalFoodName').textContent=modalFood.name;
+ document.getElementById('modalFoodPrice').textContent=money(modalFood.price);
+ const box=document.getElementById('modalAddons');
+ const groups=Array.isArray(modalFood.addonGroups)?modalFood.addonGroups:[];
+ const legacy=Array.isArray(modalFood.addons)?modalFood.addons:[];
+ let html='';
+ if(groups.length){
+   html=groups.map((g,gi)=>{
+     const opts=Array.isArray(g.options)?g.options:[];
+     if(!opts.length)return '';
+     const isDrink=/drink/i.test(g.name);
+     return `<div class="addonGroup"><h3>${esc(g.name)}</h3>
+       ${opts.map((a,ai)=>`<label class="addonChoice">
+         <span>${esc(a.name)} <b>+${money(a.price)}</b></span>
+         <input type="${isDrink?'radio':'checkbox'}" name="addonGroup_${gi}" data-group="${gi}" data-option="${ai}">
+       </label>`).join('')}
+     </div>`;
+   }).join('');
+ }
+ if(legacy.length){
+   html+='<div class="addonGroup"><h3>Add-ons</h3>'+
+     legacy.map((a,i)=>`<label class="addonChoice"><span>${esc(a.name)} <b>+${money(a.price)}</b></span><input type="checkbox" data-legacy-addon="${i}"></label>`).join('')+
+     '</div>';
+ }
+ box.innerHTML=html||'<p class="status">No add-ons for this food.</p>';
  document.getElementById('foodModal').classList.add('show');
 }
 function closeFoodModal(){document.getElementById('foodModal').classList.remove('show');modalFood=null;modalStore=null}
 function addConfiguredFood(){
  if(!modalFood)return;
  const chosen=selectedStores();
- // If the customer has not selected a store yet, the food's store becomes the first selected store.
- // If a different store is already selected, adding this food creates the second store (+₱5).
- if(!chosen.includes(modalStore)&&chosen.length>=MAX_STORES){alert('Maximum 2 stores only. Remove one store from your cart before adding another store.');return}
- const adds=[...document.querySelectorAll('#modalAddons input[data-addon]:checked')].map(x=>modalFood.addons[Number(x.dataset.addon)]);
- cart.push({id:Date.now()+Math.random(),store:modalStore,label:modalFood.label,name:modalFood.name,icon:modalFood.icon||'🍽️',price:Number(modalFood.price),addons:adds,qty:1});
- activeStore=modalStore;
- activeLabel=modalFood.label;
+ if(!chosen.includes(modalStore)&&chosen.length>=MAX_STORES){
+   alert('Maximum 2 stores only. Remove one store from your cart before adding another store.');
+   return;
+ }
+ const adds=[];
+ // New grouped add-ons
+ (modalFood.addonGroups||[]).forEach((g,gi)=>{
+   const opts=g.options||[];
+   document.querySelectorAll(`#modalAddons input[data-group="${gi}"]:checked`).forEach(el=>{
+     const a=opts[Number(el.dataset.option)];
+     if(a) adds.push({name:a.name,price:Number(a.price)||0,group:g.name});
+   });
+ });
+ // Legacy add-ons
+ (modalFood.addons||[]).forEach((a,i)=>{
+   const el=document.querySelector(`#modalAddons input[data-legacy-addon="${i}"]`);
+   if(el?.checked) adds.push({name:a.name,price:Number(a.price)||0,group:'Add-ons'});
+ });
+ cart.push({
+   id:Date.now()+Math.random(),store:modalStore,label:modalFood.label,
+   name:modalFood.name,icon:modalFood.icon||'🍽️',price:Number(modalFood.price)||0,
+   addons:adds,qty:1
+ });
+ activeStore=modalStore;activeLabel=modalFood.label;
  closeFoodModal();renderAllMenus();
  document.getElementById('cart').scrollIntoView({behavior:'smooth'});
 }
@@ -251,9 +357,21 @@ function editFood(store,label,index){const lb=getStore(store).labels.find(l=>l.n
 function addAddon(store,label,index){const lb=getStore(store).labels.find(l=>l.name===label),f=lb.foods[index];const n=prompt('Add-on name (example: Coke):');if(!n)return;const p=prompt('Add-on price:','25');if(p===null)return;const price=Number(p);if(!Number.isFinite(price)||price<0)return alert('Invalid price.');f.addons=f.addons||[];f.addons.push({name:n.trim(),price});saveMenus();renderAllMenus()}
 function removeAddon(store,label,index,ai){const f=getStore(store).labels.find(l=>l.name===label).foods[index];f.addons.splice(ai,1);saveMenus();renderAllMenus()}
 function safeId(s){return btoa(unescape(encodeURIComponent(s))).replace(/[^a-zA-Z0-9]/g,'_')}
+function resetTestMenus(){
+ if(!confirm('Reset Jollibee, McDonald\\'s and Local Food to the built-in test menus?'))return;
+ const names=defaultMenus.map(x=>x.name);
+ names.forEach(n=>{
+   const d=defaultMenus.find(x=>x.name===n);
+   const i=menus.findIndex(x=>x.name===n);
+   if(i>=0) menus[i]=JSON.parse(JSON.stringify(d)); else menus.push(JSON.parse(JSON.stringify(d)));
+ });
+ saveMenus();
+ activeStore="Jollibee";activeLabel="Burger List";renderAllMenus();
+ alert('Test menus restored. Tap Jollibee to test.');
+}
 function renderMenuManager(){
  const box=document.getElementById('menuManager');
- box.innerHTML=`<div class="managerRow"><div><label>New Store Name</label><input id="newStoreName" placeholder="Example: Jollibee"></div><div><label>Store Icon</label><input id="newStoreIcon" placeholder="🍔"></div></div><br><button onclick="addStore()">＋ ADD STORE</button>`+
+ box.innerHTML=`<div class="managerRow"><div><label>New Store Name</label><input id="newStoreName" placeholder="Example: Jollibee"></div><div><label>Store Icon</label><input id="newStoreIcon" placeholder="🍔"></div></div><br><button onclick="addStore()">＋ ADD STORE</button><button class="outline" style="margin-top:8px" onclick="resetTestMenus()">RESET TEST MENUS</button>`+
  menus.map(st=>`<div class="menuManagerStore"><div class="menuManagerHead"><h3 style="margin:0">${st.icon||'🍽️'} ${esc(st.name)}</h3><button class="dark" style="width:auto" onclick="removeStore(${JSON.stringify(st.name)})">REMOVE STORE</button></div>
  <div class="managerRow"><div><label>New Menu Label</label><input id="newLabel_${safeId(st.name)}" placeholder="Example: Chicken Meals"></div><div style="display:flex;align-items:end"><button onclick="addLabel(${JSON.stringify(st.name)})">＋ ADD MENU LABEL</button></div></div>
  ${(st.labels||[]).map(lb=>`<div class="menuManagerStore" style="background:#fff"><div class="menuManagerHead"><b>🏷️ ${esc(lb.name)}</b><button class="dark" style="width:auto" onclick="removeLabel(${JSON.stringify(st.name)},${JSON.stringify(lb.name)})">REMOVE LABEL</button></div>
