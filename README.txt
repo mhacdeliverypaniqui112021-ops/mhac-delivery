@@ -1,13 +1,21 @@
-MHAC DELIVERY MASTER V10 — ONE UPLOAD
+MHAC DELIVERY MASTER V11 - LOCKED ONE UPLOAD
 
-This is the protected master build based on the previously working V9 interface. Customer, Admin and Rider are combined into one index.html so there are no missing shared/asset folders.
+IMPORTANT:
+1. This package is a single-file GitHub Pages package.
+2. Upload ONLY these files to the ROOT of the mhac-delivery repository:
+   - index.html
+   - manifest.json
+   - README.txt
+3. Before uploading, remove/replace the OLD root index.html.
+4. Do NOT upload the old rider index.html over the root index.html.
+5. Customer App opens by default:
+   /mhac-delivery/
+6. Admin App:
+   /mhac-delivery/?app=admin
+7. Rider App:
+   /mhac-delivery/?app=rider
 
-Upload index.html to the ROOT of the GitHub Pages repository. Do not mix it with the old files.
+The logo, CSS, Customer/Admin/Rider interfaces and food/menu data are embedded in index.html.
+No shared/assets/admin/rider folders are required for this package.
 
-Customer: /mhac-delivery/
-Admin: /mhac-delivery/?app=admin
-Rider: /mhac-delivery/?app=rider
-
-Includes the existing Customer store/category/menu/cart/checkout flow, delivery-rate display, Admin order dashboard + rider assignment, and Rider assigned-orders-only flow.
-
-Current synchronization is localStorage for testing. Do not proceed to Firebase until this master build is confirmed working.
+This is the MASTER interface for local/browser testing. Do not mix files from older packages.
